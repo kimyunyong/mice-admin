@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PromotionDAO">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="Promotion" type="com.mice.cvb.service.service.Promotion"/>
+	<typeAlias  alias="PromotionVO" type="com.mice.cvb.service.service.PromotionVO"/>
+
+	<resultMap id="promotionList" class="com.mice.cvb.service.service.PromotionVO">
+		
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="site" column="site" columnIndex="2"/>
+		<result property="organization_name_ko" column="organization_name_ko" columnIndex="3"/>
+		<result property="manager_tel_no" column="manager_tel_no" columnIndex="4"/>
+		<result property="manager_email" column="manager_email" columnIndex="5"/>
+		<result property="manager_name" column="manager_name" columnIndex="6"/>
+		<result property="confirm_status" column="confirm_status" columnIndex="7"/>		
+		<result property="reg_date" column="reg_date" columnIndex="8"/>
+		<result property="form_type" column="form_type" columnIndex="9"/>
+	</resultMap>
+
+	<resultMap id="promotionDetail" class="com.mice.cvb.service.service.PromotionVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="site" column="site" columnIndex="2"/>
+		<result property="organization_name_ko" column="organization_name_ko" columnIndex="3"/>
+		<result property="manager_name" column="manager_name" columnIndex="4"/>
+		<result property="manager_class" column="manager_class" columnIndex="5"/>
+		<result property="manager_tel_no" column="manager_tel_no" columnIndex="6"/>
+		<result property="organization_fax_no" column="organization_fax_no" columnIndex="7"/>
+		<result property="manager_phone_no" column="manager_phone_no" columnIndex="8"/>
+		<result property="manager_email" column="manager_email" columnIndex="9"/>
+		<result property="organization_address" column="organization_address" columnIndex="10"/>
+		<result property="organization_zip_code" column="organization_zip_code" columnIndex="11"/>
+		<result property="organization_homepage" column="organization_homepage" columnIndex="12"/>
+		<result property="promotion_type" column="promotion_type" columnIndex="13"/>	
+		<result property="confirm_id" column="confirm_id" columnIndex="14"/>
+		<result property="confirm_status" column="confirm_status" columnIndex="15"/>
+		<result property="confirm_date" column="confirm_date" columnIndex="16"/>
+		<result property="confirm_update_date" column="confirm_update_date" columnIndex="17"/>
+		<result property="reg_date" column="reg_date" columnIndex="18"/>
+		<result property="form_type" column="form_type" columnIndex="19"/>
+		<result property="require_member_cnt" column="require_member_cnt" columnIndex="20"/>
+
+	</resultMap>
+ 	<select id="PromotionDAO.select" parameterClass="java.lang.Integer" resultMap="promotionDetail" >
+ 		<![CDATA[
+ 		SELECT 
+		idx,
+		site,
+		organization_name_ko,
+		manager_name,
+		manager_class,
+		manager_tel_no,
+		organization_fax_no,
+		manager_phone_no,
+		manager_email,
+		organization_address,
+		organization_zip_code,
+		organization_homepage,
+		promotion_type,
+		confirm_id,
+		confirm_status,
+		confirm_date,
+		confirm_update_date,
+		reg_date,
+		form_type,
+		require_member_cnt,
+		expire_id,
+		expire_date
+		from tbl_promotion_info where 
+		1=1 AND expire_date >= SYSDATE() AND idx=#idx#
+ 		]]>
+ 	</select>
+	<select id="PromotionDAO.list" parameterClass="PromotionVO" resultMap="promotionList" >
+		<![CDATA[
+		SELECT 
+		idx,
+		site,
+		organization_name_ko,
+		manager_tel_no,
+		manager_email,
+		manager_name,
+		confirm_status,
+		reg_date,
+		form_type
+		FROM tbl_promotion_info WHERE
+		1=1 AND expire_date >= SYSDATE() AND form_type = #form_type#
+		]]>
+        <isNotEmpty prepend="AND" property="searchWrd">
+       		(organization_name_ko LIKE CONCAT('%', #searchWrd#,'%') or manager_name LIKE CONCAT('%', #searchWrd#,'%'))
+       	</isNotEmpty>
+        <![CDATA[
+        order by idx desc
+        LIMIT #recordCountPerPage# OFFSET #firstIndex#
+        ]]>
+	</select>
+	
+	<select id="PromotionDAO.listCount" parameterClass="PromotionVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+		SELECT 
+		COUNT(*)
+		FROM tbl_promotion_info WHERE
+		1=1 AND expire_date >= SYSDATE() AND form_type = #form_type#
+		]]>
+        <isNotEmpty prepend="AND" property="searchWrd">
+       		(organization_name_ko LIKE CONCAT('%', #searchWrd#,'%') or manager_name LIKE CONCAT('%', #searchWrd#,'%'))
+       	</isNotEmpty>
+
+	</select>
+	
+	<update id="PromotionDAO.update" parameterClass="PromotionVO">
+		<![CDATA[
+		UPDATE tbl_promotion_info SET
+			organization_name_ko = #organization_name_ko#,
+			manager_name = #manager_name#,
+			manager_class = #manager_class#,
+			manager_tel_no = #manager_tel_no#,
+			organization_fax_no = #organization_fax_no#,
+			manager_phone_no = #manager_phone_no#,
+			manager_email = #manager_email#,
+			organization_address = #organization_address#,
+			organization_zip_code = #organization_zip_code#,
+			organization_homepage = #organization_homepage#,
+			promotion_type = #promotion_type#,
+			confirm_id = #confirm_id#,
+			confirm_status = #confirm_status#,
+			confirm_date = #confirm_date#,
+			form_type = #form_type#,
+			require_member_cnt = #require_member_cnt#
+			WHERE idx = #idx#
+		]]>
+	</update>
+	
+	<update id="PromotionDAO.delete" parameterClass="PromotionVO">
+		<![CDATA[
+		UPDATE tbl_promotion_info SET
+		expire_id = #expire_id#,
+		expire_date = SYSDATE()
+		WHERE idx= #idx#
+		]]>
+	</update>
+</sqlMap>

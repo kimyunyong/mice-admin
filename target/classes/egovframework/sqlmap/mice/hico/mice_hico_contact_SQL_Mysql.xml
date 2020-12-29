@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ContactDAO">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="Contact" type="com.mice.hico.contact.service.Contact"/>
+	<typeAlias  alias="ContactVO" type="com.mice.hico.contact.service.ContactVO"/>
+
+	<resultMap id="contactList" class="com.mice.hico.contact.service.ContactVO">
+		
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="manager_name" column="manager_name" columnIndex="2"/>
+		<result property="requester_email" column="requester_email" columnIndex="3"/>
+		<result property="confirm_status" column="confirm_status" columnIndex="4"/>
+		<result property="reg_date" column="reg_date" columnIndex="5"/>
+	</resultMap>
+
+	<resultMap id="contactDetail" class="com.mice.hico.contact.service.ContactVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="manager_name" column="manager_name" columnIndex="2"/>
+		<result property="requester_email" column="requester_email" columnIndex="3"/>
+		<result property="comment" column="comment" columnIndex="4"/>
+		<result property="confirm_id" column="confirm_id" columnIndex="5"/>
+		<result property="confirm_status" column="confirm_status" columnIndex="6"/>
+		<result property="confirm_date" column="confirm_date" columnIndex="7"/>
+		<result property="reg_date" column="reg_date" columnIndex="8"/>
+
+	</resultMap>
+ 	<select id="ContactDAO.select" parameterClass="java.lang.Integer" resultMap="contactDetail" >
+ 		<![CDATA[
+ 		SELECT 
+		idx,
+		ci.manager_email as manager_name,
+		requester_email,
+		comment,
+		confirm_id,
+		confirm_status,
+		confirm_date,
+		reg_date
+		from tbl_contact_info ci left outer join comtnemplyrinfo emp on ci.manager_email=emp.email_adres where 
+		1=1 AND ci.expire_date >= SYSDATE() AND ci.idx = #idx#
+ 		]]>
+ 	</select>
+	<select id="ContactDAO.list" parameterClass="ContactVO" resultMap="contactList" >
+		<![CDATA[
+		select
+		idx,
+		emp.USER_NM as manager_name,
+		requester_email,
+		confirm_status,
+		reg_date
+
+		from tbl_contact_info ci INNER JOIN comtnemplyrinfo emp on ci.manager_email=emp.email_adres where 
+		1=1 AND ci.expire_date >= SYSDATE()
+		]]>
+        <isNotEmpty prepend="AND" property="searchWrd">
+        		emp.USER_NM LIKE CONCAT('%', #searchWrd#,'%')
+        </isNotEmpty>
+        <![CDATA[
+        order by ci.idx desc
+        LIMIT #recordCountPerPage# OFFSET #firstIndex#
+        ]]>
+	</select>
+	
+	<select id="ContactDAO.listCount" parameterClass="ContactVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+		SELECT 
+		COUNT(*)
+		from tbl_contact_info ci INNER JOIN comtnemplyrinfo emp on ci.manager_email=emp.email_adres where 
+		1=1 AND expire_date >= SYSDATE()
+		]]>
+        <isNotEmpty prepend="AND" property="searchWrd">
+        		emp.user_nm LIKE CONCAT('%', #searchWrd#,'%')
+        </isNotEmpty>
+
+	</select>
+	
+	<update id="ContactDAO.update" parameterClass="ContactVO">
+		<![CDATA[
+		UPDATE tbl_contact_info SET
+		confirm_id = #confirm_id#,
+		confirm_status = #confirm_status#,
+		confirm_date = #confirm_date#
+		WHERE idx = #idx#
+		]]>
+	</update>
+	
+	<update id="ContactDAO.delete" parameterClass="ContactVO">
+		<![CDATA[
+		UPDATE tbl_contact_info SET
+		expire_id = #expire_id#,
+		expire_date = SYSDATE()
+		WHERE idx= #idx#
+		]]>
+	</update>
+</sqlMap>

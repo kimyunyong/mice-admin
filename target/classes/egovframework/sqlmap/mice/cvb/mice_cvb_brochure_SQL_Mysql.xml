@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BrochureDAO">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="Brochure" type="com.mice.cvb.brochure.service.Brochure"/>
+	<typeAlias  alias="BrochureVO" type="com.mice.cvb.brochure.service.BrochureVO"/>
+
+	<resultMap id="brochureList" class="com.mice.cvb.brochure.service.BrochureVO">
+		
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="title_ko" column="title_ko" columnIndex="2"/>
+		<result property="image_file_id" column="image_file_id" columnIndex="3"/>
+		<result property="reg_id" column="reg_id" columnIndex="4"/>
+		<result property="user_nm" column="user_nm" columnIndex="5"/>
+		<result property="reg_date" column="reg_date" columnIndex="6"/>
+	</resultMap>
+
+	<resultMap id="brochureDetail" class="com.mice.cvb.brochure.service.BrochureVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="title_ko" column="title_ko" columnIndex="2"/>
+		<result property="title_en" column="title_en" columnIndex="3"/>
+		<result property="comment_ko" column="comment_ko" columnIndex="4"/>
+		<result property="comment_en" column="comment_en" columnIndex="5"/>
+		<result property="image_file_id" column="image_file_id" columnIndex="6"/>
+		<result property="attach_file_id" column="attach_file_id" columnIndex="7"/>
+		<result property="reg_id" column="reg_id" columnIndex="8"/>
+		<result property="user_nm" column="user_nm" columnIndex="9"/>
+		<result property="reg_date" column="reg_date" columnIndex="10"/>
+		<result property="expire_id" column="expire_id" columnIndex="11"/>
+		<result property="expire_date" column="expire_date" columnIndex="12"/>
+	</resultMap>
+ 	<select id="BrochureDAO.info" parameterClass="java.lang.Integer" resultMap="brochureDetail" >
+ 		<![CDATA[
+ 		SELECT 
+		idx,
+		title_ko,
+		title_en,
+		comment_ko,
+		comment_en,
+		image_file_id,
+		attach_file_id,
+		reg_id,
+		(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = reg_id) as user_nm,
+		reg_date,
+		expire_id,
+		expire_date
+		FROM tbl_brochure_info WHERE 1=1 AND expire_date>NOW() AND idx=#idx#
+ 		]]>
+ 	</select>
+	<select id="BrochureDAO.list" parameterClass="BrochureVO" resultMap="brochureList" >
+		<![CDATA[
+		SELECT 
+		idx,
+		(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = reg_id) as user_nm,
+		reg_id,
+		title_ko,
+		reg_date,
+		image_file_id
+		FROM tbl_brochure_info WHERE
+		1=1 AND expire_date > NOW()
+		]]>
+		<isEqual property="searchCnd" compareValue="1">
+	        <isNotEmpty prepend="AND" property="searchWrd">
+        		title_ko LIKE CONCAT('%', #searchWrd#,'%')
+        	</isNotEmpty>
+        </isEqual>
+        <isEqual property="searchCnd" compareValue="2">
+	        <isNotEmpty prepend="AND" property="searchWrd">
+        		reg_id LIKE CONCAT('%', #searchWrd#,'%')
+        	</isNotEmpty>
+        </isEqual>
+        <![CDATA[
+        order by idx desc
+        LIMIT #recordCountPerPage# OFFSET #firstIndex#
+        ]]>
+	</select>
+	
+	<select id="BrochureDAO.listCount" parameterClass="BrochureVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+		SELECT 
+		COUNT(*)
+		FROM tbl_brochure_info WHERE
+		1=1 AND expire_date >= SYSDATE() 
+		]]>
+		<isEqual property="searchCnd" compareValue="1">
+	        <isNotEmpty prepend="AND" property="searchWrd">
+        		title_ko LIKE CONCAT('%', #searchWrd#,'%')
+        	</isNotEmpty>
+        </isEqual>
+        <isEqual property="searchCnd" compareValue="2">
+	        <isNotEmpty prepend="AND" property="searchWrd">
+        		reg_id LIKE CONCAT('%', #searchWrd#,'%')
+        	</isNotEmpty>
+        </isEqual>
+
+	</select>
+	
+	<update id="BrochureDAO.update" parameterClass="BrochureVO">
+		<![CDATA[
+		UPDATE tbl_brochure_info SET
+			title_ko = #title_ko#, 
+			title_en = #title_en#,
+			comment_ko = #comment_ko#,
+			comment_en = #comment_en#,
+			image_file_id = #image_file_id#,
+			attach_file_id = #attach_file_id#
+			WHERE idx = #idx#
+		]]>
+	</update>
+	
+	<update id="BrochureDAO.delete" parameterClass="BrochureVO">
+		<![CDATA[
+		UPDATE tbl_brochure_info SET
+		expire_id = #expire_id#,
+		expire_date = SYSDATE()
+		WHERE idx= #idx#
+		]]>
+	</update>
+	
+	<insert id="BrochureDAO.insert" parameterClass="BrochureVO">
+		<![CDATA[
+		INSERT INTO tbl_brochure_info (
+		title_ko,
+		title_en,
+		comment_ko,
+		comment_en,
+		image_file_id,
+		attach_file_id,
+		reg_id,
+		reg_date
+		)
+		VALUES
+		(
+			#title_ko#,
+			#title_en#,
+			#comment_ko#,
+			#comment_en#,
+			#image_file_id#,
+			#attach_file_id#,
+			#reg_id#,
+			NOW()
+		)
+		]]>
+	</insert>
+</sqlMap>

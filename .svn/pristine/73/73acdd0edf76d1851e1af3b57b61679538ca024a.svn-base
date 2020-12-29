@@ -1,0 +1,635 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="CRMEventOrderDAO">
+	<typeAlias  alias="int" type="java.lang.Integer"/>
+	<typeAlias  alias="OrderVO" type="com.mice.crm.service.OrderVO"/>
+	<typeAlias  alias="FacilityVO" type="com.mice.crm.service.FacilityVO"/>
+	
+	<resultMap id="FileList" class="com.mice.crm.service.FileVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="atch_file_id" column="atch_file_id" columnIndex="2"/>
+		<result property="crm_event_idx" column="crm_event_idx" columnIndex="3"/>
+		<result property="type" column="type" columnIndex="4"/>
+		<result property="file_stre_cours" column="file_stre_cours" columnIndex="5"/>
+		<result property="stre_file_nm" column="stre_file_nm" columnIndex="6"/>
+		<result property="orignl_file_nm" column="orignl_file_nm" columnIndex="7"/>
+		<result property="file_size" column="file_size" columnIndex="8"/>
+	</resultMap>
+	
+	<resultMap id="FacilityList" class="com.mice.crm.service.FacilityVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="type" column="type" columnIndex="2"/>
+		<result property="value" column="value" columnIndex="3"/>
+		<result property="sorted_no" column="sorted_no" columnIndex="4"/>
+	</resultMap>
+	
+	<resultMap id="OrderFacilityList" class="com.mice.crm.service.FacilityVO">
+		<result property="place_idx" column="place_idx" columnIndex="1"/>
+		<result property="crm_event_idx" column="crm_event_idx" columnIndex="2"/>
+		<result property="place" column="place" columnIndex="3"/>
+		<result property="p_rent_st_date" column="p_rent_st_date" columnIndex="4"/>
+		<result property="p_rent_ed_date" column="p_rent_ed_date" columnIndex="5"/>
+		<result property="rent_time" column="rent_time" columnIndex="6"/>
+		<result property="rent_setting" column="rent_setting" columnIndex="7"/>	
+		<result property="personal_cnt" column="personal_cnt" columnIndex="8"/>		
+		<result property="etc_text" column="etc_text" columnIndex="9"/>		
+		<result property="text" column="text" columnIndex="10"/>				
+	</resultMap>
+	
+	<resultMap id="FacilityValueList" class="FacilityVO">		
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="value" column="value" columnIndex="1"/>
+	</resultMap>
+
+	
+	<select id="CRMEventOrderDAO.OrderCount" parameterClass="com.mice.crm.service.EventVO" resultClass="int" >
+		<![CDATA[
+	 		SELECT COUNT(T1.idx)
+	 		FROM tbl_crm_event_info T1 LEFT OUTER JOIN tbl_crm_event_order T2 
+			ON T1.idx = T2.crm_event_idx
+			WHERE 1=1 AND expire_date>NOW()
+		]]>
+				<isNotEmpty prepend="AND" property="searchRegId">
+		     		(attract_staff_id like concat('%',#searchRegId#,'%') or event_staff_id like concat('%',#searchRegId#,'%'))
+		     	</isNotEmpty>
+				<isNotEmpty prepend="AND" property="searchEventName">
+					<![CDATA[(
+						T1.name_ko like concat('%',#searchEventName#, '%')
+						OR T1.name_en like concat('%',#searchEventName#, '%')
+						OR T1.name_etc like concat('%',#searchEventName#, '%')
+					)
+					]]>
+				</isNotEmpty>
+		     	<isNotEmpty prepend="AND" property="searchEventStartDate">
+		     		<![CDATA[
+		     			 T1.event_st_date >= #searchEventStartDate#
+		     		]]>
+		     	</isNotEmpty>
+		     	<isNotEmpty prepend="AND" property="searchEventEndDate">
+		     		<![CDATA[
+		     		  T1.event_ed_date <= #searchEventEndDate#
+		     		]]>
+		     	</isNotEmpty>
+				<isNotEmpty prepend="AND" property="write_condition_tf">
+					<![CDATA[
+						IF(#write_condition_tf# = '0', T2.write_condition_tf is null, T2.write_condition_tf = #write_condition_tf#)
+					]]>
+				</isNotEmpty>
+	</select>
+	
+	<select id="CRMEventOrderDAO.getOrderList" parameterClass="com.mice.crm.service.EventVO" resultClass="com.mice.crm.service.EventVO" >
+		<![CDATA[
+	 		SELECT 
+				T1.idx as idx,
+				T1.name_ko as name_ko,
+				T1.name_en as name_en,
+				T1.name_etc as name_etc,
+				T1.event_st_date as event_st_date,
+				T1.event_ed_date as event_ed_date,
+				T1.join_personal_cnt as join_personal_cnt,
+				T1.organizers_1 as organizers_1,
+				(select name_ko from tbl_crm_organizer_info where idx=T1.organizers_1) as organizers_1_name,
+				T1.attract_staff_id as attract_staff_id,
+				(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = attract_staff_id) as attract_staff_name,
+				T2.write_condition_tf as write_condition_tf
+			FROM tbl_crm_event_info T1 LEFT OUTER JOIN tbl_crm_event_order T2 
+			ON T1.idx = T2.crm_event_idx
+			WHERE 1=1 AND expire_date>NOW()
+ 		]]>
+		 		<isNotEmpty prepend="AND" property="searchRegId">
+		     		(attract_staff_id like concat('%',#searchRegId#,'%') or event_staff_id like concat('%',#searchRegId#,'%'))
+		     	</isNotEmpty>
+				<isNotEmpty prepend="AND" property="searchEventName">
+					<![CDATA[(
+						T1.name_ko like concat('%',#searchEventName#, '%')
+						OR T1.name_en like concat('%',#searchEventName#, '%')
+						OR T1.name_etc like concat('%',#searchEventName#, '%')
+					)]]>
+				</isNotEmpty>
+		     	<isNotEmpty prepend="AND" property="searchEventStartDate">
+		     		<![CDATA[
+		     			 T1.event_st_date >= #searchEventStartDate#
+		     		]]>
+		     	</isNotEmpty>
+		     	<isNotEmpty prepend="AND" property="searchEventEndDate">
+		     		<![CDATA[
+		     		  T1.event_ed_date <= #searchEventEndDate#
+		     		]]>
+		     	</isNotEmpty>
+				<isNotEmpty prepend="AND" property="write_condition_tf">
+					<![CDATA[
+						IF(#write_condition_tf# = '0', T2.write_condition_tf is null, T2.write_condition_tf = #write_condition_tf#)
+					]]>
+				</isNotEmpty>
+		ORDER BY T2.reg_date DESC, T1.reg_date DESC
+			<![CDATA[
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+	]]>
+	</select>
+	
+	<select id="CRMEventOrderDAO.getOrder" parameterClass="int" resultClass="OrderVO" >
+	<![CDATA[
+	 	select idx, name_ko, name_en, rent_st_date, rent_ed_date, event_st_date, event_ed_date, 
+			organizers_1, (select name_ko from tbl_crm_organizer_info where idx=organizers_1) as organizers_1_name, 
+			organizers_2, (select name_ko from tbl_crm_organizer_info where idx=organizers_2) as organizers_2_name,
+			
+			rent_facility_text, join_personal_cnt, event_staff_id, 
+			(select user_nm from comtnemplyrinfo where emplyr_id = event_staff_id) as user_nm,
+			(select concat(area_no, '-', house_middle_telno, '-', house_end_telno) from comtnemplyrinfo where emplyr_id = event_staff_id) as user_tel,
+			manager_1, (select name_ko from tbl_crm_customer_info where idx = manager_1) as manager_1_name,
+			
+			(select phone_no from tbl_crm_customer_info where idx = manager_1) as manager_1_tel,
+			(select staff from tbl_crm_customer_organizer_relation where organizer_idx = organizers_1 AND customer_idx = manager_1) as manager_1_staff,
+			manager_2, 
+			(select name_ko from tbl_crm_customer_info where idx = manager_2) as manager_2_name,
+			(select phone_no from tbl_crm_customer_info where idx=manager_2) as manager_2_phone_no,
+			(select position from tbl_crm_customer_info where idx=manager_2) as manager_2_position,
+			(select tel_no from tbl_crm_customer_info where idx = manager_2) as manager_2_tel,
+			
+			(select staff from tbl_crm_customer_organizer_relation where organizer_idx = organizers_2 AND customer_idx = manager_2) as manager_2_staff,
+			etc_comment, rent_facility_text
+			
+		from tbl_crm_event_info
+		where 1=1 AND expire_date>NOW() AND idx = #crm_event_idx#
+	]]>
+	</select>
+	
+	<select id="CRMEventOrderDAO.getFacilityList" parameterClass="java.util.HashMap" resultMap="FacilityList">
+		<![CDATA[
+			SELECT
+				idx,
+				type,
+				value,
+				sorted_no
+			FROM tbl_crm_code_info WHERE idx in 
+		]]>
+			<iterate property="idxList" open="(" close=")" conjunction=",">
+	        	#idxList[]#
+	        </iterate>
+		<![CDATA[
+			order by type, sorted_no asc
+		]]>
+	</select>
+		
+	
+	
+		
+	
+	<select id="CRMEventOrderDAO.get" parameterClass="int" resultClass="OrderVO">
+		<![CDATA[
+			SELECT idx,
+					crm_event_idx,
+					order_no,
+					join_personal_cnt,
+					event_comment,
+					equipment_rent_comment,
+					etc_comment,
+					write_condition_tf,
+					out_gate1_tf,
+					out_under_access_tf		,
+					out_gate2_tf		,
+					out_gate3_tf		,
+					out_gate4_tf		,
+					out_big_left_tf		,
+					out_big_right_tf		,
+					out_center_crossing_tf		,
+					out_light_banner_tf		,
+					out_none_tf		,
+					out_etc_tf		,
+					out_etc_text		,
+					in_ju_tf		,
+					in_center_road_tf		,
+					in_3_1_tf		,
+					in_3_2_tf		,
+					in_3_3_tf		,
+					in_3_4_tf		,
+					in_3_5_tf		,
+					in_etc_tf		,
+					in_etc_text		,
+					el_fir_multi_tf		,
+					el_fir_guid_tf		,
+					el_fir_office_tf		,
+					el_hall_1_a_tf		,
+					el_hall_1_b_tf		,
+					el_hall_2_tf		,
+					el_sec_office_tf		,
+					el_300a_tf		,
+					el_300b_tf		,
+					el_300c_tf		,
+					el_thi_multi_tf		,
+					el_etc_tf		,
+					el_etc_text		,
+					ev_etc_text		,
+					ca_hyun_tf		,
+					ca_ro_tf		,
+					ca_gle_tf		,
+					ca_etc_tf		,
+					ca_etc_text		,
+					reg_date		,
+					name_ko		,
+					organizers_1		,
+					organizers_1_name		,
+					manager_1		,
+					manager_1_name		,
+					manager_1_tel		,
+					manager_1_staff		,
+					organizers_2		,
+					organizers_2_name		,
+					manager_2		,
+					manager_2_name		,
+					manager_2_tel		,
+					manager_2_staff		,
+					organizers_3_name		,
+					manager_3_name		,
+					manager_3_tel		,
+					manager_3_staff		,
+					manager_4_name		,
+					manager_4_tel		,
+					manager_4_staff		,
+					rent_st_date		,
+					rent_ed_date		,
+					event_st_date		,
+					event_ed_date		,
+					user_nm		,
+					user_tel		,
+					user_staff		,
+					kaosk_tf,
+					organizers_5_name,
+					manager_5_name,
+					manager_5_tel,
+					manager_5_staff,
+					view_chk
+					
+				FROM tbl_crm_event_order 
+				WHERE crm_event_idx = #crm_event_idx#
+		]]>
+	</select>
+	
+	<insert id="CRMEventOrderDAO.insertOrder" parameterClass="OrderVO">
+		<![CDATA[
+			insert	into	tbl_crm_event_order (
+					crm_event_idx		,
+					order_no		,
+					join_personal_cnt		,
+					event_comment,
+					equipment_rent_comment		,
+					etc_comment		,
+					write_condition_tf		,
+					out_gate1_tf		,
+					out_under_access_tf		,
+					out_gate2_tf		,
+					out_gate3_tf		,
+					out_gate4_tf		,
+					out_big_left_tf		,
+					out_big_right_tf		,
+					out_center_crossing_tf		,
+					out_light_banner_tf		,
+					out_none_tf		,
+					out_etc_tf		,
+					out_etc_text		,
+					in_ju_tf		,
+					in_center_road_tf		,
+					in_3_1_tf		,
+					in_3_2_tf		,
+					in_3_3_tf		,
+					in_3_4_tf		,
+					in_3_5_tf		,
+					in_etc_tf		,
+					in_etc_text		,
+					el_fir_multi_tf		,
+					el_fir_guid_tf		,
+					el_fir_office_tf		,
+					el_hall_1_a_tf		,
+					el_hall_1_b_tf		,
+					el_hall_2_tf		,
+					el_sec_office_tf		,
+					el_300a_tf		,
+					el_300b_tf		,
+					el_300c_tf		,
+					el_thi_multi_tf		,
+					el_etc_tf		,
+					el_etc_text		,
+					ev_etc_text		,
+					ca_hyun_tf		,
+					ca_ro_tf		,
+					ca_gle_tf		,
+					ca_etc_tf		,
+					ca_etc_text		,
+					reg_date		,
+					name_ko		,
+					organizers_1		,
+					organizers_1_name		,
+					manager_1		,
+					manager_1_name		,
+					manager_1_tel		,
+					manager_1_staff		,
+					organizers_2		,
+					organizers_2_name		,
+					manager_2		,
+					manager_2_name		,
+					manager_2_tel		,
+					manager_2_staff		,
+					organizers_3_name		,
+					manager_3_name		,
+					manager_3_tel		,
+					manager_3_staff		,
+					manager_4_name		,
+					manager_4_tel		,
+					manager_4_staff		,
+					rent_st_date		,
+					rent_ed_date		,
+					event_st_date		,
+					event_ed_date		,
+					user_nm		,
+					user_tel		,
+					user_staff,
+					kaosk_tf,
+					organizers_5_name,
+					manager_5_name,
+					manager_5_tel,
+					manager_5_staff,
+					view_chk
+						)
+			values(
+				#crm_event_idx#,
+				#order_no#,
+				#join_personal_cnt#,
+				#event_comment#,
+				#equipment_rent_comment#,
+				#etc_comment#,
+				#write_condition_tf#,
+				#out_gate1_tf#,
+				#out_under_access_tf#,
+				#out_gate2_tf#,
+				#out_gate3_tf#,
+				#out_gate4_tf#,
+				#out_big_left_tf#,
+				#out_big_right_tf#,
+				#out_center_crossing_tf#,
+				#out_light_banner_tf#,
+				#out_none_tf#,
+				#out_etc_tf#,
+				#out_etc_text#,
+				#in_ju_tf#,
+				#in_center_road_tf#,
+				#in_3_1_tf#,
+				#in_3_2_tf#,
+				#in_3_3_tf#,
+				#in_3_4_tf#,
+				#in_3_5_tf#,
+				#in_etc_tf#,
+				#in_etc_text#,
+				#el_fir_multi_tf#,
+				#el_fir_guid_tf#,
+				#el_fir_office_tf#,
+				#el_hall_1_a_tf#,
+				#el_hall_1_b_tf#,
+				#el_hall_2_tf#,
+				#el_sec_office_tf#,
+				#el_300a_tf#,
+				#el_300b_tf#,
+				#el_300c_tf#,
+				#el_thi_multi_tf#,
+				#el_etc_tf#,
+				#el_etc_text#,
+				#ev_etc_text#,
+				#ca_hyun_tf#,
+				#ca_ro_tf#,
+				#ca_gle_tf#,
+				#ca_etc_tf#,
+				#ca_etc_text#,
+				now(),
+				#name_ko#,
+				#organizers_1#,
+				#organizers_1_name#,
+				#manager_1#,
+				#manager_1_name#,
+				#manager_1_tel#,
+				#manager_1_staff#,
+				#organizers_2#,
+				#organizers_2_name#,
+				#manager_2#,
+				#manager_2_name#,
+				#manager_2_tel#,
+				#manager_2_staff#,
+				#organizers_3_name#,
+				#manager_3_name#,
+				#manager_3_tel#,
+				#manager_3_staff#,
+				#manager_4_name#,
+				#manager_4_tel#,
+				#manager_4_staff#,
+				#rent_st_date#,
+				#rent_ed_date#,
+				#event_st_date#,
+				#event_ed_date#,
+				#user_nm#,
+				#user_tel#,
+				#user_staff#,
+				#kaosk_tf#,
+				#organizers_5_name#,
+				#manager_5_name#,
+				#manager_5_tel#,
+				#manager_5_staff#,
+				#view_chk#
+				)
+		]]>
+	</insert>
+	
+	<update id="CRMEventOrderDAO.updateOrder" parameterClass="OrderVO">
+	<![CDATA[
+		UPDATE tbl_crm_event_order
+			SET	order_no = #order_no#,
+					join_personal_cnt = #join_personal_cnt#,
+					event_comment = #event_comment#,
+					equipment_rent_comment =#equipment_rent_comment#,
+					etc_comment =#etc_comment#,
+					write_condition_tf =#write_condition_tf#,
+					out_gate1_tf =#out_gate1_tf#,
+					out_under_access_tf =#out_under_access_tf#,
+					out_gate2_tf =#out_gate2_tf#,
+					out_gate3_tf =#out_gate3_tf#,
+					out_gate4_tf =#out_gate4_tf#,
+					out_big_left_tf =#out_big_left_tf#,
+					out_big_right_tf =#out_big_right_tf#,
+					out_center_crossing_tf =#out_center_crossing_tf#,
+					out_light_banner_tf =#out_light_banner_tf#,
+					out_none_tf =#out_none_tf#,
+					out_etc_tf =#out_etc_tf#,
+					out_etc_text =#out_etc_text#,
+					in_ju_tf =#in_ju_tf#,
+					in_center_road_tf =#in_center_road_tf#,
+					in_3_1_tf =#in_3_1_tf#,
+					in_3_2_tf =#in_3_2_tf#,
+					in_3_3_tf =#in_3_3_tf#,
+					in_3_4_tf =#in_3_4_tf#,
+					in_3_5_tf =#in_3_5_tf#,
+					in_etc_tf =#in_etc_tf#,
+					in_etc_text =#in_etc_text#,
+					el_fir_multi_tf =#el_fir_multi_tf#,
+					el_fir_guid_tf =#el_fir_guid_tf#,
+					el_fir_office_tf =#el_fir_office_tf#,
+					el_hall_1_a_tf =#el_hall_1_a_tf#,
+					el_hall_1_b_tf =#el_hall_1_b_tf#,
+					el_hall_2_tf =#el_hall_2_tf#,
+					el_sec_office_tf =#el_sec_office_tf#,
+					el_300a_tf =#el_300a_tf#,
+					el_300b_tf =#el_300b_tf#,
+					el_300c_tf =#el_300c_tf#,
+					el_thi_multi_tf =#el_thi_multi_tf#,
+					el_etc_tf =#el_etc_tf#,
+					el_etc_text =#el_etc_text#,
+					ev_etc_text =#ev_etc_text#,
+					ca_hyun_tf =#ca_hyun_tf#,
+					ca_ro_tf =#ca_ro_tf#,
+					ca_gle_tf =#ca_gle_tf#,
+					ca_etc_tf =#ca_etc_tf#,
+					ca_etc_text =#ca_etc_text#,
+					reg_date =now(),
+					name_ko =#name_ko#,
+					organizers_1 =#organizers_1#,
+					organizers_1_name =#organizers_1_name#,
+					manager_1 =#manager_1#,
+					manager_1_name =#manager_1_name#,
+					manager_1_tel =#manager_1_tel#,
+					manager_1_staff =#manager_1_staff#,
+					organizers_2 =#organizers_2#,
+					organizers_2_name =#organizers_2_name#,
+					manager_2 =#manager_2#,
+					manager_2_name =#manager_2_name#,
+					manager_2_tel =#manager_2_tel#,
+					manager_2_staff =#manager_2_staff#,
+					organizers_3_name =#organizers_3_name#,
+					manager_3_name =#manager_3_name#,
+					manager_3_tel =#manager_3_tel#,
+					manager_3_staff =#manager_3_staff#,
+					manager_4_name =#manager_4_name#,
+					manager_4_tel =#manager_4_tel#,
+					manager_4_staff =#manager_4_staff#,
+					rent_st_date =#rent_st_date#,
+					rent_ed_date =#rent_ed_date#,
+					event_st_date =#event_st_date#,
+					event_ed_date =#event_ed_date#,
+					user_nm =#user_nm#,
+					user_tel =#user_tel#,
+					user_staff =#user_staff#,
+					kaosk_tf= #kaosk_tf#,
+					manager_5_name=#manager_5_name#,
+					manager_5_tel=#manager_5_tel#,
+					manager_5_staff=#manager_5_staff#,
+					organizers_5_name=#organizers_5_name#,
+					view_chk=#view_chk#
+					
+		WHERE idx=#idx# AND crm_event_idx=#crm_event_idx#
+		]]>
+	</update>
+	
+	<select id="CRMEventOrderDAO.getFile" parameterClass="com.mice.crm.service.FileVO" resultMap="FileList" >
+	<![CDATA[
+	 	select T2.idx, T1.atch_file_id, T2.crm_event_idx, T2.type, T1.file_stre_cours, T1.stre_file_nm, T1.orignl_file_nm, T1.file_size
+		from comtnfiledetail as T1 inner join tbl_crm_event_attach_file_info as T2 
+			on T1.atch_file_id	= T2.file_id 
+		where crm_event_idx = #crm_event_idx# and T2.type = #type#
+	]]>
+	</select>
+
+	<insert id="CRMEventOrderDAO.insertEventPlace" parameterClass="FacilityVO">
+		<![CDATA[
+	INSERT	INTO	tbl_crm_event_place
+			(
+				place_idx,
+				crm_event_idx,
+				place,	
+				p_rent_st_date,	
+				p_rent_ed_date,	
+				rent_time,	
+				rent_setting,	
+				personal_cnt,	
+				etc_text
+			)
+					
+   VALUES   (
+				null,	
+				#crm_event_idx#,
+				#place#,	
+				#p_rent_st_date#,
+				#p_rent_ed_date#,	
+				#rent_time#,		
+				#rent_setting#,	
+				#personal_cnt#,	
+				#etc_text#
+         )
+		]]>
+	</insert>
+	
+
+	
+	<delete id="CRMEventOrderDAO.deleteEventPlace" parameterClass="FacilityVO">
+		<![CDATA[
+	DELETE	FROM	tbl_crm_event_place
+			WHERE	crm_event_idx = #crm_event_idx#
+		]]>
+	</delete>
+	
+	<select id="CRMEventOrderDAO.getOrderFacilityList" parameterClass="int" resultMap="OrderFacilityList">
+		<![CDATA[ 
+			SELECT a.place_idx as place_idx,	
+				a.crm_event_idx crm_event_idx,	
+				a.place place,
+				a.p_rent_st_date p_rent_st_date,	
+				a.p_rent_ed_date p_rent_ed_date,
+				a.rent_time rent_time,	
+				a.rent_setting rent_setting,
+				a.personal_cnt personal_cnt,	
+				a.etc_text etc_text,
+				b.value text
+			FROM tbl_crm_event_place a LEFT JOIN  tbl_crm_code_info b 
+			ON a.value = b.idx
+			where crm_event_idx = #crm_event_idx#
+		]]>
+	</select>
+	
+	<select id="CRMEventOrderDAO.getWrite_condition_tf" resultClass="String">
+	<![CDATA[ 
+	SELECT		write_condition_tf
+		FROM	tbl_crm_event_order 
+		WHERE	crm_event_idx = #idx#
+	]]>
+	</select>
+		
+	<select id="CRMEventOrderDAO.getFacilityValueList" resultMap="FacilityValueList" parameterClass="String">
+		SELECT idx, value FROM tbl_crm_code_info WHERE type=#type#
+	</select>
+	
+	
+	
+	<select id="CRMEventOrderDAO.getAllFacilityList" resultMap="FacilityList">
+	<![CDATA[
+		SELECT idx, type, value, sorted_no FROM TBL_CRM_CODE_INFO where type='1층' or type='2층' or type='3층' or type='기타'
+	]]>
+	</select>
+	
+	<select id="CRMEventOrderDAO.getPersonalCount" resultClass="int" parameterClass="int">
+	<![CDATA[
+		SELECT ifnull(sum(personal_cnt), 0) FROM tbl_crm_event_place where crm_event_idx = #crm_event_idx#	
+	]]>
+	</select>
+	
+	<delete id="CRMEventOrderDAO.deleteEvent_attach_file_info" parameterClass="String">
+		<![CDATA[
+			DELETE FROM tbl_crm_event_attach_file_info where file_id = #file_id#			
+		]]>
+	</delete>	
+
+	<delete id="CRMEventOrderDAO.deleteComtNFileDetail" parameterClass="String">
+		<![CDATA[
+			DELETE FROM comtnfiledetail WHERE atch_file_id = #file_id#
+		]]>
+	</delete>
+
+	<delete id="CRMEventOrderDAO.deleteComtNFile" parameterClass="String">
+		<![CDATA[
+			DELETE FROM comtnfile WHERE atch_file_id = #file_id#
+		]]>
+	</delete>
+</sqlMap>

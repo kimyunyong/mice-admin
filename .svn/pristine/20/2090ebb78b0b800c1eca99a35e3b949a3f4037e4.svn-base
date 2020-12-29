@@ -1,0 +1,116 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="d" 	uri="/WEB-INF/tlds/custom.tld" %>
+<form:form commandName="userManageVO" action="${pageContext.request.contextPath}/uss/umt/EgovUserSelectUpdt.do" name="userManageVO" method="post" >
+<!-- 상세정보 사용자 삭제시 prameter 전달용 input -->
+	<input name="checkedIdForDel" type="hidden" />
+<!-- 검색조건 유지 -->
+<input type="hidden" name="searchCondition" value="<c:out value='${userSearchVO.searchCondition}'/>"/>
+<input type="hidden" name="searchKeyword" value="<c:out value='${userSearchVO.searchKeyword}'/>"/>
+<input type="hidden" name="sbscrbSttus" value="<c:out value='${userSearchVO.sbscrbSttus}'/>"/>
+<input type="hidden" name="pageIndex" value="<c:out value='${userSearchVO.pageIndex}'/>"/>
+<!-- 사용자유형정보 : password 수정화면으로 이동시 타겟 유형정보 확인용, 만약검색조건으로 유형이 포함될경우 혼란을 피하기위해 userTy명칭을 쓰지 않음-->
+<input type="hidden" name="userTyForPassword" value="<c:out value='${userManageVO.userTy}'/>" />
+<input type="hidden" name="uniqId" value="${userManageVO.uniqId }"/>
+<input type="hidden" name="emplyrSttusCode" value="${userManageVO.emplyrSttusCode}"/>
+<script type="text/javascript">
+	function action_password_change(){
+		$('form').attr('action','/uss/umt/EgovUserPasswordUpdtView.do?action=adminRegist');
+		$('form').submit();
+	}
+	
+
+</script>
+
+<!-- for validation -->
+   			
+<table width="100%"class="adm_tbl2">
+	<caption>사용자 정보 상세</caption>
+		<colgroup>
+			<col width="24%">
+			<col>
+		</colgroup>
+		<tbody>
+			<tr>
+				<th scope="row">구분</th>
+				<td class="left"><!-- 171221 -->
+					<div class="inputBox_S">
+						<label for="permission" class="hide">구분</label>
+						<select name="permission">
+							<option value="ROLE_SUPERADMIN" <c:if test="${userManageVO.permission == 'ROLE_SUPERADMIN' }">selected</c:if>>Superadmin</option>
+							<option value="ROLE_ADMIN" <c:if test="${userManageVO.permission == 'ROLE_ADMIN' }">selected</c:if>>Admin</option>
+							<option value="ROLE_MANAGER" <c:if test="${userManageVO.permission == 'ROLE_MANAGER' }">selected</c:if>>Manager</option>
+							<option value="ROLE_STAFF" <c:if test="${userManageVO.permission == 'ROLE_STAFF' }">selected</c:if>>Staff</option>
+						</select>
+					</div>
+				</td>
+			</tr>						
+			<tr>
+				<th scope="row">아이디</th>
+				<td class="left"><!-- 171221 -->
+					<div class="inputBox_S">
+						<label for="emplyrId" class="hide">아이디</label>
+						<input class="readonly" type="text" name="emplyrId" id="emplyrId" value="${userManageVO.emplyrId}" minlength="2" required readonly>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row">성명 </th>
+				<td class="left"><!-- 171221 -->
+					<div class="inputBox_S">
+						<label for="emplyrNm" class="hide">성명</label>
+						<input type="text" name="emplyrNm" id="emplyrNm" value="${d:decrypt(userManageVO.emplyrNm)}" minlength="2" required>
+					</div>
+				</td>
+			</tr>
+			<!-- <tr>
+				<th scope="row">비밀번호</th>
+				<td>
+					<div class="inputBox_S">
+						<label for="password" class="hide">비밀번호</label>
+						<input type="password" name="password" id="password" size="16" value="" minlength="8" maxlength="16" required>
+					</div>
+				</td>
+			</tr>	
+			<tr>
+				<th scope="row">비밀번호확인</th>
+				<td>
+					<div class="inputBox_S">
+						<label for="password2" class="hide">비밀번호확인</label>
+						<input type="password" name="password2" id="password2" size="16" value=""  minlength="8" maxlength="16" required>
+					</div>
+				</td>
+			</tr> -->
+			<tr>
+				<th scope="row">전화번호</th>
+				<td class="left"><!-- 171221 -->
+					<div class="inputBox_S">
+						<input type="text"  class="wd27per" size="3" name="areaNo" id="areaNo"  value="${userManageVO.areaNo}"  minlength="2" maxlength="3" required>-
+						<input type="text" class="wd27per" size="4" name="homemiddleTelno" id="homemiddleTelno"  value="${userManageVO.homemiddleTelno}"  minlength="3" maxlength="4" required>-
+						<label for="homeendTelno" class="hide">전화번호</label>
+						<input type="text" class="wd27per" size="4" name="homeendTelno" id="homeendTelno"  value="${userManageVO.homeendTelno}"  minlength="4" maxlength="4" required>
+					</div>
+				</td>
+			</tr>	
+			<tr>
+			<th scope="row">이메일</th>
+			<td class="left"><!-- 171221 -->
+				<div class="inputBox_S">
+					<input type="text" name="emailAdres" id="emailAdres" size="20" value="${userManageVO.emailAdres}" required>
+				</div>
+			</td>
+		</tr>			
+	</tbody>
+</table>
+	<!-- 버튼 위치(s) -->
+	<div class="btn_area">
+		<div class="center">
+			<sec:authorize ifAnyGranted="ROLE_SYSTEM, ROLE_SUPERADMIN">
+				<a href="#" id="btnSave" role="button" class="btn1 clr_Dgray">저장</a>
+				<a onclick="javascript:location.reload();" role="button" class="btn1 clr_Wgray">취소</a>
+				<a onclick="javascript:action_password_change()" class="btn1 clr_Wgray">비밀번호 변경</a>
+			</sec:authorize>
+			<a href="<c:url value='/uss/umt/EgovUserManage.do?action=adminRegist&pageIndex=${userSearchVO.pageIndex}'/>" role="button" class="btn1 clr_Wgray">목록</a>
+		</div>
+	</div>
+	<!--// 버튼 위치(e) -->
+</form:form>

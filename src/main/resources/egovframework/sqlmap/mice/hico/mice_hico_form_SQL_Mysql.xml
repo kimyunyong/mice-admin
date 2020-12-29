@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FormDAO">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="Form" type="com.mice.hico.form.service.Form"/>
+
+	<resultMap id="formList" class="com.mice.hico.form.service.Form">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="title" column="title" columnIndex="2"/>
+		<result property="form_file_id" column="form_file_id" columnIndex="3"/>
+		<result property="reg_date" column="reg_date" columnIndex="4"/>
+	</resultMap>
+
+	<select id="FormDAO.list" parameterClass="Form" resultMap="formList" >
+		<![CDATA[
+		select
+		idx,
+		title,
+		form_file_id,
+		reg_date
+		from tbl_hico_form_info 
+		]]>
+	</select>
+	
+	
+	<update id="FormDAO.update" parameterClass="Form">
+		<![CDATA[
+		UPDATE tbl_hico_form_info SET
+		title = #title#,
+		form_file_id = #form_file_id#,
+		reg_date = NOW()
+		WHERE idx = #idx#
+		]]>
+	</update>
+
+</sqlMap>

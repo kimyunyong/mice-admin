@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BannerDAO">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	
+ 	<select id="LogWDAO.select" resultClass="com.mice.common.log.service.LogVO" parameterClass="com.mice.common.log.service.LogVO">
+ 		<![CDATA[
+ 		SELECT (SELECT COUNT(*) FROM (SELECT * FROM COMTNWEBLOG WHERE URL like '/cvb/%' 
+ 		]]>
+ 		<isNotEmpty prepend="AND" property="searchStartDate">
+ 		<![CDATA[
+			OCCRRNC_DE >= #searchStartDate#
+		]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchEndDate">
+ 		<![CDATA[
+			OCCRRNC_DE <= #searchEndDate#
+		]]>
+		</isNotEmpty>
+		<![CDATA[
+ 		GROUP BY RQESTER_IP) xx) as CVB_UV,
+                    (SELECT COUNT(*) FROM COMTNWEBLOG WHERE URL like '/cvb/%'
+        ]]>
+        <isNotEmpty prepend="AND" property="searchStartDate">
+ 		<![CDATA[
+			OCCRRNC_DE >= #searchStartDate#
+		]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchEndDate">
+ 		<![CDATA[
+			OCCRRNC_DE <= #searchEndDate#
+		]]>
+		</isNotEmpty>
+		<![CDATA[
+                    ) as CVB_PV,
+                    (SELECT COUNT(*) FROM COMTNWEBLOG WHERE URL like '/hico/%' 
+        ]]>
+        <isNotEmpty prepend="AND" property="searchStartDate">
+ 		<![CDATA[
+			OCCRRNC_DE >= #searchStartDate#
+		]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchEndDate">
+ 		<![CDATA[
+			OCCRRNC_DE <= #searchEndDate#
+		]]>
+		</isNotEmpty>
+		<![CDATA[
+                    ) as HICO_PV,
+                    (SELECT COUNT(*) FROM (SELECT * FROM COMTNWEBLOG  WHERE URL like '/hico/%' 
+        ]]>
+                <isNotEmpty prepend="AND" property="searchStartDate">
+ 		<![CDATA[
+			OCCRRNC_DE >= #searchStartDate#
+		]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchEndDate">
+ 		<![CDATA[
+			OCCRRNC_DE <= #searchEndDate#
+		]]>
+		</isNotEmpty>
+		<![CDATA[
+                    GROUP BY RQESTER_IP) xx) as HICO_UV, #searchStartDate# as searchStartDate, #searchEndDate# as searchEndDate;
+ 		]]>
+ 	</select>
+</sqlMap>

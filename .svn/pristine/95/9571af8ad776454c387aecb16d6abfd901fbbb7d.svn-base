@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BannerDAO">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="BannerInfoList" type="com.mice.common.banner.service.BannerVO"/>
+	<typeAlias  alias="BannerInfoDetail" type="com.mice.common.banner.service.BannerVO"/>
+	
+	<resultMap id="BannerInfoDetail" class="com.mice.common.banner.service.BannerVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="site" column="site" columnIndex="2"/>
+		<result property="banner_kind" column="banner_kind" columnIndex="3"/>
+		<result property="title_ko" column="title_ko" columnIndex="4"/>
+		<result property="title_en" column="title_en" columnIndex="5"/>
+		<result property="comment_ko" column="comment_ko" columnIndex="6"/>
+		<result property="comment_en" column="comment_en" columnIndex="7"/>
+		<result property="url_ko" column="url_ko" columnIndex="8"/>
+		<result property="url_en" column="url_en" columnIndex="9"/>
+		<result property="view_st_date" column="view_st_date" columnIndex="10"/>
+		<result property="view_ed_date" column="view_ed_date" columnIndex="11"/>
+		<result property="view_status" column="view_status" columnIndex="12"/>
+		<result property="image_file_id" column="image_file_id" columnIndex="13"/>
+		<result property="image_file_id_en" column="image_file_id_en" columnIndex="14"/>
+		<result property="sort_no" column="sort_no" columnIndex="15"/>
+		<result property="reg_id" column="reg_id" columnIndex="16"/>
+		<result property="reg_date" column="reg_date" columnIndex="17"/>
+		<result property="expire_id" column="expire_id" columnIndex="18"/>
+		<result property="expire_date" column="expire_date" columnIndex="19"/>
+		<result property="url_ko_window" column="url_ko_window" columnIndex="20"/>
+		<result property="url_en_window" column="url_en_window" columnIndex="21"/>
+		<result property="popup_width" column="popup_width" columnIndex="22"/>
+		<result property="popup_height" column="popup_height" columnIndex="23"/>
+		<result property="popup_top" column="popup_top" columnIndex="24"/>
+		<result property="popup_left" column="popup_left" columnIndex="25"/>
+	</resultMap>
+	
+	<resultMap id="BannerInfoList" class="com.mice.common.banner.service.BannerVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="title_ko" column="title_ko" columnIndex="2"/>
+		<result property="reg_date" column="reg_date" columnIndex="3"/>
+		<result property="image_file_id" column="image_file_id" columnIndex="4"/>
+		<result property="sort_no" column="sort_no" columnIndex="5"/>
+	</resultMap>
+	
+    <select id="BannerDAO.list" parameterClass="com.mice.common.banner.service.BannerVO" resultMap="BannerInfoList">
+    	<![CDATA[
+    	SELECT
+    	idx,
+    	title_ko,
+    	reg_date,
+    	image_file_id,
+    	sort_no
+    	FROM tbl_banner_info
+    	WHERE 1=1 AND expire_date>NOW() AND site = #site# AND banner_kind = #banner_kind#
+		order by sort_no asc
+		LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>				
+    </select>
+    
+    <select id="BannerDAO.listCount" parameterClass="com.mice.common.banner.service.BannerVO" resultClass="java.lang.Integer">
+    	<![CDATA[
+    	SELECT
+    	COUNT(*)
+    	FROM tbl_banner_info 
+    	WHERE 1=1 AND expire_date>NOW() AND site = #site# AND banner_kind = #banner_kind#
+    	]]>
+    </select>
+    
+    <select id="BannerDAO.getSortNo" resultClass="java.lang.Integer" parameterClass="com.mice.common.banner.service.BannerVO">
+    	<![CDATA[
+    	SELECT
+    	ifnull(MAX(sort_no) + 1,1)
+    	FROM tbl_banner_info WHERE 1=1 AND expire_date>NOW() AND site = #site# AND banner_kind = #banner_kind#
+    	]]>
+    </select>
+    
+    <update id="BannerDAO.delete" parameterClass="com.mice.common.banner.service.BannerVO">
+    	<![CDATA[
+    		UPDATE tbl_banner_info SET
+    		expire_id = #expire_id#, expire_date = SYSDATE()
+    		WHERE idx=#idx#;
+    		SET @seq := 0;
+			UPDATE tbl_banner_info SET sort_no=(@seq := @seq + 1) WHERE idx IN (select * from (select idx from tbl_banner_info x WHERE expire_date>NOW() order by sort_no asc) as temp);
+    	]]>
+ 
+    </update>
+    
+    <update id="BannerDAO.update" parameterClass="com.mice.common.banner.service.BannerVO">
+    	<![CDATA[
+    		UPDATE tbl_banner_info SET
+				title_ko = #title_ko#,
+				title_en = #title_en#,
+				comment_ko = #comment_ko#,
+				comment_en = #comment_en#,
+				url_ko = #url_ko#,
+				url_ko_window = #url_ko_window#,
+				url_en = #url_en#,
+				url_en_window = #url_en_window#,
+				view_st_date = #view_st_date#,
+				view_ed_date = #view_ed_date#,
+				view_status = #view_status#,
+				image_file_id = #image_file_id#,
+				image_file_id_en = #image_file_id_en#,
+				popup_width = #popup_width#,
+				popup_height = #popup_height#,
+				popup_top = #popup_top#,
+				popup_left = #popup_left#
+			WHERE idx = #idx#;
+    	]]>
+    </update>
+   	<update id="BannerDAO.updateSortNo" parameterClass="com.mice.common.banner.service.BannerVO">
+    	<![CDATA[
+    	UPDATE tbl_banner_info SET sort_no = sort_no + 1
+    	WHERE expire_date > NOW() AND sort_no = #sort_no#;
+    	UPDATE tbl_banner_info SET sort_no = #sort_no#
+    	WHERE idx=#idx#;
+    	SET @seq := 0;
+		UPDATE tbl_banner_info SET sort_no=(@seq := @seq + 1) WHERE idx IN (select * from (select idx from tbl_banner_info x WHERE expire_date>NOW() order by sort_no asc) as temp);
+    	]]>   	
+   	</update>
+    <insert id="BannerDAO.insert" parameterClass="com.mice.common.banner.service.BannerVO">
+    	<![CDATA[    	
+    	INSERT INTO tbl_banner_info (
+    	site,
+		banner_kind,
+		title_ko,
+		title_en,
+		comment_ko,
+		comment_en,
+		url_ko,
+		url_ko_window,
+		url_en,
+		url_en_window,
+		view_st_date,
+		view_ed_date,
+		view_status,
+		image_file_id,
+		image_file_id_en,
+		sort_no,
+		reg_id,
+		reg_date,
+		popup_width,
+		popup_height,
+		popup_top,
+		popup_left
+    	) VALUES (
+    	#site#,
+		#banner_kind#,
+		#title_ko#,
+		#title_en#,
+		#comment_ko#,
+		#comment_en#,
+		#url_ko#,
+		#url_ko_window#,
+		#url_en#,
+		#url_en_window#,
+		#view_st_date#,
+		#view_ed_date#,
+		#view_status#,
+		#image_file_id#,
+		#image_file_id_en#,
+		#sort_no#,
+		#reg_id#,
+		NOW(),
+		#popup_width#,
+		#popup_height#,
+		#popup_top#,
+		#popup_left#
+    	);
+    	]]>
+    </insert>
+ 	<select id="BannerDAO.info" resultMap="BannerInfoDetail" parameterClass="com.mice.common.banner.service.BannerVO">
+ 		<![CDATA[
+ 		SELECT 
+ 		idx,
+		site,
+		banner_kind,
+		title_ko,
+		title_en,
+		comment_ko,
+		comment_en,
+		url_ko,
+		url_ko_window,
+		url_en,
+		url_en_window,
+		view_st_date,
+		view_ed_date,
+		view_status,
+		image_file_id,
+		image_file_id_en,
+		sort_no,
+		reg_id,
+		reg_date,
+		expire_id,
+		expire_date,
+		ifnull(popup_width, -1) as popup_width,
+		ifnull(popup_height, -1) as popup_height,
+		ifnull(popup_top, -1) as popup_top,
+		ifnull(popup_left, -1) as popup_left
+		FROM tbl_banner_info WHERE 1=1 AND expire_date > NOW() AND idx=#idx#
+ 		]]>
+ 	</select>
+</sqlMap>

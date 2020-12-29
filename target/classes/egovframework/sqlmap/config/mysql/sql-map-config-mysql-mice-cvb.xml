@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>						
+	<sqlMap resource="egovframework/sqlmap/mice/cvb/mice_cvb_event_SQL_Mysql.xml"/>		
+	<sqlMap resource="egovframework/sqlmap/mice/cvb/mice_cvb_rfp_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/mice/cvb/mice_cvb_promotion_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/mice/cvb/mice_cvb_archive_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/mice/cvb/mice_cvb_lodgment_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/mice/cvb/mice_cvb_brochure_SQL_Mysql.xml"/>
+	<sqlMap resource="egovframework/sqlmap/mice/cvb/mice_cvb_organizer_SQL_Mysql.xml"/>
+</sqlMapConfig>

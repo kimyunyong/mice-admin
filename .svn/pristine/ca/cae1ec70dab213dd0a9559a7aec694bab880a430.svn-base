@@ -1,0 +1,3377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CRMDAO">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="CRMCustomerVO" type="com.mice.crm.service.CustomerVO"/>
+	<typeAlias  alias="CRMEventVO" type="com.mice.crm.service.EventVO"/>
+	<typeAlias  alias="CRMEventAttachFile" type="com.mice.crm.service.EventAttachFile"/>
+	<typeAlias  alias="CRMOrganizerVO" type="com.mice.crm.service.OrganizerVO"/>
+	<typeAlias  alias="CRMPromotion" type="com.mice.crm.service.PromotionVO"/>
+
+	<resultMap id="CustomerAndOrganizerInfo" class="com.mice.crm.service.CustomerOrganizerRelationVO">
+		<result property="name_ko" column="name_ko" columnIndex="1"/>
+		<result property="organizer_idx" column="organizer_idx" columnIndex="2"/>		
+		<result property="unit" column="unit" columnIndex="3"/>
+		<result property="staff" column="staff" columnIndex="4"/>
+		<result property="add_tel_no" column="add_tel_no" columnIndex="5"/>
+		<result property="operation" column="operation" columnIndex="6"/>
+		<result property="reg_id" column="reg_id" columnIndex="7"/>
+		<result property="user_nm" column="user_nm" columnIndex="8"/>
+		<result property="reg_date" column="reg_date" columnIndex="9"/>
+		<result property="customer_idx" column="customer_idx" columnIndex="10"/>
+	</resultMap>
+	
+	<resultMap id="CodeInfo" class="com.mice.crm.service.CodeVO">
+		<result property="type" column="type" columnIndex="1"/>
+		<result property="value" column="value" columnIndex="2"/>
+		<result property="sorted_no" column="sorted_no" columnIndex="3"/>
+		<result property="idx" column="idx" columnIndex="4"/>
+		<result property="code_name" column="code_name" columnIndex="5"/>
+		<result property="code_item" column="code_item" columnIndex="6"/>
+		<result property="link_url" column="link_url" columnIndex="7"/>
+		
+	</resultMap>
+	
+	
+	<resultMap id="OrganizerInfo" class="com.mice.crm.service.OrganizerVO"> 
+		<result property="idx" column="idx" columnIndex="1"/>
+		
+		<result property="name_ko" column="name_ko" columnIndex="2"/>
+		<result property="name_en" column="name_en" columnIndex="3"/>
+		<result property="name_etc" column="name_etc" columnIndex="4"/>
+		<result property="type_idx" column="type_idx" columnIndex="5"/>
+		<result property="national" column="national" columnIndex="6"/>
+		<result property="city" column="city" columnIndex="7"/>
+		<result property="zip_code" column="zip_code" columnIndex="8"/>
+		<result property="address_ko" column="address_ko" columnIndex="9"/>
+		<result property="address_en" column="address_en" columnIndex="10"/>
+		<result property="tel_no" column="tel_no" columnIndex="11"/>
+		<result property="fax" column="fax" columnIndex="12"/>
+		<result property="email" column="email" columnIndex="13"/>
+		<result property="homepage" column="homepage" columnIndex="14"/>
+		<result property="comment" column="comment" columnIndex="15"/>
+		<result property="reg_date" column="reg_date" columnIndex="16"/>
+		<result property="reg_id" column="reg_id" columnIndex="17"/>
+		<result property="expire_id" column="expire_id" columnIndex="18"/>
+		<result property="expire_date" column="expire_date" columnIndex="19"/>
+		<result property="type_name" column="type_name" columnIndex="20"/>
+		<result property="user_nm" column="user_nm" columnIndex="21"/>
+		<result property="manager_id" column="manager_id" columnIndex="22"/>
+		<result property="manager_nm" column="manager_nm" columnIndex="23"/>
+		
+		<result property="manager_event" column="manager_event" columnIndex="24"/>
+		<result property="manager_event_str" column="manager_event_str" columnIndex="25"/>
+		
+		<result property="crm_event_idx" column="crm_event_idx" columnIndex="26"/>
+		<result property="event_cate_biz1" column="event_cate_biz1" columnIndex="27"/>
+		<result property="event_cate_biz2" column="event_cate_biz2" columnIndex="28"/>
+		<result property="event_cate_biz3" column="event_cate_biz3" columnIndex="29"/>
+		
+		<result property="crm_event_idx_str" column="crm_event_idx_str" columnIndex="30"/>
+		<result property="event_cate_biz1_str" column="event_cate_biz1_str" columnIndex="31"/>
+		<result property="event_cate_biz2_str" column="event_cate_biz2_str" columnIndex="32"/>
+		<result property="event_cate_biz3_str" column="event_cate_biz3_str" columnIndex="33"/>
+	
+		<result property="event_cate_serviceList_idx" column="event_cate_serviceList_idx" columnIndex="34"/>
+		<result property="event_cate_itemList_idx" column="event_cate_itemList_idx" columnIndex="35"/>
+		<result property="event_cate_serviceList_str" column="event_cate_serviceList_str" columnIndex="36"/>
+		<result property="event_cate_itemList_str" column="event_cate_itemList_str" columnIndex="37"/>
+		
+		
+		
+		<result property="ceo_name" column="ceo_name" columnIndex="38"/>
+		<result property="ceo_phone" column="ceo_phone" columnIndex="39"/>
+		<result property="biz_man" column="biz_man" columnIndex="40"/>
+		<result property="biz_man_phone" column="biz_man_phone" columnIndex="41"/>
+		<result property="biz_man_email" column="biz_man_email" columnIndex="42"/>
+			
+		<result property="org_import" column="org_import" columnIndex="43"/>
+		<result property="org_grade" column="org_grade" columnIndex="44"/>
+		<result property="org_step" column="org_step" columnIndex="45"/>
+		<result property="org_exhi_history" column="org_exhi_history" columnIndex="46"/>
+		<result property="org_exhi_path" column="org_exhi_path" columnIndex="47"/>
+		
+		<result property="org_kind" column="org_kind" columnIndex="48"/>
+	
+	</resultMap>
+	
+	<resultMap id="PromotionInfo" class="com.mice.crm.service.Promotion">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="parent_idx" column="parent_idx" columnIndex="2"/>
+		<result property="comment" column="comment" columnIndex="3"/>
+		<result property="reg_id" column="reg_id" columnIndex="4"/>
+		<result property="reg_date" column="reg_date" columnIndex="5"/>
+		<result property="expire_id" column="expire_id" columnIndex="6"/>
+		<result property="expire_date" column="expire_date" columnIndex="7"/>
+	</resultMap>
+	
+	<resultMap id="EventAttachFileInfo" class="com.mice.crm.service.EventAttachFile">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="crm_event_idx" column="crm_event_idx" columnIndex="2"/>
+		<result property="type" column="type" columnIndex="3"/>
+		<result property="file_id" column="file_id" columnIndex="4"/>
+	</resultMap>
+	
+	
+	<resultMap id="CustomerInfo" class="com.mice.crm.service.CustomerVO">
+		
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="name_ko" column="name_ko" columnIndex="2"/>
+		<result property="name_en" column="name_en" columnIndex="3"/>
+		<result property="tel_no" column="tel_no" columnIndex="4"/>
+		<result property="phone_no" column="phone_no" columnIndex="5"/>
+		<result property="email" column="email" columnIndex="6"/>
+		<result property="fax_no" column="fax_no" columnIndex="7"/>
+		<result property="etc" column="etc" columnIndex="8"/>
+		<result property="reg_id" column="reg_id" columnIndex="9"/>
+		<result property="reg_date" column="reg_date" columnIndex="10"/>
+		<result property="expire_date" column="expire_date" columnIndex="11"/>
+		<result property="expire_id" column="expire_id" columnIndex="12"/>
+		<result property="organizer_cnt" column="organizer_cnt" columnIndex="13"/>
+		<result property="user_nm" column="user_nm" columnIndex="14"/>
+		<result property="organizer_name" column="organizer_name"  columnIndex="15"/>
+		
+		<result property="position" column="position" columnIndex="16"/>
+		<result property="zip_code" column="zip_code" columnIndex="17"/>
+		<result property="address_ko" column="address_ko" columnIndex="18"/>
+		<result property="address_en" column="address_en" columnIndex="19"/>
+		<result property="manager_id" column="manager_id" columnIndex="20"/>
+		<result property="manager_nm" column="manager_nm" columnIndex="21"/>
+		<result property="newsletter" column="newsletter" columnIndex="22"/>
+		<result property="country" column="country" columnIndex="23"/>
+		<result property="sosoc_excel" column="sosoc_excel" columnIndex="24"/>
+		<result property="department" column="department" columnIndex="25"/>
+		
+		<result property="modify_id" column="modify_id" columnIndex="26"/>
+		<result property="modify_date" column="modify_date" columnIndex="27"/>
+		
+		<result property="remember_id" column="remember_id" columnIndex="28"/>
+		<result property="remember_created_at" column="remember_created_at" columnIndex="29"/>
+		<result property="remember_main_card_id" column="remember_main_card_id" columnIndex="30"/>
+		<result property="remember_main_card_created_at" column="remember_main_card_created_at" columnIndex="31"/>
+		<result property="remember_main_card_user_id" column="remember_main_card_user_id" columnIndex="32"/>
+		<result property="remember_main_card_user_email" column="remember_main_card_user_email" columnIndex="33"/>
+		<result property="remember_modify_date" column="remember_modify_date" columnIndex="34"/>
+		
+	</resultMap>
+
+	<resultMap id="EventInfo" class="com.mice.crm.service.EventVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="implementation_status" column="implementation_status" columnIndex="2"/>
+		<result property="confirm_date" column="confirm_date" columnIndex="3"/>
+		<result property="name_ko" column="name_ko" columnIndex="4"/>
+		<result property="name_en" column="name_en" columnIndex="5"/>
+		<result property="name_etc" column="name_etc" columnIndex="6"/>
+		<result property="rent_facility_text" column="rent_facility_text" columnIndex="7"/>
+		<result property="rent_st_date" column="rent_st_date" columnIndex="8"/>
+		<result property="rent_ed_date" column="rent_ed_date" columnIndex="9"/>
+		<result property="event_st_date" column="event_st_date" columnIndex="11"/>
+		<result property="event_ed_date" column="event_ed_date" columnIndex="12"/>
+		<result property="event_division_idx" column="event_division_idx" columnIndex="13"/>
+		<result property="event_type_idx" column="event_type_idx" columnIndex="14"/>
+		<result property="event_scale_idx" column="event_scale_idx" columnIndex="15"/>
+		<result property="join_personal_cnt" column="join_personal_cnt" columnIndex="16"/>
+		<result property="join_foreigner_cnt" column="join_foreigner_cnt" columnIndex="17"/>
+		<result property="join_nationals_cnt" column="join_nationals_cnt" columnIndex="18"/>
+		<result property="booth_cnt" column="booth_cnt" columnIndex="19"/>
+		<result property="exhibition_scale" column="exhibition_scale" columnIndex="20"/>
+		<result property="participating_states_cnt" column="participating_states_cnt" columnIndex="21"/>
+		<result property="organizers_1" column="organizers_1" columnIndex="22"/>
+		<result property="organizers_2" column="organizers_2" columnIndex="23"/>
+		<result property="organizers_3" column="organizers_3" columnIndex="24"/>
+		<result property="manager_1" column="manager_1" columnIndex="25"/>
+		<result property="manager_2" column="manager_2" columnIndex="26"/>
+		<result property="homepage" column="homepage" columnIndex="27"/>
+		<result property="view_yn" column="view_yn" columnIndex="28"/>
+		<result property="estimate_date" column="estimate_date" columnIndex="29"/>
+		<result property="estimate_cost" column="estimate_cost" columnIndex="30"/>
+		<result property="sales_cost" column="sales_cost" columnIndex="31"/>
+		<result property="total_cost" column="total_cost" columnIndex="32"/>
+		<result property="rent_cost" column="rent_cost" columnIndex="33"/>
+		<result property="food_cost" column="food_cost" columnIndex="34"/>
+		<result property="av_rental_cost" column="av_rental_cost" columnIndex="35"/>
+		<result property="manager_cost" column="manager_cost" columnIndex="36"/>
+		<result property="total_grant_cost" column="total_grant_cost" columnIndex="37"/>
+		<result property="attract_grant_cost" column="attract_grant_cost" columnIndex="38"/>
+		<result property="sales_grant_cost" column="sales_grant_cost" columnIndex="39"/>
+		<result property="held_grant_cost" column="held_grant_cost" columnIndex="40"/>
+		<result property="attract_staff_id" column="attract_staff_id" columnIndex="41"/>
+		<result property="event_staff_id" column="event_staff_id" columnIndex="42"/>
+		<result property="etc_comment" column="etc_comment" columnIndex="43"/>
+		<result property="partners_comment" column="partners_comment" columnIndex="44"/>
+		<result property="reg_id" column="reg_id" columnIndex="45"/>
+		<result property="reg_date" column="reg_date" columnIndex="46"/>
+		<result property="expire_id" column="expire_id" columnIndex="47"/>
+		<result property="expire_date" column="expire_date" columnIndex="48"/>
+		<result property="place_idx" column="place_idx" columnIndex="49"/>
+		<result property="place_name" column="place_name" columnIndex="50"/>
+		<result property="organizers_1_name" column="organizers_1_name" columnIndex="51"/>
+		<result property="organizers_2_name" column="organizers_2_name" columnIndex="52"/>
+	    <result property="attract_staff_name" column="attract_staff_name" columnIndex="53"/>
+	    <result property="event_staff_name" column="event_staff_name" columnIndex="54"/>
+	    <result property="manager_event" column="manager_event" columnIndex="55"/>
+	    
+	</resultMap>
+		
+	<select id="CRMDAO.listCodeType" resultMap="CodeInfo">
+		<![CDATA[
+		SELECT distinct(type) as type,
+		'' as value,
+		-1 as sorted_no,
+		-1 as idx,
+		'' code_name,
+		'' code_item,
+		'' link_url
+		FROM tbl_crm_code_info
+		]]>
+	</select>
+	
+	<select id="CRMDAO.listCode" parameterClass="com.mice.crm.service.CodeVO" resultMap="CodeInfo">
+		<![CDATA[
+		SELECT
+			idx,
+			type,
+			value,
+			sorted_no,
+			code_name,
+			code_item,
+			link_url	
+		FROM tbl_crm_code_info WHERE 1=1
+		]]>
+		<isNotEmpty prepend="AND" property="searchType">
+			type = #searchType#
+		</isNotEmpty>
+       	<isNotEmpty prepend="AND" property="searchInList">
+     		<![CDATA[code_item]]>
+	 		<iterate prepend="IN" property="searchInList" open="(" close=")" conjunction=","> 
+	       		#searchInList[]# 
+	     	</iterate>
+     	</isNotEmpty> 		
+		
+		
+		 <![CDATA[
+		 order by sorted_no asc
+		]]>
+	</select>
+	
+	<select id="CRMDAO.selectListCode" parameterClass="java.util.HashMap" resultMap="CodeInfo">
+		<![CDATA[
+		SELECT
+			idx,
+			type,
+			value,
+			sorted_no,
+			code_name,
+			code_item,
+			link_url		
+		FROM tbl_crm_code_info WHERE idx in 
+		]]>
+		<iterate property="idxList" open="(" close=")" conjunction=",">
+        	#idxList[]#
+        </iterate>
+       	<isNotEmpty prepend="AND" property="searchInList">
+     		<![CDATA[code_item]]>
+	 		<iterate prepend="IN" property="searchInList" open="(" close=")" conjunction=","> 
+	       		#searchInList[]# 
+	     	</iterate>
+     	</isNotEmpty> 
+		<![CDATA[
+		 order by type, sorted_no asc
+		]]>
+	</select>
+	
+	<select id="CRMDAO.selectCodeSeq" parameterClass="com.mice.crm.service.CodeVO" resultClass="java.lang.Integer" remapResults="true">
+		<![CDATA[
+		select ifnull((select sorted_no + 1 from tbl_crm_code_info where type=#type# order by sorted_no desc limit 1), 1)
+		]]>
+	</select>
+	
+	<insert id="CRMDAO.insertCode" parameterClass="com.mice.crm.service.CodeVO">
+
+		<![CDATA[
+		INSERT INTO tbl_crm_code_info
+		(
+			type,
+			value,
+			sorted_no,
+			code_name,
+			code_item,
+			link_url
+		)
+		VALUES
+		(
+			#type#,
+			#value#,
+			#sorted_no#,
+			#code_name#,
+			#code_item#,
+			#link_url#
+		)
+		]]>
+	</insert>
+	
+	<update id="CRMDAO.updateCode" parameterClass="com.mice.crm.service.CodeVO">
+		<![CDATA[
+		UPDATE tbl_crm_code_info
+		SET 
+			value = #value#,
+			sorted_no = #sorted_no#,
+			code_name = #code_name#,
+			code_item = #code_item#,
+			link_url = #link_url#
+		WHERE idx=#idx#;
+		SET @ROWNUM := 0;
+ 		UPDATE tbl_crm_code_info SET
+ 		sorted_no = @ROWNUM := @ROWNUM + 1;
+		]]>
+	</update>
+	
+	<delete id="CRMDAO.deleteCode" parameterClass="com.mice.crm.service.CodeVO">
+		<![CDATA[
+		DELETE FROM tbl_crm_code_info WHERE idx=#idx#
+		]]>
+	</delete>
+	<update id="CRMDAO.updateCodeSortedNo" parameterClass="com.mice.crm.service.CodeVO">
+		SET @archive_idx := LAST_INSERT_ID();
+		SELECT 
+	</update>
+	<select id="CRMDAO.listEventAttachFile" parameterClass="com.mice.crm.service.EventVO" resultClass="com.mice.crm.service.EventAttachFileVO">
+		<![CDATA[
+		SELECT 
+ 		idx,
+ 		crm_event_idx,
+ 		(select orignl_file_nm from comtnfiledetail where atch_file_id=file_id) as file_name,
+ 		type,
+ 		file_id
+ 		FROM tbl_crm_event_attach_file_info WHERE crm_event_idx=#idx# AND type=#searchAttachFileType# order by idx asc
+		]]>
+	</select>
+	
+	<insert id="CRMDAO.insertEventAttachFile" parameterClass="com.mice.crm.service.EventAttachFile">
+		<![CDATA[
+		INSERT INTO tbl_crm_event_attach_file_info (crm_event_idx, type, file_id) VALUES (#crm_event_idx#, #type#, #file_id#)
+		]]>
+	</insert>
+	
+	<update id="CRMDAO.updateEventAttachFile" parameterClass="com.mice.crm.service.EventAttachFile">
+		<![CDATA[
+			UPDATE tbl_crm_event_attach_file_info SET type=#type#, file_id=#file_id# WHERE idx=#idx#
+		]]>
+	</update>
+	<delete id="CRMDAO.deleteEventAttachFile" parameterClass="java.lang.Integer">
+		<![CDATA[
+			DELETE FROM tbl_crm_event_attach_file_info WHERE idx=#idx#
+		]]> 
+	</delete>
+	
+	<select id="CRMDAO.listCalendar" parameterClass="com.mice.crm.service.EventCalendarVO" resultClass="com.mice.crm.service.EventCalendarVO">
+		<![CDATA[
+		
+		SELECT          
+		yyyymmdd,
+		days,
+		dayweek,
+		(select distinct restde_nm from comtnrestde where restde=yyyymmdd) as holiday,
+		(select group_concat((idx) SEPARATOR '|') from tbl_crm_event_info where expire_date>NOW() AND yyyymmdd between 
+		]]>
+		<isNotEmpty property="searchOrderby">
+			<isEqual property="searchOrderby" compareValue="0">
+				<![CDATA[
+				rent_st_date and rent_ed_date
+				]]>
+			</isEqual>
+			<isEqual property="searchOrderby" compareValue="1">
+				<![CDATA[
+				event_st_date and event_ed_date
+				]]>
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchPlaceIdx" prepend="AND">
+		<![CDATA[
+		place_idx = #searchPlaceIdx#
+		]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchImplementsStatusList">
+ 			<![CDATA[implementation_status]]>
+	 		<iterate prepend="IN" property="searchImplementsStatusList" open="(" close=")" conjunction=","> 
+	       		#searchImplementsStatusList[]# 
+	     	</iterate>
+     	</isNotEmpty>    
+     	<isNotEmpty prepend="AND" property="searchEventDivisionList">
+     		<![CDATA[event_division_idx]]>
+	 		<iterate prepend="IN" property="searchEventDivisionList" open="(" close=")" conjunction=","> 
+	       		#searchEventDivisionList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+		
+		<![CDATA[
+		) as idx,
+		(select group_concat((name_ko) SEPARATOR '|') from tbl_crm_event_info where  expire_date>NOW() AND yyyymmdd between 
+		]]>
+		
+		<isNotEmpty property="searchOrderby">
+			<isEqual property="searchOrderby" compareValue="0">
+				<![CDATA[
+				rent_st_date and rent_ed_date
+				]]>
+			</isEqual>
+			<isEqual property="searchOrderby" compareValue="1">
+				<![CDATA[
+				event_st_date and event_ed_date
+				]]>
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchPlaceIdx" prepend="AND">
+		<![CDATA[
+		place_idx = #searchPlaceIdx#
+		]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchImplementsStatusList">
+ 			<![CDATA[implementation_status]]>
+	 		<iterate prepend="IN" property="searchImplementsStatusList" open="(" close=")" conjunction=","> 
+	       		#searchImplementsStatusList[]# 
+	     	</iterate>
+     	</isNotEmpty>    
+     	<isNotEmpty prepend="AND" property="searchEventDivisionList">
+     		<![CDATA[event_division_idx]]>
+	 		<iterate prepend="IN" property="searchEventDivisionList" open="(" close=")" conjunction=","> 
+	       		#searchEventDivisionList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+     	
+		<![CDATA[
+		) as name_ko,
+		(select group_concat((SELECT value FROM tbl_crm_code_info where type='추진현황' and idx=implementation_status) SEPARATOR '|') from tbl_crm_event_info where expire_date>NOW() AND yyyymmdd between 
+		]]>
+		<isNotEmpty property="searchOrderby">
+			<isEqual property="searchOrderby" compareValue="0">
+				<![CDATA[
+				rent_st_date and rent_ed_date
+				]]>
+			</isEqual>
+			<isEqual property="searchOrderby" compareValue="1">
+				<![CDATA[
+				event_st_date and event_ed_date
+				]]>
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchPlaceIdx" prepend="AND">
+		<![CDATA[
+		place_idx = #searchPlaceIdx#
+		]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchImplementsStatusList">
+ 			<![CDATA[implementation_status]]>
+	 		<iterate prepend="IN" property="searchImplementsStatusList" open="(" close=")" conjunction=","> 
+	       		#searchImplementsStatusList[]# 
+	     	</iterate>
+     	</isNotEmpty>    
+     	<isNotEmpty prepend="AND" property="searchEventDivisionList">
+     		<![CDATA[event_division_idx]]>
+	 		<iterate prepend="IN" property="searchEventDivisionList" open="(" close=")" conjunction=","> 
+	       		#searchEventDivisionList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+		
+		<![CDATA[
+		) as implementsStatusName,
+		
+		
+		(select group_concat((event_division_idx) SEPARATOR '|') from tbl_crm_event_info where expire_date>NOW() AND yyyymmdd between 
+		]]>
+		<isNotEmpty property="searchOrderby">
+			<isEqual property="searchOrderby" compareValue="0">
+				<![CDATA[
+				rent_st_date and rent_ed_date
+				]]>
+			</isEqual>
+			<isEqual property="searchOrderby" compareValue="1">
+				<![CDATA[
+				event_st_date and event_ed_date
+				]]>
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchPlaceIdx" prepend="AND">
+		<![CDATA[
+		place_idx = #searchPlaceIdx#
+		]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchImplementsStatusList">
+ 			<![CDATA[implementation_status]]>
+	 		<iterate prepend="IN" property="searchImplementsStatusList" open="(" close=")" conjunction=","> 
+	       		#searchImplementsStatusList[]# 
+	     	</iterate>
+     	</isNotEmpty>    
+     	<isNotEmpty prepend="AND" property="searchEventDivisionList">
+     		<![CDATA[event_division_idx]]>
+	 		<iterate prepend="IN" property="searchEventDivisionList" open="(" close=")" conjunction=","> 
+	       		#searchEventDivisionList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+		
+		<![CDATA[
+		) as event_division_idx		
+		
+		
+		FROM            (SELECT (dt          + INTERVAL lv-1 DAY)      AS yyyymmdd, 
+		                        substring(dt + INTERVAL lv-1 DAY, 9,2) AS days    , 
+		                        dayofweek(dt + INTERVAL lv-1 DAY)      AS dayweek 
+		                FROM    ( SELECT ordinal_position                       lv , 
+		                                        CONCAT(#searchYearMonth#, '01')                 dt 
+		                        FROM    information_schema.columns 
+		                        WHERE   table_schema = 'mysql' 
+		                        AND     table_name   = 'user' 
+		                        ) 
+		                        a 
+		                WHERE   lv <= DAY(LAST_DAY(dt)) 
+		                ) 
+		                calendar 
+		                
+		WHERE           1=1 
+		ORDER BY        calendar.yyyymmdd ASC;
+		 
+		]]>
+	</select>
+	<select id="CRMDAO.listXlsEvent" parameterClass="com.mice.crm.service.EventVO" resultClass="com.mice.crm.service.EventVO" >
+		<![CDATA[
+		select @rownum:=@rownum+1 as idx, X.* FROM (
+		SELECT 
+			   
+		       substring(cei.reg_date, 1, 10) as reg_date,
+		       (select value from tbl_crm_code_info where idx=cei.implementation_status) as implementation_status_name,
+		       substring(cei.confirm_date, 1, 10) as confirm_date,
+		       (SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = attract_staff_id) as attract_staff_name,
+		       cei.name_ko,
+		       cei.name_en,
+		       cei.name_etc,
+		       (select value from tbl_crm_code_info where type='장소' and idx=cei.place_idx) as place_name,
+		       cci.value facility_text_description,
+		       cce.value as rent_area_value,
+			   (select value from tbl_crm_code_ext where name='단가' and parent_idx=cci.idx) as rent_cost_value,
+		       case when datediff(cei.rent_ed_date, cei.rent_st_date) >= 0 and cei.rent_facility_text like concat('%',cci.idx,'%') then 1 else 0 end as rent_yn_value,
+		       (cce.value * case when datediff(cei.rent_ed_date, cei.rent_st_date) >= 0 then datediff(cei.rent_ed_date, cei.rent_st_date) + 1 else 0 end) as rent_area_day_value,
+		       case when datediff(cei.rent_ed_date, cei.rent_st_date) >= 0 and cei.rent_facility_text like concat('%',cci.idx,'%') then datediff(cei.rent_ed_date, cei.rent_st_date) + 1 else 0 end as rent_day_value,
+		       (cce.value * case when datediff(cei.rent_ed_date, cei.rent_st_date) >= 0 and cei.rent_facility_text like concat('%',cci.idx,'%') then datediff(cei.rent_ed_date, cei.rent_st_date) + 1 else 0 end)   as rent_all_area_value,
+		       CASE WHEN cci.value like concat('%','실내','%' ) then cce.value * (case when datediff(cei.rent_ed_date, cei.rent_st_date) >= 0 then datediff(cei.rent_ed_date, cei.rent_st_date) + 1 else 0 end)  else 0 end as rent_inner_area_value,
+		       cei.rent_cost,
+		       cei.rent_st_date,
+		       cei.rent_ed_date,
+		       cei.event_st_date,
+		       cei.event_ed_date,
+		       (select value from tbl_crm_code_info where idx=cei.event_type_idx) as event_type_name,
+		       (select value from tbl_crm_code_info where idx=cei.event_scale_idx) as event_scale_name,
+		       (select value from tbl_crm_code_info where idx=cei.event_division_idx) as event_division_name,
+		       cei.join_foreigner_cnt,
+		       cei.join_nationals_cnt,
+		       cei.join_personal_cnt,
+		       cei.booth_cnt,
+		       cei.exhibition_scale,
+		       cei.participating_states_cnt,
+		       (select name_ko from tbl_crm_organizer_info where idx=cei.organizers_1) as organizers_1_name,
+		       (select name_ko from tbl_crm_customer_info where idx=cei.manager_1) as manager_1_name,
+		       (select name_ko from tbl_crm_organizer_info where idx=cei.organizers_2) as organizers_2_name,
+		       (select name_ko from tbl_crm_customer_info where idx=cei.manager_2) as manager_2_name,
+		       cei.homepage,
+		       case when cei.view_yn = 'Y' then '공개' else '숨김' end as view_yn,
+		       cei.estimate_cost,
+		       cei.total_cost,
+		       cei.food_cost,
+		       cei.av_rental_cost,
+		       cei.manager_cost,
+		       cei.sales_cost,
+		       cei.estimate_date,
+		
+				(select tel_no from tbl_crm_customer_info where idx=manager_1) as manager_1_tel_no,
+				(select phone_no from tbl_crm_customer_info where idx=manager_1) as manager_1_phone_no,
+				(select email from tbl_crm_customer_info where idx=manager_1) as manager_1_email,
+				(select position from tbl_crm_customer_info where idx=manager_1) as manager_1_position,
+				
+				(select tel_no from tbl_crm_customer_info where idx=manager_2) as manager_2_tel_no,
+				(select phone_no from tbl_crm_customer_info where idx=manager_2) as manager_2_phone_no,
+				(select email from tbl_crm_customer_info where idx=manager_2) as manager_2_email,
+				(select position from tbl_crm_customer_info where idx=manager_2) as manager_2_position,
+				
+				manager_event
+		       
+		FROM tbl_crm_code_info cci left outer join tbl_crm_code_ext cce on cci.idx=cce.parent_idx and name='면적' 
+		left outer join tbl_crm_event_info cei on cei.expire_date>NOW()
+		WHERE cci.type IN ('1층','2층','3층') and cce.value is not null
+		]]>
+		<isNotEmpty prepend="AND" property="searchIdx">
+ 			cei.idx = #searchIdx#
+ 		</isNotEmpty>
+ 		<isNotEmpty prepend="AND" property="searchImplementsStatusList">
+ 			<![CDATA[cei.implementation_status]]>
+	 		<iterate prepend="IN" property="searchImplementsStatusList" open="(" close=")" conjunction=","> 
+	       		#searchImplementsStatusList[]# 
+	     	</iterate>
+     	</isNotEmpty>    
+     	<isNotEmpty prepend="AND" property="searchEventDivisionList">
+     		<![CDATA[cei.event_division_idx]]>
+	 		<iterate prepend="IN" property="searchEventDivisionList" open="(" close=")" conjunction=","> 
+	       		#searchEventDivisionList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchPlaceIdx">
+     		cei.place_idx = #searchPlaceIdx#
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchRegId">
+     		(cei.attract_staff_id like concat('%',#searchRegId#,'%') or cei.event_staff_id like concat('%',#searchRegId#,'%'))
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchRentStartDate">
+     		<![CDATA[
+     		 cei.rent_st_date >= #searchRentStartDate#
+     		]]>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchRentEndDate">
+     		<![CDATA[
+     		 cei.rent_ed_date <= #searchRentEndDate#
+     		]]>
+     	</isNotEmpty>
+     	
+     	<isNotEmpty prepend="AND" property="searchEventStartDate">
+     		<![CDATA[
+     		 cei.event_st_date >= #searchEventStartDate#
+     		]]>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchEventEndDate">
+     		<![CDATA[
+     		  cei.event_ed_date <= #searchEventEndDate#
+     		]]>
+     	</isNotEmpty>
+     	
+     	
+     	
+     	
+     	<isNotEmpty prepend="AND" property="searchJoinPersonalMinCount">
+     		<![CDATA[
+			cei.join_personal_cnt >=  CONVERT(#searchJoinPersonalMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinPersonalMaxCount">
+			<![CDATA[
+			cei.join_personal_cnt <=  CONVERT(#searchJoinPersonalMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinNationalsMinCount">
+			<![CDATA[
+			cei.join_nationals_cnt >= CONVERT(#searchJoinNationalsMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinNationalsMaxCount">
+			<![CDATA[
+			cei.join_nationals_cnt <= CONVERT(#searchJoinNationalsMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinForeignerMinCount">
+			<![CDATA[
+			cei.join_foreigner_cnt >= CONVERT(#searchJoinForeignerMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinForeignerMaxCount">
+			<![CDATA[
+			cei.join_foreigner_cnt <= CONVERT(#searchJoinForeignerMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchExhibitionScaleMinCount">
+			<![CDATA[
+			cei.exhibition_scale >= CONVERT(#searchExhibitionScaleMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchExhibitionScaleMaxCount">
+			<![CDATA[
+			cei.exhibition_scale <= CONVERT(#searchExhibitionScaleMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchParticipatingStatesMinCount">
+			<![CDATA[
+			cei.participating_states_cnt >= CONVERT(#searchParticipatingStatesMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchParticipatingStatesMaxCount">
+			<![CDATA[
+			cei.participating_states_cnt >= CONVERT(#searchParticipatingStatesMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchAttractGrantMinCost">
+			<![CDATA[
+			cei.attract_grant_cost >= CONVERT(#searchAttractGrantMinCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchAttractGrantMaxCost">
+			<![CDATA[
+			cei.attract_grant_cost <= CONVERT(#searchAttractGrantMaxCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchSalesGrantMinCost">
+			<![CDATA[
+			cei.sales_grant_cost >= CONVERT(#searchSalesGrantMinCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchSalesGrantMaxCost">
+			<![CDATA[
+			cei.sales_grant_cost <= CONVERT(#searchSalesGrantMaxCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>		
+		<isNotEmpty prepend="AND" property="searchHeldGrantMinCost">
+			<![CDATA[
+			cei.held_grant_cost >= CONVERT(#searchHeldGrantMinCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchHeldGrantMaxCost">
+			<![CDATA[
+			cei.held_grant_cost <= CONVERT(#searchHeldGrantMaxCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>		
+		
+		
+		
+		
+			
+		<isNotEmpty prepend="AND" property="searchOrganizers_1">
+			cei.organizers_1 = #searchOrganizers_1#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchOrganizers_2">
+			cei.organizers_2 = #searchOrganizers_2#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchRentFacility">
+			cei.rent_facility_text like concat('%',#searchRentFacility#,'%')
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchEventName">
+			(
+			cei.name_ko like concat('%',#searchEventName#, '%')
+			or cei.name_en like concat('%',#searchEventName#, '%')
+			or cei.name_etc like concat('%',#searchEventName#, '%')
+			)
+		</isNotEmpty>
+		<![CDATA[
+		order by cei.idx asc, cei.rent_st_date asc, cci.type asc, cci.sorted_no asc
+		)  X inner join (SELECT @rownum:=0) TMP;
+		]]>
+	</select>
+	
+	<select id="CRMDAO.listEvent" parameterClass="com.mice.crm.service.EventVO" resultClass="com.mice.crm.service.EventVO" >
+ 		<![CDATA[
+ 		
+ 		SELECT 
+ 		idx,
+		implementation_status,
+		(select value from tbl_crm_code_info where idx=implementation_status) as implementation_status_name,
+		confirm_date,
+		name_ko,
+		name_en,
+		name_etc,
+		place_idx,
+		(select value from tbl_crm_code_info where type='장소' and idx=place_idx) as place_name,
+		rent_facility_text,
+		'' as facility_text_description,
+		rent_st_date,
+		rent_ed_date,
+		event_st_date,
+		event_ed_date,
+		event_division_idx,
+		(select value from tbl_crm_code_info where idx=event_division_idx) as event_division_name,
+		event_type_idx,
+		(select value from tbl_crm_code_info where idx=event_type_idx) as event_type_name,
+		event_scale_idx,
+		(select value from tbl_crm_code_info where idx=event_scale_idx) as event_scale_name,
+		join_personal_cnt,
+		join_foreigner_cnt,
+		join_nationals_cnt,
+		booth_cnt,
+		exhibition_scale,
+		participating_states_cnt,
+		organizers_1,
+		(select name_ko from tbl_crm_organizer_info where idx=organizers_1) as organizers_1_name,
+		organizers_2,
+		(select name_ko from tbl_crm_organizer_info where idx=organizers_2) as organizers_2_name,
+		organizers_3,
+		manager_1,
+		(select name_ko from tbl_crm_customer_info where idx=manager_1) as manager_1_name,
+		manager_2,
+		(select name_ko from tbl_crm_customer_info where idx=manager_2) as manager_2_name,
+		homepage,
+		view_yn,
+		estimate_date,
+		estimate_cost,
+		sales_cost,
+		total_cost,
+		rent_cost,
+		food_cost,
+		av_rental_cost,
+		manager_cost,
+		total_grant_cost,
+		attract_grant_cost,
+		sales_grant_cost,
+		held_grant_cost,
+		attract_staff_id,
+		(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = attract_staff_id) as attract_staff_name,
+		event_staff_id,
+		(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = event_staff_id) as event_staff_name,
+		etc_comment,
+		partners_comment,
+		
+				(select tel_no from tbl_crm_customer_info where idx=manager_1) as manager_1_tel_no,
+				(select phone_no from tbl_crm_customer_info where idx=manager_1) as manager_1_phone_no,
+				(select email from tbl_crm_customer_info where idx=manager_1) as manager_1_email,
+				(select position from tbl_crm_customer_info where idx=manager_1) as manager_1_position,
+				
+				(select tel_no from tbl_crm_customer_info where idx=manager_2) as manager_2_tel_no,
+				(select phone_no from tbl_crm_customer_info where idx=manager_2) as manager_2_phone_no,
+				(select email from tbl_crm_customer_info where idx=manager_2) as manager_2_email,
+				(select position from tbl_crm_customer_info where idx=manager_2) as manager_2_position,
+				
+		manager_event,
+				
+			
+		reg_id,
+		reg_date,
+		expire_id,
+		expire_date
+		FROM tbl_crm_event_info WHERE 1=1 AND expire_date>NOW()
+ 		]]>
+ 		<isNotEmpty prepend="AND" property="searchIdx">
+ 			idx = #searchIdx#
+ 		</isNotEmpty>
+ 		<isNotEmpty prepend="AND" property="searchImplementsStatusList">
+ 			<![CDATA[implementation_status]]>
+	 		<iterate prepend="IN" property="searchImplementsStatusList" open="(" close=")" conjunction=","> 
+	       		#searchImplementsStatusList[]# 
+	     	</iterate>
+     	</isNotEmpty>    
+     	<isNotEmpty prepend="AND" property="searchEventDivisionList">
+     		<![CDATA[event_division_idx]]>
+	 		<iterate prepend="IN" property="searchEventDivisionList" open="(" close=")" conjunction=","> 
+	       		#searchEventDivisionList[]#
+	     	</iterate>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchPlaceIdx">
+     		place_idx = #searchPlaceIdx#
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchRegId">
+     		(attract_staff_id like concat('%',#searchRegId#,'%') or event_staff_id like concat('%',#searchRegId#,'%'))
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchRentStartDate">
+     		<![CDATA[
+     		 rent_st_date >= #searchRentStartDate#
+     		]]>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchRentEndDate">
+     		<![CDATA[
+     		 rent_ed_date <= #searchRentEndDate#
+     		]]>
+     	</isNotEmpty>
+     	
+     	<isNotEmpty prepend="AND" property="searchEventStartDate">
+     		<![CDATA[
+     		 event_st_date >= #searchEventStartDate#
+     		]]>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchEventEndDate">
+     		<![CDATA[
+     		  event_ed_date <= #searchEventEndDate#
+     		]]>
+     	</isNotEmpty>
+     	
+     	
+     	
+     	
+     	
+     	<isNotEmpty prepend="AND" property="searchJoinPersonalMinCount">
+     		<![CDATA[
+			join_personal_cnt >=  CONVERT(#searchJoinPersonalMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinPersonalMaxCount">
+			<![CDATA[
+			join_personal_cnt <=  CONVERT(#searchJoinPersonalMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinNationalsMinCount">
+			<![CDATA[
+			join_nationals_cnt >= CONVERT(#searchJoinNationalsMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinNationalsMaxCount">
+			<![CDATA[
+			join_nationals_cnt <= CONVERT(#searchJoinNationalsMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinForeignerMinCount">
+			<![CDATA[
+			join_foreigner_cnt >= CONVERT(#searchJoinForeignerMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinForeignerMaxCount">
+			<![CDATA[
+			join_foreigner_cnt <= CONVERT(#searchJoinForeignerMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchExhibitionScaleMinCount">
+			<![CDATA[
+			exhibition_scale >= CONVERT(#searchExhibitionScaleMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchExhibitionScaleMaxCount">
+			<![CDATA[
+			exhibition_scale <= CONVERT(#searchExhibitionScaleMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchParticipatingStatesMinCount">
+			<![CDATA[
+			participating_states_cnt >= CONVERT(#searchParticipatingStatesMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchParticipatingStatesMaxCount">
+			<![CDATA[
+			participating_states_cnt >= CONVERT(#searchParticipatingStatesMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchAttractGrantMinCost">
+			<![CDATA[
+			attract_grant_cost >= CONVERT(#searchAttractGrantMinCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchAttractGrantMaxCost">
+			<![CDATA[
+			attract_grant_cost <= CONVERT(#searchAttractGrantMaxCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchSalesGrantMinCost">
+			<![CDATA[
+			sales_grant_cost >= CONVERT(#searchSalesGrantMinCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchSalesGrantMaxCost">
+			<![CDATA[
+			sales_grant_cost <= CONVERT(#searchSalesGrantMaxCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>		
+		<isNotEmpty prepend="AND" property="searchHeldGrantMinCost">
+			<![CDATA[
+			held_grant_cost >= CONVERT(#searchHeldGrantMinCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchHeldGrantMaxCost">
+			<![CDATA[
+			held_grant_cost <= CONVERT(#searchHeldGrantMaxCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>	
+		
+		
+		
+				
+		<isNotEmpty prepend="AND" property="searchOrganizers_1">
+			organizers_1 = #searchOrganizers_1#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchOrganizers_2">
+			organizers_2 = #searchOrganizers_2#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchRentFacility">
+			rent_facility_text like concat('%',#searchRentFacility#,'%')
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchEventName">
+			(
+			name_ko like concat('%',#searchEventName#, '%')
+			or name_en like concat('%',#searchEventName#, '%')
+			or name_etc like concat('%',#searchEventName#, '%')
+			)
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="cowork">
+			implementation_status not in (1,4)
+		</isNotEmpty>
+		
+		<isNotEmpty property="search_manager_event" >
+ 			<isEqual property="search_manager_event"  compareValue="N">
+					and manager_event = #search_manager_event#
+			</isEqual>
+			<isEqual property="search_manager_event"  compareValue="M">
+					and manager_event = #search_manager_event#
+			</isEqual>
+		</isNotEmpty>			
+				
+		
+		
+ 		<isEqual property="searchOrderby" compareValue="-1">
+ 			order by idx desc
+ 		</isEqual>
+ 		<isEqual property="searchOrderby" compareValue="0">
+ 			order by rent_st_date asc
+ 		</isEqual>
+ 		<isEqual property="searchOrderby" compareValue="1">
+ 			order by event_st_date asc
+ 		</isEqual>
+ 		
+ 		<![CDATA[
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>
+ 	</select>
+ 	
+ 	<select id="CRMDAO.listEventCount" parameterClass="com.mice.crm.service.EventVO" resultClass="java.lang.Integer" >
+ 		<![CDATA[
+ 		SELECT COUNT(*) 
+ 		FROM tbl_crm_event_info
+ 		WHERE 1=1 AND expire_date>NOW()
+ 		]]>
+ 		<isNotEmpty prepend="AND" property="searchIdx">
+ 			idx = #searchIdx#
+ 		</isNotEmpty>
+ 		<isNotEmpty prepend="AND" property="searchImplementsStatusList">
+ 			<![CDATA[implementation_status]]>
+	 		<iterate prepend="IN" property="searchImplementsStatusList" open="(" close=")" conjunction=","> 
+	       		#searchImplementsStatusList[]# 
+	     	</iterate>
+     	</isNotEmpty>    
+     	<isNotEmpty prepend="AND" property="searchEventDivisionList">
+     		<![CDATA[event_division_idx]]>
+	 		<iterate prepend="IN" property="searchEventDivisionList" open="(" close=")" conjunction=","> 
+	       		#searchEventDivisionList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchPlaceIdx">
+     		place_idx = #searchPlaceIdx#
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchRegId">
+     		(attract_staff_id like concat('%',#searchRegId#,'%') or event_staff_id like concat('%',#searchRegId#,'%'))
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchRentStartDate">
+     		<![CDATA[
+     		 rent_st_date >= #searchRentStartDate#
+     		]]>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchRentEndDate">
+     		<![CDATA[
+     		 rent_ed_date <= #searchRentEndDate#
+     		]]>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchEventStartDate">
+     		<![CDATA[
+     		 event_st_date >= #searchEventStartDate#
+     		]]>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchEventEndDate">
+     		<![CDATA[
+     		  event_ed_date <= #searchEventEndDate#
+     		]]>
+     	</isNotEmpty>
+     	
+     	
+     	
+     	
+     	<isNotEmpty prepend="AND" property="searchJoinPersonalMinCount">
+     		<![CDATA[
+			join_personal_cnt >=  CONVERT(#searchJoinPersonalMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinPersonalMaxCount">
+			<![CDATA[
+			join_personal_cnt <=  CONVERT(#searchJoinPersonalMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinNationalsMinCount">
+			<![CDATA[
+			join_nationals_cnt >= CONVERT(#searchJoinNationalsMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinNationalsMaxCount">
+			<![CDATA[
+			join_nationals_cnt <= CONVERT(#searchJoinNationalsMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinForeignerMinCount">
+			<![CDATA[
+			join_foreigner_cnt >= CONVERT(#searchJoinForeignerMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinForeignerMaxCount">
+			<![CDATA[
+			join_foreigner_cnt <= CONVERT(#searchJoinForeignerMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchExhibitionScaleMinCount">
+			<![CDATA[
+			exhibition_scale >= CONVERT(#searchExhibitionScaleMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchExhibitionScaleMaxCount">
+			<![CDATA[
+			exhibition_scale <= CONVERT(#searchExhibitionScaleMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchParticipatingStatesMinCount">
+			<![CDATA[
+			participating_states_cnt >= CONVERT(#searchParticipatingStatesMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchParticipatingStatesMaxCount">
+			<![CDATA[
+			participating_states_cnt >= CONVERT(#searchParticipatingStatesMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchAttractGrantMinCost">
+			<![CDATA[
+			attract_grant_cost >= CONVERT(#searchAttractGrantMinCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchAttractGrantMaxCost">
+			<![CDATA[
+			attract_grant_cost <= CONVERT(#searchAttractGrantMaxCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchSalesGrantMinCost">
+			<![CDATA[
+			sales_grant_cost >= CONVERT(#searchSalesGrantMinCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchSalesGrantMaxCost">
+			<![CDATA[
+			sales_grant_cost <= CONVERT(#searchSalesGrantMaxCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>		
+		<isNotEmpty prepend="AND" property="searchHeldGrantMinCost">
+			<![CDATA[
+			held_grant_cost >= CONVERT(#searchHeldGrantMinCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchHeldGrantMaxCost">
+			<![CDATA[
+			held_grant_cost <= CONVERT(#searchHeldGrantMaxCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>			
+		
+		
+		
+		
+		
+		
+		<isNotEmpty prepend="AND" property="searchOrganizers_1">
+			organizers_1 = #searchOrganizers_1#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchOrganizers_2">
+			organizers_2 = #searchOrganizers_2#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchRentFacility">
+			rent_facility_text like concat('%',#searchRentFacility#,'%')
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchEventName">
+			(
+			name_ko like concat('%',#searchEventName#, '%')
+			or name_en like concat('%',#searchEventName#, '%')
+			or name_etc like concat('%',#searchEventName#, '%')
+			)
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="cowork">
+			implementation_status not in (1,4)
+		</isNotEmpty>
+		<isNotEmpty property="search_manager_event" >
+ 			<isEqual property="search_manager_event"  compareValue="N">
+					and manager_event = #search_manager_event#
+			</isEqual>
+			<isEqual property="search_manager_event"  compareValue="M">
+					and manager_event = #search_manager_event#
+			</isEqual>
+		</isNotEmpty>			
+				
+				
+ 	</select>
+ 	
+ 	<select id="CRMDAO.selectEvent" parameterClass="java.lang.Integer" resultClass="com.mice.crm.service.EventVO" >
+ 		<![CDATA[
+ 		
+ 		call splitter((select rent_facility_text from tbl_crm_event_info where idx=#idx#),',');
+ 		
+ 		SELECT 
+ 		idx,
+		implementation_status,
+		(select value from tbl_crm_code_info where idx=implementation_status) as implementation_status_name,
+		confirm_date,
+		name_ko,
+		name_en,
+		name_etc,
+		place_idx,
+		(select value from tbl_crm_code_info where type='장소' and idx=place_idx) as place_name,
+		rent_facility_text,
+		replace((SELECT group_concat((select value from tbl_crm_code_info where idx=split_value)) FROM splitResults order by split_value),',,',',') as facility_text_description,
+		rent_st_date,
+		rent_ed_date,
+		event_st_date,
+		event_ed_date,
+		event_division_idx,
+		(select value from tbl_crm_code_info where idx=event_division_idx) as event_division_name,
+		event_type_idx,
+		(select value from tbl_crm_code_info where idx=event_type_idx) as event_type_name,
+		event_scale_idx,
+		(select value from tbl_crm_code_info where idx=event_scale_idx) as event_scale_name,
+		join_personal_cnt,
+		join_foreigner_cnt,
+		join_nationals_cnt,
+		booth_cnt,
+		exhibition_scale,
+		participating_states_cnt,
+		organizers_1,
+		(select name_ko from tbl_crm_organizer_info where idx=organizers_1) as organizers_1_name,
+		organizers_2,
+		(select name_ko from tbl_crm_organizer_info where idx=organizers_2) as organizers_2_name,
+		organizers_3,
+		manager_1,
+		(select name_ko from tbl_crm_customer_info where idx=manager_1) as manager_1_name,
+		manager_2,
+		(select name_ko from tbl_crm_customer_info where idx=manager_2) as manager_2_name,
+		homepage,
+		view_yn,
+		estimate_date,
+		estimate_cost,
+		sales_cost,
+		total_cost,
+		rent_cost,
+		food_cost,
+		av_rental_cost,
+		manager_cost,
+		total_grant_cost,
+		attract_grant_cost,
+		sales_grant_cost,
+		held_grant_cost,
+		attract_staff_id,
+		(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = attract_staff_id) as attract_staff_name,
+		event_staff_id,
+		(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = event_staff_id) as event_staff_name,
+		etc_comment,
+		partners_comment,
+
+		(select tel_no from tbl_crm_customer_info where idx=manager_1) as manager_1_tel_no,
+		(select phone_no from tbl_crm_customer_info where idx=manager_1) as manager_1_phone_no,
+		(select email from tbl_crm_customer_info where idx=manager_1) as manager_1_email,
+		(select position from tbl_crm_customer_info where idx=manager_1) as manager_1_position,
+		
+		(select tel_no from tbl_crm_customer_info where idx=manager_2) as manager_2_tel_no,
+		(select phone_no from tbl_crm_customer_info where idx=manager_2) as manager_2_phone_no,
+		(select email from tbl_crm_customer_info where idx=manager_2) as manager_2_email,
+		(select position from tbl_crm_customer_info where idx=manager_2) as manager_2_position,
+		
+		reg_id,
+		reg_date,
+		expire_id,
+		expire_date
+		
+		,(
+		SELECT GROUP_CONCAT( (select value from tbl_crm_code_info cd where cd.idx = tm.event_theme)  SEPARATOR ',') 
+		FROM tbl_crm_event_info_theme tm
+		WHERE tm.crm_event_idx = info.idx
+		) event_theme_name
+		
+		,(
+		SELECT GROUP_CONCAT( (event_theme)  SEPARATOR ',') 
+		FROM tbl_crm_event_info_theme tm
+		WHERE tm.crm_event_idx = info.idx
+		) event_theme_idx,
+		
+		manager_event				
+				
+		
+		FROM tbl_crm_event_info info WHERE 1=1 AND expire_date>NOW() AND idx=#idx#
+ 		]]>
+ 		
+ 	</select>
+ 	
+	<insert id="CRMDAO.insertEvent" parameterClass="com.mice.crm.service.EventVO">
+ 		<![CDATA[
+			INSERT INTO tbl_crm_event_info
+		 	(
+		 		implementation_status,
+				confirm_date,
+				name_ko,
+				name_en,
+				name_etc,
+				place_idx,
+				rent_facility_text,
+				rent_st_date,
+				rent_ed_date,
+				event_st_date,
+				event_ed_date,
+				event_division_idx,
+				event_type_idx,
+				event_scale_idx,
+				join_personal_cnt,
+				join_foreigner_cnt,
+				join_nationals_cnt,
+				booth_cnt,
+				exhibition_scale,
+				participating_states_cnt,
+				organizers_1,
+				organizers_2,
+				organizers_3,
+				manager_1,
+				manager_2,
+				homepage,
+				view_yn,
+				estimate_date,
+				estimate_cost,
+				sales_cost,
+				total_cost,
+				rent_cost,
+				food_cost,
+				av_rental_cost,
+				manager_cost,
+				total_grant_cost,
+				attract_grant_cost,
+				sales_grant_cost,
+				held_grant_cost,
+				attract_staff_id,
+				event_staff_id,
+				etc_comment,
+				partners_comment,
+				manager_event,
+				reg_id,
+				reg_date
+		 	)
+		 	VALUES
+		 	(
+				#implementation_status#,
+				#confirm_date#,
+				#name_ko#,
+				#name_en#,
+				#name_etc#,
+				#place_idx#,
+				#rent_facility_text#,
+				#rent_st_date#,
+				#rent_ed_date#,
+				#event_st_date#,
+				#event_ed_date#,
+				#event_division_idx#,
+				#event_type_idx#,
+				#event_scale_idx#,
+				#join_personal_cnt#,
+				#join_foreigner_cnt#,
+				#join_nationals_cnt#,
+				#booth_cnt#,
+				#exhibition_scale#,
+				#participating_states_cnt#,
+				#organizers_1#,
+				#organizers_2#,
+				#organizers_3#,
+				#manager_1#,
+				#manager_2#,
+				#homepage#,
+				#view_yn#,
+				#estimate_date#,
+				#estimate_cost#,
+				#sales_cost#,
+				#total_cost#,
+				#rent_cost#,
+				#food_cost#,
+				#av_rental_cost#,
+				#manager_cost#,
+				#total_grant_cost#,
+				#attract_grant_cost#,
+				#sales_grant_cost#,
+				#held_grant_cost#,
+				#attract_staff_id#,
+				#event_staff_id#,
+				#etc_comment#,
+				#partners_comment#,
+				#manager_event#,
+				#reg_id#,
+				NOW()		 	
+		 	)
+		]]>
+		<selectKey keyProperty="idx" resultClass="int">
+        	SELECT LAST_INSERT_ID()
+		</selectKey>
+ 	</insert>
+ 	
+ 	<update id="CRMDAO.updateEvent" parameterClass="com.mice.crm.service.EventVO">
+ 		<![CDATA[
+ 		UPDATE tbl_crm_event_info SET
+ 		implementation_status = #implementation_status#,
+		confirm_date = #confirm_date#,
+		name_ko = #name_ko#,
+		name_en = #name_en#,
+		name_etc = #name_etc#,
+		place_idx = #place_idx#,
+		rent_facility_text = #rent_facility_text#,
+		rent_st_date = #rent_st_date#,
+		rent_ed_date = #rent_ed_date#,
+		event_st_date = #event_st_date#,
+		event_ed_date = #event_ed_date#,
+		event_division_idx = #event_division_idx#,
+		event_type_idx = #event_type_idx#,
+		event_scale_idx = #event_scale_idx#,
+		join_personal_cnt = #join_personal_cnt#,
+		join_foreigner_cnt = #join_foreigner_cnt#,
+		join_nationals_cnt = #join_nationals_cnt#,
+		booth_cnt = #booth_cnt#,
+		exhibition_scale = #exhibition_scale#,
+		participating_states_cnt = #participating_states_cnt#,
+		organizers_1 = #organizers_1#,
+		organizers_2 = #organizers_2#,
+		organizers_3 = #organizers_3#,
+		manager_1 = #manager_1#,
+		manager_2 = #manager_2#,
+		homepage = #homepage#,
+		view_yn = #view_yn#,
+		estimate_date = #estimate_date#,
+		estimate_cost = #estimate_cost#,
+		sales_cost = #sales_cost#,
+		total_cost = #total_cost#,
+		rent_cost = #rent_cost#,
+		food_cost = #food_cost#,
+		av_rental_cost = #av_rental_cost#,
+		manager_cost = #manager_cost#,
+		total_grant_cost = #total_grant_cost#,
+		attract_grant_cost = #attract_grant_cost#,
+		sales_grant_cost = #sales_grant_cost#,
+		held_grant_cost = #held_grant_cost#,
+		attract_staff_id = #attract_staff_id#,
+		event_staff_id = #event_staff_id#,
+		etc_comment = #etc_comment#,
+		partners_comment = #partners_comment#,
+		manager_event = #manager_event#
+ 		WHERE idx = #idx#
+ 		]]>
+ 	</update>
+ 	
+	<update id="CRMDAO.deleteEvent" parameterClass="com.mice.crm.service.EventVO">
+ 		<![CDATA[
+ 		UPDATE tbl_crm_event_info SET
+ 			expire_date = NOW(),
+ 			expire_id = #expire_id#
+ 		WHERE idx = #idx#
+ 		]]>
+ 	</update>
+	
+ 	<select id="CRMDAO.selectCustomer" parameterClass="java.lang.Integer" resultMap="CustomerInfo" >
+	<![CDATA[
+		SELECT 
+				idx,
+				name_ko,
+				name_en,
+				tel_no,
+				phone_no,
+				email,
+				fax_no,
+				etc,
+				reg_id,
+				reg_date,
+				expire_date,
+				expire_id,
+				(select name_ko from tbl_crm_organizer_info where idx in (select organizer_idx from tbl_crm_customer_organizer_relation where customer_idx=customer.idx) limit 1) as organizer_name,
+				(select count(*) from tbl_crm_organizer_info where idx in (select organizer_idx from tbl_crm_customer_organizer_relation where customer_idx=customer.idx)) as organizer_cnt,
+				(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = reg_id) as user_nm,
+				
+				zip_code,
+				address_ko,
+				address_en,
+				manager_id,
+				(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = manager_id) as manager_nm,
+				newsletter,
+				country,				
+				position,
+				sosoc_excel,
+				department,
+				
+				reg_id, 
+				reg_date,
+				modify_id,
+				modify_date,
+				remember_id,	
+				remember_created_at,	
+				remember_main_card_id,	
+				remember_main_card_created_at,
+				remember_main_card_user_id,
+				remember_main_card_user_email,
+				remember_modify_date				
+				
+		FROM tbl_crm_customer_info customer WHERE 1=1 AND expire_date > NOW() AND idx = #idx#
+		]]> 	
+ 	</select>
+
+ 	<select id="CRMDAO.selectCustomerCheck" parameterClass="com.mice.crm.service.CustomerVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+			SELECT 
+			if( EXISTS(
+		]]>
+			<![CDATA[
+			select idx FROM tbl_crm_customer_info customer WHERE 1=1 AND expire_date > NOW()
+			]]>
+			<isNotEmpty property="name_ko" prepend="AND" >
+					name_ko = #name_ko#
+			</isNotEmpty>			
+			<isNotEmpty property="phone_no" prepend="AND" >
+					replace(phone_no,'-','') = replace(#phone_no#,'-','')
+			</isNotEmpty>
+			<![CDATA[
+				LIMIT 1 OFFSET 0
+			]]>
+		<![CDATA[
+			) ,
+			(
+		]]>
+			<![CDATA[
+			select idx FROM tbl_crm_customer_info customer WHERE 1=1 AND expire_date > NOW()
+			]]>
+			<isNotEmpty property="name_ko" prepend="AND" >
+					name_ko = #name_ko#
+			</isNotEmpty>	
+			<isNotEmpty property="phone_no" prepend="AND" >
+					replace(phone_no,'-','') = replace(#phone_no#,'-','')
+			</isNotEmpty>
+			<![CDATA[
+				LIMIT 1 OFFSET 0
+			]]>
+			
+		<![CDATA[
+			)  ,0) 
+			idx		
+		]]>
+	</select>
+
+	
+ 	<select id="CRMDAO.selectCustomerManager_id" parameterClass="com.mice.crm.service.CustomerVO"  resultClass="java.lang.String" >
+	<![CDATA[
+		SELECT 
+				EMPLYR_ID manager_id
+		FROM COMTNEMPLYRINFO info WHERE 1=1 AND EMAIL_ADRES = #searchMng#
+		]]> 	
+ 	</select>
+
+	<insert id="CRMDAO.insertRememberInfo" parameterClass="com.mice.crm.service.CustomerVO">
+		<![CDATA[
+		INSERT INTO tbl_remember_open_api
+		(
+			page_url,
+			page,
+			per,
+			total_count,
+			total_page,
+			reg_date	
+		)
+		VALUES
+		(
+			#page_url#,
+			#page#,
+			#per#,
+			#total_count#,
+			#total_page#,
+			NOW()
+		)
+		]]>
+	</insert>
+
+
+
+
+
+	<select id="CRMDAO.listCustomer" parameterClass="com.mice.crm.service.CustomerVO" resultMap="CustomerInfo" >
+		<![CDATA[
+		SELECT 
+				idx,
+				name_ko,
+				name_en,
+				tel_no,
+				phone_no,
+				email,
+				fax_no,
+				etc,
+				reg_id,
+				reg_date,
+				expire_date,
+				expire_id,
+				(select name_ko from tbl_crm_organizer_info where idx in (select organizer_idx from tbl_crm_customer_organizer_relation where customer_idx=customer.idx) limit 1) as organizer_name,
+				(select count(*) from tbl_crm_organizer_info where idx in (select organizer_idx from tbl_crm_customer_organizer_relation where customer_idx=customer.idx)) as organizer_cnt,
+				(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = reg_id) as user_nm,
+				
+				zip_code,
+				address_ko,
+				address_en,
+				manager_id,
+				(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = manager_id) as manager_nm,
+				newsletter,
+				country,
+				position,
+				sosoc_excel,
+				department,		
+				
+				
+				reg_id, 
+				reg_date,
+				modify_id,
+				modify_date,
+				remember_id,	
+				remember_created_at,	
+				remember_main_card_id,	
+				remember_main_card_created_at,
+				remember_main_card_user_id,
+				remember_main_card_user_email,
+				remember_modify_date			
+				
+		FROM tbl_crm_customer_info customer WHERE 1=1 AND expire_date > NOW()
+		]]>
+		
+		<!-- 		
+		<isEqual property="searchCnd" compareValue="1">
+			<isNotEmpty prepend="AND" property="searchWrd">
+				(name_ko like concat('%',#searchWrd#,'%') or name_en like concat('%',#searchWrd#,'%'))
+			</isNotEmpty>
+		</isEqual>
+		<isEqual property="searchCnd" compareValue="2">
+			<isNotEmpty prepend="AND" property="searchWrd">
+				idx in (select a.customer_idx from tbl_crm_customer_organizer_relation a left join tbl_crm_organizer_info b on a.organizer_idx=b.idx where (b.name_ko like concat('%',#searchWrd#,'%') or b.name_en like concat('%',#searchWrd#,'%') or b.name_etc like concat('%',#searchWrd#,'%'))  )
+			</isNotEmpty>
+		</isEqual> 
+		-->
+		
+		<isNotEmpty property="searchWrdName" prepend="AND" >
+			(name_ko like concat('%',#searchWrdName#,'%') or name_en like concat('%',#searchWrdName#,'%'))
+		</isNotEmpty>
+		<isNotEmpty property="searchWrdSosoc" prepend="AND" >
+			idx in (select a.customer_idx from tbl_crm_customer_organizer_relation a left join tbl_crm_organizer_info b on a.organizer_idx=b.idx where (b.name_ko like concat('%',#searchWrdSosoc#,'%') or b.name_en like concat('%',#searchWrdSosoc#,'%') or b.name_etc like concat('%',#searchWrdSosoc#,'%'))  )
+		</isNotEmpty>
+		<isNotEmpty property="searchMng" prepend="AND" >
+				manager_id = #searchMng#
+		</isNotEmpty>
+		<isNotEmpty property="searchNewsletter" prepend="AND" >
+ 			<isEqual property="searchNewsletter" compareValue="null">
+					(newsletter = '' or newsletter is null)
+			</isEqual>
+			<isNotEqual property="searchNewsletter" compareValue="null">
+					newsletter = #searchNewsletter#
+			</isNotEqual>
+		</isNotEmpty>		
+			
+		
+		<isNotEmpty property="searchCountry" prepend="AND" >
+				country = #searchCountry#
+		</isNotEmpty>
+		
+		
+				
+
+		
+		<![CDATA[
+			order by idx desc
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>
+	</select>
+	
+ 	<select id="CRMDAO.listCustomerCount" parameterClass="com.mice.crm.service.CustomerVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+		SELECT COUNT(*)
+		FROM tbl_crm_customer_info WHERE 1=1 AND expire_date > NOW()
+		]]>
+		
+		<!-- 		
+		<isEqual property="searchCnd" compareValue="1">
+			<isNotEmpty prepend="AND" property="searchWrd">
+				(name_ko like concat('%',#searchWrd#,'%') or name_en like concat('%',#searchWrd#,'%'))
+			</isNotEmpty>
+		</isEqual>
+		<isEqual property="searchCnd" compareValue="2">
+			<isNotEmpty prepend="AND" property="searchWrd">
+				idx in (select a.customer_idx from tbl_crm_customer_organizer_relation a left join tbl_crm_organizer_info b on a.organizer_idx=b.idx where (b.name_ko like concat('%',#searchWrd#,'%') or b.name_en like concat('%',#searchWrd#,'%') or b.name_etc like concat('%',#searchWrd#,'%'))  )
+			</isNotEmpty>
+		</isEqual> 
+		-->
+		
+		<isNotEmpty property="searchWrdName" prepend="AND" >
+			(name_ko like concat('%',#searchWrdName#,'%') or name_en like concat('%',#searchWrdName#,'%'))
+		</isNotEmpty>
+		<isNotEmpty property="searchWrdSosoc" prepend="AND" >
+			idx in (select a.customer_idx from tbl_crm_customer_organizer_relation a left join tbl_crm_organizer_info b on a.organizer_idx=b.idx where (b.name_ko like concat('%',#searchWrdSosoc#,'%') or b.name_en like concat('%',#searchWrdSosoc#,'%') or b.name_etc like concat('%',#searchWrdSosoc#,'%'))  )
+		</isNotEmpty>
+		<isNotEmpty property="searchMng" prepend="AND" >
+				manager_id = #searchMng#
+		</isNotEmpty>
+		<isNotEmpty property="searchNewsletter" prepend="AND" >
+ 			<isEqual property="searchNewsletter" compareValue="null">
+					(newsletter = '' or newsletter is null)
+			</isEqual>
+			<isNotEqual property="searchNewsletter" compareValue="null">
+					newsletter = #searchNewsletter#
+			</isNotEqual>
+		</isNotEmpty>		
+			
+		
+		<isNotEmpty property="searchCountry" prepend="AND" >
+				country = #searchCountry#
+		</isNotEmpty>
+		
+	
+	</select>
+	<insert id="CRMDAO.insertCustomer" parameterClass="com.mice.crm.service.CustomerVO">
+		<![CDATA[
+		INSERT INTO tbl_crm_customer_info
+		(
+			name_ko,
+			name_en,
+			tel_no,
+			phone_no,
+			email,
+			fax_no,
+			etc,
+			
+			zip_code,
+			address_ko,
+			address_en,
+			manager_id,
+			newsletter,
+			country,
+			position,
+			sosoc_excel,
+			department,
+						
+			reg_id,
+			reg_date,
+				
+			remember_id,	
+			remember_created_at,	
+			remember_main_card_id,	
+			remember_main_card_created_at,
+			remember_main_card_user_id,
+			remember_main_card_user_email
+			
+		)
+		VALUES
+		(
+			#name_ko#,
+			#name_en#,
+			#tel_no#,
+			#phone_no#,
+			#email#,
+			#fax_no#,
+			#etc#,
+			
+			#zip_code#,
+			#address_ko#,
+			#address_en#,
+			#manager_id#,
+			#newsletter#,
+			#country#,
+			#position#,
+			#sosoc_excel#,
+			#department#,
+			
+			#reg_id#,
+			NOW(),
+			
+			#remember_id#,
+			#remember_created_at#,
+			#remember_main_card_id#,
+			#remember_main_card_created_at#,
+			#remember_main_card_user_id#,
+			#remember_main_card_user_email#
+			
+		)		
+		
+		]]>
+		<selectKey keyProperty="idx" resultClass="int">
+        	SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	<update id="CRMDAO.updateCustomer" parameterClass="com.mice.crm.service.CustomerVO">
+		<![CDATA[
+		UPDATE tbl_crm_customer_info SET
+		 	name_ko = #name_ko#,
+			name_en = #name_en#,
+			tel_no = #tel_no#,
+			phone_no = #phone_no#,
+			email = #email#,
+			fax_no = #fax_no#,
+			etc = #etc#,
+			
+			zip_code = #zip_code#,
+			address_ko = #address_ko#,
+			address_en = #address_en#,
+			manager_id = #manager_id#,
+			newsletter = #newsletter#,
+			country = #country#,			
+			position = #position#,	
+			sosoc_excel = #sosoc_excel#,
+			department = #department#,
+			
+			modify_id = #reg_id#,
+			modify_date = NOW()
+
+		WHERE idx=#idx#
+		]]>
+	</update>
+	
+	<update id="CRMDAO.updateCustomerRemember" parameterClass="com.mice.crm.service.CustomerVO">
+		<![CDATA[
+		UPDATE tbl_crm_customer_info SET
+			tel_no = #tel_no#,
+			email = #email#,
+			fax_no = #fax_no#,
+			
+			zip_code = #zip_code#,
+			address_ko = #address_ko#,
+			position = #position#,	
+			sosoc_excel = #sosoc_excel#,
+			department = #department#,
+			
+			remember_id=#remember_id#,	
+			remember_created_at=#remember_created_at#,	
+			remember_main_card_id=#remember_main_card_id#,	
+			remember_main_card_created_at=#remember_main_card_created_at#,
+			remember_main_card_user_id=#remember_main_card_user_id#,
+			remember_main_card_user_email=#remember_main_card_user_email#,
+			remember_modify_date=NOW()
+
+		WHERE idx=#idx#
+		]]>
+	</update>
+		
+	<update id="CRMDAO.deleteCustomer" parameterClass="com.mice.crm.service.CustomerVO">
+		<![CDATA[
+		UPDATE tbl_crm_customer_info SET
+		 	expire_date = NOW(),
+		 	expire_id = #expire_id#
+		WHERE idx=#idx#
+		]]>
+	</update>
+	
+	<select id="CRMDAO.listCustomerNOrganizer" parameterClass="java.lang.Integer" resultMap="CustomerAndOrganizerInfo">
+		<![CDATA[
+		SELECT 
+		coi.name_ko,
+		cor.customer_idx,
+		cor.organizer_idx,
+		cor.unit,
+		cor.staff,
+		cor.add_tel_no,
+		cor.operation,
+		cor.reg_id,
+		(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = cor.reg_id) as user_nm,
+		cor.reg_date
+		FROM tbl_crm_organizer_info coi left join tbl_crm_customer_organizer_relation cor on coi.idx = cor.organizer_idx
+		WHERE 1=1 AND coi.expire_date>NOW() AND cor.customer_idx=#idx#
+		]]>
+	</select>
+	
+	<select id="CRMDAO.listOrganizerNCustomer" parameterClass="java.lang.Integer" resultMap="CustomerAndOrganizerInfo">
+		<![CDATA[
+		SELECT 
+		coi.name_ko,
+		cor.customer_idx,
+		cor.organizer_idx,
+		cor.unit,
+		cor.staff,
+		cor.add_tel_no,
+		cor.operation,
+		cor.reg_id,
+		(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = cor.reg_id) as user_nm,
+		cor.reg_date
+		FROM tbl_crm_organizer_info coi left join tbl_crm_customer_organizer_relation cor on coi.idx = cor.organizer_idx
+		WHERE 1=1 AND coi.expire_date>NOW() AND cor.organizer_idx=#idx#
+		]]>
+	</select>
+	
+	<select id="CRMDAO.selectCustomerNOrganizer" parameterClass="com.mice.crm.service.CustomerOrganizerRelationVO" resultMap="CustomerAndOrganizerInfo">
+		<![CDATA[
+		SELECT 
+		'' as name_ko,
+		customer_idx,
+		organizer_idx,
+		unit,
+		staff,
+		add_tel_no,
+		operation,
+		reg_id,
+		reg_date,
+		(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = reg_id) as user_nm
+		FROM tbl_crm_customer_organizer_relation WHERE 1=1 AND customer_idx=#customer_idx# AND organizer_idx=#organizer_idx#
+		]]>
+	</select>
+	<update id="CRMDAO.updateCustomerNOrganizer" parameterClass="com.mice.crm.service.CustomerOrganizerRelationVO">
+		<![CDATA[
+		UPDATE tbl_crm_customer_organizer_relation
+		SET
+			organizer_idx = #organizer_idx#,
+			unit = #unit#,
+			staff = #staff#,
+			add_tel_no = #add_tel_no#,
+			operation = #operation#
+		WHERE customer_idx = #customer_idx# AND organizer_idx=#organizer_idx#
+		]]>
+	</update>
+	<insert id="CRMDAO.insertCustomerNOrganizer" parameterClass="com.mice.crm.service.CustomerOrganizerRelationVO">
+		<![CDATA[
+		INSERT INTO tbl_crm_customer_organizer_relation
+		(
+			customer_idx,
+			organizer_idx,
+			unit,
+			staff,
+			add_tel_no,
+			operation,
+			reg_id,
+			reg_date
+		)
+		VALUES
+		(
+			#customer_idx#,
+			#organizer_idx#,
+			#unit#,
+			#staff#,
+			#add_tel_no#,
+			#operation#,
+			#reg_id#,
+			NOW()
+		)
+		]]>
+	</insert>
+	<delete id="CRMDAO.deleteCustomerNOrganizer" parameterClass="com.mice.crm.service.CustomerOrganizerRelationVO">
+		<![CDATA[
+		DELETE FROM tbl_crm_customer_organizer_relation WHERE customer_idx=#customer_idx# AND  organizer_idx=#organizer_idx#
+		]]>
+	</delete>
+	<select id="CRMDAO.selectOrganizer" parameterClass="java.lang.Integer" resultMap="OrganizerInfo">
+		<![CDATA[
+		SELECT 
+				idx,
+				
+				org_kind,
+				manager_event,
+				crm_event_idx,
+				event_cate_biz1,
+				event_cate_biz2,
+				event_cate_biz3,
+				(select value from tbl_crm_code_info cd where cd.type='주관행사분류' and cd.code_name=oi.manager_event ) as manager_event_str,	
+								
+				(select name_ko from tbl_crm_event_info evt where  evt.idx = oi.crm_event_idx) crm_event_idx_str,
+				(select cate_name from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='biz' and cate.cate_no = oi.event_cate_biz1 and cate.depth=1) event_cate_biz1_str,
+				(select cate_name from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='biz' and cate.cate_no = oi.event_cate_biz2 and cate.depth=2) event_cate_biz2_str,
+				(select cate_name from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='biz' and cate.cate_no = oi.event_cate_biz3 and cate.depth=3) event_cate_biz3_str,
+				
+
+				(
+				SELECT GROUP_CONCAT( (select cate_no from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='service' and cate.cate_no = tm.value order by sort)  SEPARATOR ',') 
+				FROM tbl_crm_organizer_info_theme tm WHERE tm.org_idx =oi.idx and tm.kind='event_cate_service'
+				) event_cate_serviceList_idx,		
+				(
+				SELECT GROUP_CONCAT( (select cate_no from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='item' and cate.cate_no = tm.value order by sort)  SEPARATOR ',') 
+				FROM tbl_crm_organizer_info_theme tm WHERE tm.org_idx = oi.idx and tm.kind='event_cate_item'
+				) event_cate_itemList_idx,	
+
+				(
+				SELECT GROUP_CONCAT( (select cate_name from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='service' and cate.cate_no = tm.value order by sort)  SEPARATOR ',') 
+				FROM tbl_crm_organizer_info_theme tm WHERE tm.org_idx =oi.idx and tm.kind='event_cate_service'
+				) event_cate_serviceList_str,		
+				(
+				SELECT GROUP_CONCAT( (select cate_name from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='item' and cate.cate_no = tm.value order by sort)  SEPARATOR ',') 
+				FROM tbl_crm_organizer_info_theme tm WHERE tm.org_idx = oi.idx and tm.kind='event_cate_item'
+				) event_cate_itemList_str,				
+
+
+
+				ceo_name,
+				ceo_phone,
+				biz_man,
+				biz_man_phone,
+				biz_man_email,
+				org_import,
+				org_grade,
+				org_step,
+				org_exhi_history,
+				org_exhi_path,
+						
+
+				name_ko,
+				name_en,
+				name_etc,
+				type_idx,
+				(select value from tbl_crm_code_info where idx=oi.type_idx limit 1) as type_name,
+				national,
+				city,
+				zip_code,
+				address_ko,
+				address_en,
+				tel_no,
+				fax,
+				email,
+				homepage,
+				comment,
+				reg_date,
+				reg_id,
+				expire_id,
+				expire_date,
+				(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = reg_id) as user_nm,
+				manager_id,
+				(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = manager_id) as manager_nm
+		FROM tbl_crm_organizer_info oi WHERE 1=1 AND expire_date > NOW() AND idx=#idx#
+		]]>
+	</select>
+	<select id="CRMDAO.listOrganizer" parameterClass="com.mice.crm.service.OrganizerVO" resultMap="OrganizerInfo" >
+		<![CDATA[
+		SELECT 
+				idx,
+				
+				org_kind,
+				manager_event,
+				crm_event_idx,
+				event_cate_biz1,
+				event_cate_biz2,
+				event_cate_biz3,
+				(select value from tbl_crm_code_info cd where cd.type='주관행사분류' and cd.code_name=oi.manager_event ) as manager_event_str,
+								
+				(select name_ko from tbl_crm_event_info evt where  evt.idx = oi.crm_event_idx) crm_event_idx_str,
+				(select cate_name from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='biz' and cate.cate_no = oi.event_cate_biz1 and cate.depth=1) event_cate_biz1_str,
+				(select cate_name from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='biz' and cate.cate_no = oi.event_cate_biz2 and cate.depth=2) event_cate_biz2_str,
+				(select cate_name from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='biz' and cate.cate_no = oi.event_cate_biz3 and cate.depth=3) event_cate_biz3_str,
+				
+
+				(
+				SELECT GROUP_CONCAT( (select cate_no from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='service' and cate.cate_no = tm.value order by sort)  SEPARATOR ',') 
+				FROM tbl_crm_organizer_info_theme tm WHERE tm.org_idx =oi.idx and tm.kind='event_cate_service'
+				) event_cate_serviceList_idx,		
+				(
+				SELECT GROUP_CONCAT( (select cate_no from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='item' and cate.cate_no = tm.value order by sort)  SEPARATOR ',') 
+				FROM tbl_crm_organizer_info_theme tm WHERE tm.org_idx = oi.idx and tm.kind='event_cate_item'
+				) event_cate_itemList_idx,				
+
+				(
+				SELECT GROUP_CONCAT( (select cate_name from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='service' and cate.cate_no = tm.value order by sort)  SEPARATOR ',') 
+				FROM tbl_crm_organizer_info_theme tm WHERE tm.org_idx =oi.idx and tm.kind='event_cate_service'
+				) event_cate_serviceList_str,		
+				(
+				SELECT GROUP_CONCAT( (select cate_name from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='item' and cate.cate_no = tm.value order by sort)  SEPARATOR ',') 
+				FROM tbl_crm_organizer_info_theme tm WHERE tm.org_idx = oi.idx and tm.kind='event_cate_item'
+				) event_cate_itemList_str,				
+
+
+
+
+				ceo_name,
+				ceo_phone,
+				biz_man,
+				biz_man_phone,
+				biz_man_email,
+				org_import,
+				org_grade,
+				org_step,
+				org_exhi_history,
+				org_exhi_path,
+
+
+				name_ko,
+				name_en,
+				name_etc,
+				type_idx,
+				(select value from tbl_crm_code_info where idx=oi.type_idx limit 1) as type_name,
+				national,
+				city,
+				zip_code,
+				address_ko,
+				address_en,
+				tel_no,
+				fax,
+				email,
+				homepage,
+				comment,
+				reg_date,
+				reg_id,
+				manager_id,
+				expire_id,
+				expire_date,
+				(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = reg_id) as user_nm,
+				manager_id,
+				(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = manager_id) as manager_nm
+		FROM tbl_crm_organizer_info oi WHERE 1=1 AND expire_date>NOW()
+		]]>
+		<isNotEmpty prepend="AND" property="searchName">
+			(name_ko like concat('%',#searchName#,'%') or name_en like concat('%',#searchName#,'%') or name_etc like concat('%',#searchName#,'%'))
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchType">
+			type_idx = #searchType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="search_manager_nm">
+			manager_id in (SELECT USER_ID FROM comvnusermaster WHERE USER_NM LIKE concat('%',#search_manager_nm#,'%') )
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchAddress">
+			(address_ko like concat('%',#searchAddress#,'%') or address_en like concat('%',#searchAddress#,'%'))
+		</isNotEmpty> 
+		
+		
+		<isNotEmpty property="search_manager_event" >
+ 			<isEqual property="search_manager_event"  compareValue="N">
+					and manager_event = #search_manager_event#
+			</isEqual>
+			<isEqual property="search_manager_event" compareValue="M">
+					and manager_event = #search_manager_event#
+			</isEqual>
+		</isNotEmpty>			
+		
+		
+		
+		<isNotEmpty prepend="AND" property="search_crm_event_idx">
+			<isNotEqual property="search_crm_event_idx" compareValue="0">
+				crm_event_idx = #search_crm_event_idx#
+			</isNotEqual>			
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="search_event_cate_biz1">
+			event_cate_biz1 = #search_event_cate_biz1#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="search_event_cate_biz2">
+			event_cate_biz2 = #search_event_cate_biz2#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="search_event_cate_biz3">
+			event_cate_biz3 = #search_event_cate_biz3#
+		</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="search_event_cate_serviceList">
+     		<![CDATA[
+ 				(
+				SELECT GROUP_CONCAT( (select cate_no from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='biz' and cate.cate_no = tm.value)  SEPARATOR ',') 
+				FROM tbl_crm_organizer_info_theme tm WHERE tm.org_idx =oi.idx and tm.kind='event_cate_service'
+				)		
+     		]]>
+	 		<iterate prepend="IN" property="search_event_cate_serviceList" open="(" close=")" conjunction=","> 
+	       		#search_event_cate_serviceList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="search_event_cate_itemList">
+     		<![CDATA[
+				(
+				SELECT GROUP_CONCAT( (select cate_no from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='biz' and cate.cate_no = tm.value)  SEPARATOR ',') 
+				FROM tbl_crm_organizer_info_theme tm WHERE tm.org_idx = oi.idx and tm.kind='event_cate_item'
+				)				
+    		]]>
+	 		<iterate prepend="IN" property="search_event_cate_itemList" open="(" close=")" conjunction=","> 
+	       		#search_event_cate_itemList[]# 
+	     	</iterate>
+     	</isNotEmpty>	
+
+
+
+
+		<isNotEmpty prepend="AND" property="search_org_import">
+			org_import = #search_org_import#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="search_org_grade">
+			org_grade = #search_org_grade#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="search_org_step">
+			org_step = #search_org_step#
+		</isNotEmpty>
+
+
+
+		
+		<![CDATA[
+			order by idx desc
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>
+	</select>
+	<select id="CRMDAO.listOrganizerCount" parameterClass="com.mice.crm.service.OrganizerVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+		SELECT COUNT(*)
+		FROM tbl_crm_organizer_info oi WHERE 1=1 AND expire_date>NOW()
+		]]>
+		<isNotEmpty prepend="AND" property="searchName">
+			(name_ko like concat('%',#searchName#,'%') or name_en like concat('%',#searchName#,'%') or name_etc like concat('%',#searchName#,'%'))
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchType">
+			type_idx = #searchType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="search_manager_nm">
+			manager_id in (SELECT USER_ID FROM comvnusermaster WHERE USER_NM LIKE concat('%',#search_manager_nm#,'%') )
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchAddress">
+			(address_ko like concat('%',#searchAddress#,'%') or address_en like concat('%',#searchAddress#,'%'))
+		</isNotEmpty>
+		
+		
+
+		<isNotEmpty property="search_manager_event" >
+ 			<isEqual property="search_manager_event"  compareValue="N">
+					and manager_event = #search_manager_event#
+			</isEqual>
+			<isEqual property="search_manager_event"  compareValue="M">
+					and manager_event = #search_manager_event#
+			</isEqual>
+		</isNotEmpty>			
+		
+		
+		
+		
+		<isNotEmpty prepend="AND" property="search_crm_event_idx">
+			<isNotEqual property="search_crm_event_idx" compareValue="0">
+				crm_event_idx = #search_crm_event_idx#
+			</isNotEqual>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="search_event_cate_biz1">
+			event_cate_biz1 = #search_event_cate_biz1#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="search_event_cate_biz2">
+			event_cate_biz2 = #search_event_cate_biz2#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="search_event_cate_biz3">
+			event_cate_biz3 = #search_event_cate_biz3#
+		</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="search_event_cate_serviceList">
+     		<![CDATA[
+ 				(
+				SELECT GROUP_CONCAT( (select cate_no from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='biz' and cate.cate_no = tm.value)  SEPARATOR ',') 
+				FROM tbl_crm_organizer_info_theme tm WHERE tm.org_idx =oi.idx and tm.kind='event_cate_service'
+				)		
+     		]]>
+	 		<iterate prepend="IN" property="search_event_cate_serviceList" open="(" close=")" conjunction=","> 
+	       		#search_event_cate_serviceList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="search_event_cate_itemList">
+     		<![CDATA[
+				(
+				SELECT GROUP_CONCAT( (select cate_no from tbl_crm_category cate where cate.crm_event_idx = oi.crm_event_idx and cate.cate_code ='biz' and cate.cate_no = tm.value)  SEPARATOR ',') 
+				FROM tbl_crm_organizer_info_theme tm WHERE tm.org_idx = oi.idx and tm.kind='event_cate_item'
+				)				
+    		]]>
+	 		<iterate prepend="IN" property="search_event_cate_itemList" open="(" close=")" conjunction=","> 
+	       		#search_event_cate_itemList[]# 
+	     	</iterate>
+     	</isNotEmpty>	
+     	
+     	
+     	
+
+
+
+
+		<isNotEmpty prepend="AND" property="search_org_import">
+			org_import = #search_org_import#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="search_org_grade">
+			org_grade = #search_org_grade#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="search_org_step">
+			org_step = #search_org_step#
+		</isNotEmpty>
+
+
+
+		
+     	
+		
+	</select>
+	
+	<insert id="CRMDAO.insertOrganizer" parameterClass="com.mice.crm.service.OrganizerVO">
+		<![CDATA[
+		INSERT INTO tbl_crm_organizer_info
+		(
+			org_kind,
+			manager_event,
+			crm_event_idx,
+			event_cate_biz1,
+			event_cate_biz2,
+			event_cate_biz3,
+			
+			ceo_name,
+			ceo_phone,
+			biz_man,
+			biz_man_phone,
+			biz_man_email,
+		
+			name_ko,
+			name_en,
+			name_etc,
+			type_idx,
+			national,
+			city,
+			zip_code,
+			address_ko,
+			address_en,
+			tel_no,
+			fax,
+			email,
+			homepage,
+			comment,
+			manager_id,
+			
+			org_import,
+			org_grade,
+			org_step,
+			org_exhi_history,
+			org_exhi_path,
+			
+			reg_date,
+			reg_id
+		)
+		VALUES
+		(
+			#org_kind#,
+			#manager_event#,
+			#crm_event_idx#,
+			#event_cate_biz1#,
+			#event_cate_biz2#,
+			#event_cate_biz3#,
+			
+			#ceo_name#,
+			#ceo_phone#,
+			#biz_man#,
+			#biz_man_phone#,
+			#biz_man_email#,
+		
+			#name_ko#,
+			#name_en#,
+			#name_etc#,
+			#type_idx#,
+			#national#,
+			#city#,
+			#zip_code#,
+			#address_ko#,
+			#address_en#,
+			#tel_no#,
+			#fax#,
+			#email#,
+			#homepage#,
+			#comment#,
+			#manager_id#,
+			
+			#org_import#,
+			#org_grade#,
+			#org_step#,
+			#org_exhi_history#,
+			#org_exhi_path#,
+			
+			NOW(),
+			#reg_id#		
+		)
+		]]>
+		<selectKey keyProperty="idx" resultClass="int">
+        	SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	<update id="CRMDAO.updateOrganizer" parameterClass="com.mice.crm.service.OrganizerVO">
+		<![CDATA[
+		UPDATE tbl_crm_organizer_info SET
+			org_kind = #org_kind#,
+			manager_event = #manager_event#,
+			crm_event_idx = #crm_event_idx#,
+			event_cate_biz1 = #event_cate_biz1#,
+			event_cate_biz2 = #event_cate_biz2#,
+			event_cate_biz3 = #event_cate_biz3#,
+		
+			ceo_name= #ceo_name#,
+			ceo_phone= #ceo_phone#,
+			biz_man= #biz_man#,
+			biz_man_phone= #biz_man_phone#,
+			biz_man_email= #biz_man_email#,
+			org_import = #org_import#,
+			org_grade = #org_grade#,
+			org_step = #org_step#,
+			org_exhi_history= #org_exhi_history#,
+			org_exhi_path = #org_exhi_path#,
+		
+			name_ko = #name_ko#,
+			name_en = #name_en#,
+			name_etc = #name_etc#,
+			type_idx = #type_idx#,
+			national = #national#,
+			city = #city#,
+			zip_code = #zip_code#,
+			address_ko = #address_ko#,
+			address_en = #address_en#,
+			tel_no = #tel_no#,
+			fax = #fax#,
+			email = #email#,
+			homepage = #homepage#,
+			comment = #comment#,
+			manager_id = #manager_id#
+		WHERE idx=#idx#
+		]]>
+	</update>
+	<update id="CRMDAO.updateOrganizerGrade" parameterClass="com.mice.crm.service.OrganizerVO">
+		<![CDATA[
+		UPDATE tbl_crm_organizer_info SET
+			org_import = #org_import#,
+			org_grade = #org_grade#,
+			org_step = #org_step#
+		WHERE idx=#idx#
+		]]>
+	</update>	
+	<update id="CRMDAO.deleteOrganizer" parameterClass="com.mice.crm.service.OrganizerVO">
+		UPDATE tbl_crm_organizer_info SET
+			expire_date = NOW(),
+			expire_id = #expire_id#
+		WHERE idx=#idx#
+	</update>
+		 
+	<insert id="CRMDAO.insertOrganizerTheme" parameterClass="com.mice.crm.service.OrganizerVO">
+		<![CDATA[
+		INSERT INTO tbl_crm_organizer_info_theme
+		(
+			org_idx,
+			kind,
+			value,
+			reg_id,
+			reg_date
+		)
+		VALUES
+		(
+			#org_idx#,
+			#kind#,
+			#value#,
+			#reg_id#,
+			NOW()
+		)
+		]]>
+	</insert>	
+ 	
+	<insert id="CRMDAO.deleteOrganizerTheme" parameterClass="com.mice.crm.service.OrganizerVO">
+		<![CDATA[
+		DELETE FROM tbl_crm_organizer_info_theme WHERE org_idx=#org_idx# and kind=#kind#
+		]]>
+	</insert>		
+		
+		
+		
+		
+		
+	<select id="CRMDAO.listPromotion" parameterClass="com.mice.crm.service.PromotionVO" resultClass="com.mice.crm.service.PromotionVO" >
+		<![CDATA[
+		SELECT * from(
+			SELECT 
+				a.idx,
+				a.parent_idx,
+				a.promotion_type,
+				( select value from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type ) promotion_type_name,
+				( select link_url from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type ) link_url,
+				(select code_item from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type) code_item,
+				a.input_date,
+				a.COMMENT,
+				a.reg_id,
+				b.user_nm,
+				CASE WHEN (select code_item from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type) = 'E' THEN (SELECT name_ko FROM tbl_crm_event_info WHERE idx=a.parent_idx) 
+					 WHEN (select code_item from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type) = 'O' THEN (SELECT name_ko FROM tbl_crm_organizer_info WHERE idx=a.parent_idx) 
+					 WHEN (select code_item from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type) = 'I' THEN (SELECT name_ko FROM tbl_crm_invite_info WHERE idx=a.parent_idx) 
+				END  AS event_name,
+				a.reg_date,
+				a.expire_id,
+				a.expire_date
+			FROM tbl_crm_promotion_info a INNER JOIN comvnusermaster b ON a.reg_id=b.USER_ID
+		) a
+		WHERE 1=1 AND a.expire_date>NOW()
+		]]>
+		<isNotEmpty prepend="AND" property="searchPromotionType">
+			 a.promotion_type = #searchPromotionType#
+		</isNotEmpty>
+		<isNotEmpty property="searchWrd">		
+			<isEqual property="searchCnd" compareValue="0">
+				<isNotEmpty prepend="AND" property="searchWrd">
+					a.reg_id like  concat('%',#searchWrd#,'%')
+				</isNotEmpty>
+			</isEqual>
+			<isEqual property="searchCnd" compareValue="1">
+				<isNotEmpty prepend="AND" property="searchWrd">	
+					a.user_nm like  concat('%',#searchWrd#,'%')
+				</isNotEmpty>
+			</isEqual>
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="searchStartDate">
+			<![CDATA[
+			a.reg_date >= concat(#searchStartDate#,' 00:00:00')
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchEndDate">
+			<![CDATA[
+			a.reg_date <= concat(#searchEndDate#, ' 23:59:59') 
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchEvtName">
+			<![CDATA[
+			(
+				CASE WHEN a.code_item = 'E' THEN (SELECT name_ko FROM tbl_crm_event_info WHERE idx=a.parent_idx) WHEN a.code_item = 'O' THEN (SELECT name_ko FROM tbl_crm_organizer_info WHERE idx=a.parent_idx) END
+			)
+			 like concat('%',#searchEvtName#,'%') and a.code_item = 'E'
+			]]>
+		</isNotEmpty>
+
+		<isNotEmpty prepend="AND" property="searchOrgName">
+			<![CDATA[
+			(
+				CASE WHEN a.code_item = 'E' THEN (SELECT name_ko FROM tbl_crm_event_info WHERE idx=a.parent_idx) WHEN a.code_item = 'O' THEN (SELECT name_ko FROM tbl_crm_organizer_info WHERE idx=a.parent_idx) END
+			)
+			like concat('%',#searchOrgName#,'%') and a.code_item = 'O'
+			]]>
+		</isNotEmpty>		
+		<isNotEmpty prepend="AND" property="searchPromotionType2">
+			 a.promotion_type = #searchPromotionType2#
+		</isNotEmpty>			
+		
+		
+		<![CDATA[
+			order by a.idx desc
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>
+	</select>
+	
+	<select id="CRMDAO.listPromotionCount" parameterClass="com.mice.crm.service.PromotionVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+		SELECT count(*) from(
+			SELECT 
+				a.idx,
+				a.parent_idx,
+				a.promotion_type,
+				( select value from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type ) promotion_type_name,
+				( select link_url from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type ) link_url,
+				(select code_item from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type) code_item,
+				a.input_date,
+				a.COMMENT,
+				a.reg_id,
+				b.user_nm,
+				CASE WHEN (select code_item from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type) = 'E' THEN (SELECT name_ko FROM tbl_crm_event_info WHERE idx=a.parent_idx) 
+					 WHEN (select code_item from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type) = 'O' THEN (SELECT name_ko FROM tbl_crm_organizer_info WHERE idx=a.parent_idx) 
+					 WHEN (select code_item from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type) = 'I' THEN (SELECT name_ko FROM tbl_crm_invite_info WHERE idx=a.parent_idx) 
+				END  AS event_name,
+				a.reg_date,
+				a.expire_id,
+				a.expire_date
+			FROM tbl_crm_promotion_info a INNER JOIN comvnusermaster b ON a.reg_id=b.USER_ID
+		) a
+		WHERE 1=1 AND a.expire_date>NOW()
+				
+		]]>
+		<isNotEmpty prepend="AND" property="searchPromotionType">
+			 a.promotion_type = #searchPromotionType#
+		</isNotEmpty>
+		<isNotEmpty property="searchWrd">		
+			<isEqual property="searchCnd" compareValue="0">
+				<isNotEmpty prepend="AND" property="searchWrd">
+					a.reg_id like  concat('%',#searchWrd#,'%')
+				</isNotEmpty>
+			</isEqual>
+			<isEqual property="searchCnd" compareValue="1">
+				<isNotEmpty prepend="AND" property="searchWrd">	
+					a.user_nm like  concat('%',#searchWrd#,'%')
+				</isNotEmpty>
+			</isEqual>
+		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="searchStartDate">
+			<![CDATA[
+			a.reg_date >= concat(#searchStartDate#,' 00:00:00')
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchEndDate">
+			<![CDATA[
+			a.reg_date <= concat(#searchEndDate#, ' 23:59:59') 
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchEvtName">
+			<![CDATA[
+			(
+				CASE WHEN a.code_item = 'E' THEN (SELECT name_ko FROM tbl_crm_event_info WHERE idx=a.parent_idx) WHEN a.code_item = 'O' THEN (SELECT name_ko FROM tbl_crm_organizer_info WHERE idx=a.parent_idx) END
+			)
+			 like concat('%',#searchEvtName#,'%') and a.code_item = 'E'
+			]]>
+		</isNotEmpty>
+
+		<isNotEmpty prepend="AND" property="searchOrgName">
+			<![CDATA[
+			(
+				CASE WHEN a.code_item = 'E' THEN (SELECT name_ko FROM tbl_crm_event_info WHERE idx=a.parent_idx) WHEN a.code_item = 'O' THEN (SELECT name_ko FROM tbl_crm_organizer_info WHERE idx=a.parent_idx) END
+			)
+			like concat('%',#searchOrgName#,'%') and a.code_item = 'O'
+			]]>
+		</isNotEmpty>		
+		<isNotEmpty prepend="AND" property="searchPromotionType2">
+			 a.promotion_type = #searchPromotionType2#
+		</isNotEmpty>		
+	</select>
+	
+	<select id="CRMDAO.selectPromotion" parameterClass="java.lang.Integer" resultClass="com.mice.crm.service.PromotionVO">
+		<![CDATA[
+		SELECT
+				idx,
+				parent_idx,
+				comment,
+				input_date,
+				reg_id,
+				(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = reg_id) as user_nm,
+				(SELECT name_ko FROM tbl_crm_event_info where idx=a.idx) as event_name,
+				promotion_type,
+				reg_date,
+				expire_id,
+				expire_date
+		FROM tbl_crm_promotion_info a WHERE 1=1 AND expire_date>NOW() AND idx=#idx#
+		]]>
+	</select>
+		<select id="CRMDAO.listEventRelationPromotion" parameterClass="com.mice.crm.service.PromotionVO" resultClass="com.mice.crm.service.PromotionVO" >
+		<isEqual property="promotion_type" compareValue="E">
+		<![CDATA[
+		SELECT
+				idx,
+				parent_idx,
+				comment,
+				input_date,
+				reg_id,
+				(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = reg_id) as user_nm,
+				(SELECT name_ko FROM tbl_crm_event_info where idx=a.parent_idx) as event_name,
+				(SELECT count(*) FROM tbl_crm_promotion_attach_file where promotion_idx=a.idx) as file_cnt,
+				promotion_type,
+				( select value from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type ) promotion_type_name,
+				reg_date,
+				expire_id,
+				expire_date
+		FROM tbl_crm_promotion_info a 
+		WHERE 1=1 AND expire_date>NOW() AND parent_idx=#parent_idx# 
+		and ( select code_item from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type ) = #promotion_type#
+		order by reg_date desc
+		]]>
+		</isEqual>
+		<isEqual property="promotion_type" compareValue="O">
+		<![CDATA[
+		SELECT
+				a.idx,
+				a.parent_idx,
+				a.comment,
+				a.input_date,
+				a.reg_id,
+				(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = a.reg_id) as user_nm,
+				'' as event_name,
+				(SELECT count(*) FROM tbl_crm_promotion_attach_file where promotion_idx=a.idx) as file_cnt,
+				promotion_type,
+				( select value from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type ) promotion_type_name,
+				a.reg_date,
+				a.expire_id,
+				a.expire_date
+		FROM tbl_crm_promotion_info a left join tbl_crm_organizer_info b on a.parent_idx=b.idx 
+		WHERE 1=1 AND a.expire_date>NOW() AND parent_idx=#parent_idx# 
+		and ( select code_item from tbl_crm_code_info where type='상담형태' and code_name = a.promotion_type ) = #promotion_type#
+		order by reg_date desc
+		]]>
+		</isEqual>
+	</select>
+	<insert id="CRMDAO.insertPromotion" parameterClass="com.mice.crm.service.PromotionVO">
+		<![CDATA[
+		INSERT INTO tbl_crm_promotion_info 
+		(
+			parent_idx,
+			promotion_type,
+			input_date,
+			comment,
+			reg_id,
+			reg_date
+		) 
+		VALUES
+		(
+			#parent_idx#,
+			#promotion_type2#,
+			#input_date#,
+			#comment#,
+			#reg_id#,
+			NOW()
+		)
+		
+		]]>
+		<selectKey keyProperty="idx" resultClass="int">
+        	SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	<update id="CRMDAO.updatePromotion" parameterClass="com.mice.crm.service.PromotionVO">
+		<![CDATA[
+		UPDATE tbl_crm_promotion_info SET
+			comment = #comment#
+		WHERE idx = #idx#
+		]]>
+	</update>
+	<update id="CRMDAO.deletePromotion" parameterClass="com.mice.crm.service.PromotionVO">
+		<![CDATA[
+		UPDATE tbl_crm_promotion_info SET
+			expire_date = NOW(),
+			expire_id = #expire_id#
+		WHERE idx = #idx#
+		]]>
+	</update>
+	
+	<select id="CRMDAO.listOrganizerRelationCustomer" parameterClass="java.lang.Integer" resultMap="CustomerInfo">
+		<![CDATA[
+		SELECT
+				cci.idx,
+				cci.name_ko,
+				cci.name_en,
+				cci.tel_no,
+				cci.phone_no,
+				cci.email,
+				cci.fax_no,
+				cci.etc,
+				cci.reg_id,
+				cci.reg_date,
+				cci.expire_date,
+				cci.expire_id,
+				(select name_ko from tbl_crm_organizer_info where idx in (select organizer_idx from tbl_crm_customer_organizer_relation where customer_idx=cci.idx) limit 1) as organizer_name,
+				(select count(*) from tbl_crm_organizer_info where idx in (select organizer_idx from tbl_crm_customer_organizer_relation where customer_idx=cci.idx)) as organizer_cnt,
+				(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = cci.reg_id) as user_nm,
+				
+				zip_code,
+				address_ko,
+				address_en,
+				manager_id,
+				(SELECT user_nm FROM comvnusermaster WHERE 1=1 AND USER_ID = manager_id) as manager_nm,
+				newsletter,
+				country,
+				position,
+				sosoc_excel,
+				department,
+				
+				
+				cci.reg_id, 
+				cci.reg_date,
+				cci.modify_id,
+				cci.modify_date,
+				cci.remember_id,	
+				cci.remember_created_at,	
+				cci.remember_main_card_id,	
+				cci.remember_main_card_created_at,
+				cci.remember_main_card_user_id,
+				cci.remember_main_card_user_email,
+				cci.remember_modify_date				
+					
+		FROM tbl_crm_customer_info cci LEFT JOIN tbl_crm_customer_organizer_relation cor ON cci.idx=cor.customer_idx
+		WHERE 1=1 AND cci.expire_date>NOW() AND cor.organizer_idx=#idx#
+		]]>
+	</select>
+	<select id="CRMDAO.listCodeFacility" resultMap="CodeInfo">
+		<![CDATA[
+		select 
+		idx,
+		type,
+		value,
+		sorted_no,
+		code_name,
+		code_item,
+		link_url		
+		from 
+		(select * from tbl_crm_code_info where type='1층'
+		union all
+		select * from tbl_crm_code_info where type='2층'
+		union all
+		select * from tbl_crm_code_info where type='3층'
+		union all
+		select * from tbl_crm_code_info where type='기타') a order by type, sorted_no asc;
+		]]>
+	</select>
+	<insert id="CRMDAO.insertPromotionAttachFile" parameterClass="com.mice.crm.service.PromotionAttachFile">
+		
+		<![CDATA[
+		insert into tbl_crm_promotion_attach_file
+		(
+			promotion_idx,
+			file_id,
+			reg_date,
+			reg_id
+		)
+		values
+		(
+			#promotion_idx#,
+			#file_id#,
+			NOW(),
+			#reg_id#
+		)
+		]]>		
+	</insert>
+	
+	<delete id="CRMDAO.deletePromotionAttachFile" parameterClass="java.lang.String">
+		<![CDATA[
+		delete from tbl_crm_promotion_attach_file where file_id=#file_id#
+		]]>
+	</delete>
+	
+	<select id="CRMDAO.listPromotionAttachFile" parameterClass="java.lang.Integer" resultClass="com.mice.crm.service.PromotionAttachFileVO">
+		<![CDATA[
+		select
+			idx,
+			promotion_idx,
+			file_id,
+			(select orignl_file_nm from comtnfiledetail where atch_file_id=file_id) as file_name,
+			(select i.promotion_type from tbl_crm_promotion_info i where i.idx = promotion_idx) promotion_type,
+			reg_date,
+			reg_id
+		from tbl_crm_promotion_attach_file where 1=1 AND promotion_idx=#promotion_idx#
+		]]>
+	</select>
+
+	<select id="CRMDAO.selectEventRelationOrganizer" parameterClass="java.lang.Integer" resultClass="com.mice.crm.service.EventVO">
+		<![CDATA[
+		SELECT
+		idx,
+		name_ko,
+		place_idx,
+		(select value from tbl_crm_code_info where type='장소' and idx=place_idx) as place_name,
+		rent_st_date,
+		rent_ed_date,
+		event_st_date,
+		event_ed_date,
+		event_type_idx,
+		(select value from tbl_crm_code_info where idx=event_type_idx) as event_type_name,
+		event_scale_idx,
+		(select value from tbl_crm_code_info where idx=event_scale_idx) as event_scale_name,
+		join_personal_cnt,
+		join_foreigner_cnt,
+		join_nationals_cnt,
+		booth_cnt,
+		exhibition_scale,
+		participating_states_cnt,
+		organizers_1,
+		(select name_ko from tbl_crm_organizer_info where idx=organizers_1) as organizers_1_name,
+		organizers_2,
+		(select name_ko from tbl_crm_organizer_info where idx=organizers_2) as organizers_2_name,
+		total_cost,
+		reg_id,
+		reg_date,
+		expire_id,
+		expire_date
+		FROM tbl_crm_event_info
+		 WHERE 1=1 AND expire_date>NOW() AND (organizers_1=#idx# OR organizers_2=#idx#);
+		 ]]>
+	</select>
+
+	<select id="CRMDAO.listUserName" parameterClass="java.lang.String" resultClass="java.util.List">
+		SELECT USER_ID, user_nm FROM comvnusermaster
+	</select>
+	
+	<select id="CRMDAO.searchOrganizer" parameterClass="java.lang.String" resultClass="com.mice.crm.service.OrganizerVO">
+		<![CDATA[
+		SELECT 
+				idx,
+				case when name_ko = '' then name_en else name_ko end as name_ko
+		FROM tbl_crm_organizer_info WHERE 1=1 AND name_ko LIKE CONCAT('%',#name#,'%') AND expire_date>NOW()
+		]]>
+	</select>
+	
+	<select id="CRMDAO.selectStatistics" parameterClass="com.mice.crm.service.CRMStasticsVO">
+		<![CDATA[
+		SELECT
+			SUM(join_personal_cnt) as join_personal_cnt,
+			SUM(join_foreigner_cnt) as join_foreigner_cnt,
+			SUM(join_nationals_cnt) as join_nationals_cnt,
+			SUM(booth_cnt) as booth_cnt,
+			SUM(exhibition_scale) as exhibition_scale,
+			SUM(rent_cost) as rent_cost,
+			SUM(food_cost) as food_cost,
+			SUM(av_rental_cost) as av_rental_cost,
+			SUM(manager_cost) as manager_cost,
+			SUM(total_cost) as total_cost
+			
+		FROM tbl_crm_event_info WHERE 1=1
+		]]>
+		<isNotEmpty prepend="AND" property="searchManager">
+			<![CDATA[
+			(attract_staff_id = #searchManager# or event_staff_id = #searchManager#)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchManager">
+			<![CDATA[
+			(attract_staff_id = #searchManager# or event_staff_id = #searchManager#)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchBeginDate">
+			<![CDATA[
+			event_st_date >= #searchBeginDate#
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchEndDate">
+			<![CDATA[
+			event_ed_date >= #searchEndDate#
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchPlaceIdx">
+			<![CDATA[
+			place_idx = #searchPlaceIdx#
+			]]>
+		</isNotEmpty>
+	</select>
+	
+	<select id="CRMDAO.listCodeExt" resultClass="com.mice.crm.service.CRMCodeExt" parameterClass="com.mice.crm.service.CRMCodeExtVO">
+		<![CDATA[
+			SELECT * FROM tbl_crm_code_ext WHERE 1=1 
+		]]>
+		<isNotEmpty prepend="AND" property="searchName">
+			<![CDATA[
+				 name=#searchName#
+			]]>
+		</isNotEmpty>
+	</select>
+	
+	<select id="CRMDAO.selectAreaCalculator" resultClass="long" parameterClass="java.lang.String">
+		<![CDATA[
+			SELECT value FROM tbl_crm_code_ext WHERE 1=1 AND parent_idx = #parent_idx# AND name='면적' 
+		]]>
+	</select>
+	<select id="CRMDAO.selectCostCalculator" resultClass="long" parameterClass="java.lang.String">
+		<![CDATA[
+			SELECT value FROM tbl_crm_code_ext WHERE 1=1 AND parent_idx = #parent_idx# AND name='단가' 
+		]]>
+	</select>
+	
+	<select id="CRMDAO.selectSummary" resultClass="com.mice.crm.service.EventVO" parameterClass="com.mice.crm.service.EventVO">
+		<![CDATA[
+			select 
+				IFNULL(SUM(join_personal_cnt),0) as join_personal_cnt,
+			    IFNULL(SUM(join_foreigner_cnt),0) as join_foreigner_cnt,
+			    IFNULL(SUM(join_nationals_cnt),0) as join_nationals_cnt,
+			    IFNULL(SUM(booth_cnt),0) as booth_cnt,
+			    IFNULL(SUM(rent_cost),0) as rent_cost,
+			    IFNULL(SUM(food_cost),0) as food_cost,
+			    IFNULL(SUM(av_rental_cost),0) as av_rental_cost,
+			    IFNULL(SUM(manager_cost),0) as manager_cost,
+			    IFNULL(SUM(exhibition_scale),0) as exhibition_scale,
+			    IFNULL(SUM(estimate_cost),0) as estimate_cost,
+			    IFNULL(SUM(total_cost),0) as total_cost,
+			    rent_facility_text,
+				ifnull((SELECT DATEDIFF(
+		]]>
+		<isEmpty property="searchRentEndDate">
+		
+			MAX(rent_ed_date),
+		</isEmpty>
+		<isNotEmpty property="searchRentEndDate">
+		<![CDATA[
+			#searchRentEndDate#,
+		]]>
+		</isNotEmpty>
+		<isEmpty property="searchRentStartDate">
+		
+		<![CDATA[
+			MIN(rent_st_date))),0)+1 as diffDay
+		]]>
+		</isEmpty>
+		<isNotEmpty property="searchRentStartDate">
+		<![CDATA[
+			#searchRentStartDate#)),0)+1 as diffDay
+		]]>
+		</isNotEmpty>
+		<![CDATA[
+			from tbl_crm_event_info e WHERE expire_date > NOW()
+		]]>
+		 		<isNotEmpty prepend="AND" property="searchIdx">
+ 			idx = #searchIdx#
+ 		</isNotEmpty>
+ 		<isNotEmpty prepend="AND" property="searchImplementsStatusList">
+ 			<![CDATA[implementation_status]]>
+	 		<iterate prepend="IN" property="searchImplementsStatusList" open="(" close=")" conjunction=","> 
+	       		#searchImplementsStatusList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+     	<isEmpty prepend="AND" property="searchImplementsStatusList">
+     		<![CDATA[
+     		 implementation_status IN (2)
+     		]]>
+     	</isEmpty>
+     	<isNotEmpty prepend="AND" property="searchEventDivisionList">
+     		<![CDATA[event_division_idx]]>
+	 		<iterate prepend="IN" property="searchEventDivisionList" open="(" close=")" conjunction=","> 
+	       		#searchEventDivisionList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchPlaceIdx">
+     		place_idx = #searchPlaceIdx#
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchRegId">
+     		(attract_staff_id like concat('%',#searchRegId#,'%') or event_staff_id like concat('%',#searchRegId#,'%'))
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchRentStartDate">
+     		<![CDATA[
+     		 rent_st_date >= #searchRentStartDate#
+     		]]>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchRentEndDate">
+     		<![CDATA[
+     		 rent_ed_date <= #searchRentEndDate#
+     		]]>
+     	</isNotEmpty>
+     	
+     	<isNotEmpty prepend="AND" property="searchEventStartDate">
+     		<![CDATA[
+     		 event_st_date >= #searchEventStartDate#
+     		]]>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchEventEndDate">
+     		<![CDATA[
+     		  event_ed_date <= #searchEventEndDate#
+     		]]>
+     	</isNotEmpty>
+     	
+     	
+     	
+     	
+     	
+     	<isNotEmpty prepend="AND" property="searchJoinPersonalMinCount">
+     		<![CDATA[
+			join_personal_cnt >=  CONVERT(#searchJoinPersonalMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinPersonalMaxCount">
+			<![CDATA[
+			join_personal_cnt <=  CONVERT(#searchJoinPersonalMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinNationalsMinCount">
+			<![CDATA[
+			join_nationals_cnt >= CONVERT(#searchJoinNationalsMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinNationalsMaxCount">
+			<![CDATA[
+			join_nationals_cnt <= CONVERT(#searchJoinNationalsMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinForeignerMinCount">
+			<![CDATA[
+			join_foreigner_cnt >= CONVERT(#searchJoinForeignerMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinForeignerMaxCount">
+			<![CDATA[
+			join_foreigner_cnt <= CONVERT(#searchJoinForeignerMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchExhibitionScaleMinCount">
+			<![CDATA[
+			exhibition_scale >= CONVERT(#searchExhibitionScaleMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchExhibitionScaleMaxCount">
+			<![CDATA[
+			exhibition_scale <= CONVERT(#searchExhibitionScaleMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchParticipatingStatesMinCount">
+			<![CDATA[
+			participating_states_cnt >= CONVERT(#searchParticipatingStatesMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchParticipatingStatesMaxCount">
+			<![CDATA[
+			participating_states_cnt >= CONVERT(#searchParticipatingStatesMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchAttractGrantMinCost">
+			<![CDATA[
+			attract_grant_cost >= CONVERT(#searchAttractGrantMinCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchAttractGrantMaxCost">
+			<![CDATA[
+			attract_grant_cost <= CONVERT(#searchAttractGrantMaxCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchSalesGrantMinCost">
+			<![CDATA[
+			sales_grant_cost >= CONVERT(#searchSalesGrantMinCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchSalesGrantMaxCost">
+			<![CDATA[
+			sales_grant_cost <= CONVERT(#searchSalesGrantMaxCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>		
+		<isNotEmpty prepend="AND" property="searchHeldGrantMinCost">
+			<![CDATA[
+			held_grant_cost >= CONVERT(#searchHeldGrantMinCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchHeldGrantMaxCost">
+			<![CDATA[
+			held_grant_cost <= CONVERT(#searchHeldGrantMaxCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>			
+		
+		
+		
+		
+		
+		<isNotEmpty prepend="AND" property="searchOrganizers_1">
+			organizers_1 = #searchOrganizers_1#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchOrganizers_2">
+			organizers_2 = #searchOrganizers_2#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchRentFacility">
+			rent_facility_text like concat('%',#searchRentFacility#,'%')
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchEventName">
+			(
+			name_ko like concat('%',#searchEventName#, '%')
+			or name_en like concat('%',#searchEventName#, '%')
+			or name_etc like concat('%',#searchEventName#, '%')
+			)
+		</isNotEmpty>
+ 		<isEqual property="searchOrderby" compareValue="-1">
+ 			order by idx desc
+ 		</isEqual>
+ 		<isEqual property="searchOrderby" compareValue="0">
+ 			order by rent_st_date asc
+ 		</isEqual>
+ 		<isEqual property="searchOrderby" compareValue="1">
+ 			order by event_st_date asc
+ 		</isEqual>
+	</select>
+	
+	<select id="CRMDAO.listSummary" resultClass="com.mice.crm.service.EventVO" parameterClass="com.mice.crm.service.EventVO">
+		<![CDATA[
+			select 
+			    rent_facility_text,
+			    (datediff(rent_ed_date, rent_st_date)+1) as day
+			from tbl_crm_event_info e WHERE expire_date > NOW()
+		]]>
+		 		<isNotEmpty prepend="AND" property="searchIdx">
+ 			idx = #searchIdx#
+ 		</isNotEmpty>
+ 		<isNotEmpty prepend="AND" property="searchImplementsStatusList">
+ 			<![CDATA[implementation_status]]>
+	 		<iterate prepend="IN" property="searchImplementsStatusList" open="(" close=")" conjunction=","> 
+	       		#searchImplementsStatusList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+     	<isEmpty prepend="AND" property="searchImplementsStatusList">
+     		<![CDATA[
+     		 implementation_status IN (2)
+     		]]>
+     	</isEmpty>
+     	<isNotEmpty prepend="AND" property="searchEventDivisionList">
+     		<![CDATA[event_division_idx]]>
+	 		<iterate prepend="IN" property="searchEventDivisionList" open="(" close=")" conjunction=","> 
+	       		#searchEventDivisionList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchPlaceIdx">
+     		place_idx = #searchPlaceIdx#
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchRegId">
+     		(attract_staff_id like concat('%',#searchRegId#,'%') or event_staff_id like concat('%',#searchRegId#,'%'))
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchRentStartDate">
+     		<![CDATA[
+     		 rent_st_date >= #searchRentStartDate#
+     		]]>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchRentEndDate">
+     		<![CDATA[
+     		 rent_ed_date <= #searchRentEndDate#
+     		]]>
+     	</isNotEmpty>
+     	
+     	<isNotEmpty prepend="AND" property="searchEventStartDate">
+     		<![CDATA[
+     		 event_st_date >= #searchEventStartDate#
+     		]]>
+     	</isNotEmpty>
+     	<isNotEmpty prepend="AND" property="searchEventEndDate">
+     		<![CDATA[
+     		  event_ed_date <= #searchEventEndDate#
+     		]]>
+     	</isNotEmpty>
+     	
+     	
+     	
+     	
+     	<isNotEmpty prepend="AND" property="searchJoinPersonalMinCount">
+     		<![CDATA[
+			join_personal_cnt >=  CONVERT(#searchJoinPersonalMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinPersonalMaxCount">
+			<![CDATA[
+			join_personal_cnt <=  CONVERT(#searchJoinPersonalMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinNationalsMinCount">
+			<![CDATA[
+			join_nationals_cnt >= CONVERT(#searchJoinNationalsMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinNationalsMaxCount">
+			<![CDATA[
+			join_nationals_cnt <= CONVERT(#searchJoinNationalsMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinForeignerMinCount">
+			<![CDATA[
+			join_foreigner_cnt >= CONVERT(#searchJoinForeignerMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchJoinForeignerMaxCount">
+			<![CDATA[
+			join_foreigner_cnt <= CONVERT(#searchJoinForeignerMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchExhibitionScaleMinCount">
+			<![CDATA[
+			exhibition_scale >= CONVERT(#searchExhibitionScaleMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchExhibitionScaleMaxCount">
+			<![CDATA[
+			exhibition_scale <= CONVERT(#searchExhibitionScaleMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchParticipatingStatesMinCount">
+			<![CDATA[
+			participating_states_cnt >= CONVERT(#searchParticipatingStatesMinCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchParticipatingStatesMaxCount">
+			<![CDATA[
+			participating_states_cnt >= CONVERT(#searchParticipatingStatesMaxCount#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchAttractGrantMinCost">
+			<![CDATA[
+			attract_grant_cost >= CONVERT(#searchAttractGrantMinCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchAttractGrantMaxCost">
+			<![CDATA[
+			attract_grant_cost <= CONVERT(#searchAttractGrantMaxCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchSalesGrantMinCost">
+			<![CDATA[
+			sales_grant_cost >= CONVERT(#searchSalesGrantMinCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchSalesGrantMaxCost">
+			<![CDATA[
+			sales_grant_cost <= CONVERT(#searchSalesGrantMaxCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>		
+		<isNotEmpty prepend="AND" property="searchHeldGrantMinCost">
+			<![CDATA[
+			held_grant_cost >= CONVERT(#searchHeldGrantMinCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchHeldGrantMaxCost">
+			<![CDATA[
+			held_grant_cost <= CONVERT(#searchHeldGrantMaxCost#, UNSIGNED)
+			]]>
+		</isNotEmpty>			
+		
+		
+		
+		
+		<isNotEmpty prepend="AND" property="searchOrganizers_1">
+			organizers_1 = #searchOrganizers_1#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchOrganizers_2">
+			organizers_2 = #searchOrganizers_2#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchRentFacility">
+			rent_facility_text like concat('%',#searchRentFacility#,'%')
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchEventName">
+			(
+			name_ko like concat('%',#searchEventName#, '%')
+			or name_en like concat('%',#searchEventName#, '%')
+			or name_etc like concat('%',#searchEventName#, '%')
+			)
+		</isNotEmpty>
+ 		<isEqual property="searchOrderby" compareValue="-1">
+ 			order by idx desc
+ 		</isEqual>
+ 		<isEqual property="searchOrderby" compareValue="0">
+ 			order by rent_st_date asc
+ 		</isEqual>
+ 		<isEqual property="searchOrderby" compareValue="1">
+ 			order by event_st_date asc
+ 		</isEqual>
+	</select>
+	
+	<select id="CRMDAO.selectCodeFacilityTotalCount" resultClass="java.lang.Integer">
+			select count(idx)
+			from
+				(select * from tbl_crm_code_info where type='1층'
+					union all
+				select * from tbl_crm_code_info where type='2층'
+					union all
+				select * from tbl_crm_code_info where type='3층'
+					union all
+				select * from tbl_crm_code_info where type='기타') a
+			order by type, sorted_no asc
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+ 	<insert id="CRMDAO.insertEventPlus" parameterClass="com.mice.crm.service.EventPlusVO">
+		<![CDATA[
+		INSERT INTO tbl_crm_event_info_plus
+		(
+			crm_event_idx,
+			organizer_idx,
+			customer_idx,
+			reg_id,
+			reg_date
+		)
+		VALUES
+		(
+			#crm_event_idx#,
+			#organizer_idx#,
+			#customer_idx#,
+			#reg_id#,
+			NOW()
+		)
+		]]>
+	</insert>	
+ 	
+	<insert id="CRMDAO.deleteEventPlus" parameterClass="com.mice.crm.service.EventPlusVO">
+		<![CDATA[
+		DELETE FROM tbl_crm_event_info_plus WHERE crm_event_idx=#crm_event_idx#
+		]]>
+	</insert>
+ 	<select id="CRMDAO.listEventPlus" parameterClass="com.mice.crm.service.EventPlusVO" resultClass="com.mice.crm.service.EventPlusVO" >
+	<![CDATA[
+		SELECT 
+		crm_event_idx, organizer_idx,  customer_idx
+		,( select name_ko from tbl_crm_organizer_info I where P.organizer_idx = I.idx) organizer_name
+		,( select name_ko from tbl_crm_customer_info I where P.customer_idx = I.idx) customer_name	
+		,( select position from tbl_crm_customer_info I where P.customer_idx = I.idx) customer_position	
+		,( select tel_no from tbl_crm_customer_info I where P.customer_idx = I.idx) customer_tel_no
+		,( select phone_no from tbl_crm_customer_info I where P.customer_idx = I.idx) customer_phone_no
+		,( select email from tbl_crm_customer_info I where P.customer_idx = I.idx) customer_email
+		FROM tbl_crm_event_info_plus P WHERE 1=1 AND crm_event_idx = #crm_event_idx# order by idx 
+		]]> 	
+ 	</select>	
+	
+		
+ 	<insert id="CRMDAO.insertEventTheme" parameterClass="com.mice.crm.service.EventThemeVO">
+		<![CDATA[
+		INSERT INTO tbl_crm_event_info_theme
+		(
+			crm_event_idx,
+			event_theme,
+			reg_id,
+			reg_date
+		)
+		VALUES
+		(
+			#crm_event_idx#,
+			#event_theme#,
+			#reg_id#,
+			NOW()
+		)
+		]]>
+	</insert>	
+ 	
+	<insert id="CRMDAO.deleteEventTheme" parameterClass="com.mice.crm.service.EventThemeVO">
+		<![CDATA[
+		DELETE FROM tbl_crm_event_info_theme WHERE crm_event_idx=#crm_event_idx#
+		]]>
+	</insert>
+ 	<select id="CRMDAO.listEventTheme" parameterClass="com.mice.crm.service.EventThemeVO" resultClass="com.mice.crm.service.EventThemeVO" >
+	<![CDATA[
+		SELECT crm_event_idx, event_theme
+		,(select value from tbl_crm_code_info cd where cd.idx = tm.event_theme) event_theme_name
+		FROM tbl_crm_event_info_theme tm  WHERE 1=1 AND tm.crm_event_idx = #crm_event_idx#
+		]]> 	
+ 	</select>	
+	
+	
+	
+</sqlMap>

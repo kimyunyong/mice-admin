@@ -1,0 +1,212 @@
+package com.mice.crm.service.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.mice.crm.service.KMSEvaluateCurrVO;
+import com.mice.crm.service.KMSEvaluateSearchVO;
+import com.mice.crm.service.KMSEvaluateVO;
+import com.mice.crm.service.KMSInsertVO;
+import com.mice.crm.service.KMSLogVO;
+import com.mice.crm.service.KMSMemberVO;
+import com.mice.crm.service.KMSSearchVO;
+import com.mice.crm.service.KMSService;
+
+import egovframework.com.cmm.service.FileVO;
+import egovframework.com.uss.umt.service.UserManageVO;
+
+@Service("KMSService")
+public class KMSServiceImpl implements KMSService{
+	@Resource(name = "KMSDAO")
+	private KMSDAO dao;
+	
+	@Override
+	public List<KMSSearchVO> getAllTeam() {
+		
+		return dao.getAllTeam();
+	}
+	@Override
+	public List<KMSSearchVO> getEmpByTeam(int team_idx) {
+		
+		return dao.getEmpByTeam(team_idx);
+	}
+	
+	@Override
+	public List<KMSSearchVO> getTeam(String userId) {
+		
+		return dao.getTeam(userId);
+	}
+	@Override
+	public List<KMSSearchVO> getEmpByTeam(KMSMemberVO vo) {
+	
+		return dao.getEmpByTeam( vo);
+	}
+	public List<KMSSearchVO>getAllFolder(KMSSearchVO vo){
+		return dao.getAllFolder(vo);
+	}
+	
+	public void projectInsertAction(KMSInsertVO vo){
+		 dao.projectInsertAction(vo);
+	}
+	public void categoryInsertAction(KMSInsertVO vo){
+		 dao.categoryInsertAction(vo);
+	}
+	public void yearsInsertAction(KMSInsertVO vo){
+		 dao.yearsInsertAction(vo);
+	}
+	public void folder1InsertAction(KMSInsertVO vo){
+		 dao.folder1InsertAction(vo);
+	}
+	public void folder2InsertAction(KMSInsertVO vo){
+		 dao.folder2InsertAction(vo);
+	} 
+	public void projectUpdateAction(KMSInsertVO vo){
+		 dao.projectUpdateAction(vo);
+	}
+	public void categoryUpdateAction(KMSInsertVO vo){
+		 dao.categoryUpdateAction(vo);
+	}
+	public void yearsUpdateAction(KMSInsertVO vo){
+		 dao.yearsUpdateAction(vo);
+	}
+	public void folder1UpdateAction(KMSInsertVO vo){
+		 dao.folder1UpdateAction(vo);
+	}
+	public void folder2UpdateAction(KMSInsertVO vo){
+		 dao.folder2UpdateAction(vo);
+	}
+	
+	public void projectDeleteAction(KMSInsertVO vo){
+		 dao.projectDeleteAction(vo);
+	}
+	public void categoryDeleteAction(KMSInsertVO vo){
+		 dao.categoryDeleteAction(vo);
+	}
+	public void yearsDeleteAction(KMSInsertVO vo){
+		 dao.yearsDeleteAction(vo);
+	}
+	public void folder1DeleteAction(KMSInsertVO vo){
+		 dao.folder1DeleteAction(vo);
+	}
+	public void folder2DeleteAction(KMSInsertVO vo){
+		 dao.folder2DeleteAction(vo);
+	}
+	public List<KMSEvaluateSearchVO>  getEvaluateList(KMSEvaluateVO vo){
+		
+		return dao.getEvaluateList(vo);
+	}
+	public void evaluateInsertAction(KMSEvaluateCurrVO vo){
+		dao.evaluateInsertAction(vo);
+	}
+	public void evaluateUpdateAction(KMSEvaluateCurrVO vo){
+		dao.evaluateUpdateAction(vo);
+	}
+	public void fileDeleteAction(KMSInsertVO vo){
+		dao.fileDeleteAction(vo);
+	}
+	
+	@Override
+	public List<KMSSearchVO> getProByEmp(KMSSearchVO vo) {
+		return dao.getProByEmp(vo);
+	}
+
+	@Override
+	public List<KMSSearchVO> getCateByPro(KMSSearchVO vo) {
+		return dao.getCateByPro(vo);
+	}
+
+	@Override
+	public List<KMSSearchVO> getYearsByCate(KMSSearchVO vo) {
+		return dao.getYearsByCate(vo);
+	}
+
+	@Override
+	public List<KMSSearchVO> getFolder_1ByYears(KMSSearchVO vo) {
+		return dao.getFolder_1ByYears(vo);
+	}
+
+	@Override
+	public List<KMSSearchVO> getFolder_2ByFolder_1(KMSSearchVO vo) {
+		return dao.getFolder_2ByFolder_1(vo);
+	}
+	
+	@Override
+	public List<KMSSearchVO> getFileList(KMSSearchVO vo) {
+		
+		return dao.getFileList(vo);
+	}
+
+	@Override
+	public int getFileCount(KMSSearchVO vo) {
+		
+		return dao.getFileCount(vo);
+	}
+	
+	@Override
+	public String insertFileInfs(List<?> fvoList) throws Exception {
+		String atchFileId = "";
+
+		if (fvoList.size() != 0) {
+			atchFileId = dao.insertFileInfs(fvoList);
+		}
+		
+		if (atchFileId == "") {
+			atchFileId = null;
+		}
+		
+		return atchFileId;
+	}
+	
+	@Override
+	public String insertFileInf(KMSSearchVO vo) throws Exception {
+		String atchFileId = vo.getAtchFileId();
+		
+		dao.insertFileInf(vo);
+
+		return atchFileId;
+	}
+	
+	@Override
+	public void deleteFile(KMSSearchVO vo) {
+		
+		String file_id[] = vo.getCheckedIdForFileId().split(",");
+		
+		for(int i=0; i<file_id.length; i++){
+			dao.deleteFile(file_id[i]);
+			
+		}
+	}
+
+	@Override
+	public UserManageVO teamPositionById(String userId) {
+		//UserManageVO vo = new UserManageVO();
+		
+		return dao.teamPositionById(userId);
+	}
+	
+	
+	@Override
+    public void logInsertAction(KMSLogVO vo){
+      String atchFileId[] = vo.getCheckedIdForFileId().split(",");
+      
+      for(int i=0; i<atchFileId.length; i++){
+		  KMSLogVO vo1 = new KMSLogVO();
+		     vo1.setAtchFileId( atchFileId[i] );
+		     vo1.setDownload_id(vo.getDownload_id());
+		     
+		     dao.logInsertAction(vo1);
+		  }
+   }
+	
+	public FileVO selectFileInf(FileVO fvo) throws Exception {
+		
+		return dao.selectFileInf(fvo);
+	}
+	public List<KMSLogVO> getFileLog(String atchFileId){
+		return dao.getFileLog(atchFileId);
+	}
+	
+}

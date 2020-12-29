@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RFPDAO">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="RFP" type="com.mice.cvb.service.service.RFP"/>
+	<typeAlias  alias="RFPVO" type="com.mice.cvb.service.service.RFPVO"/>
+
+	<resultMap id="rfpList" class="com.mice.cvb.service.service.RFPVO">
+		
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="site" column="site" columnIndex="2"/>
+		<result property="event_name" column="event_name" columnIndex="3"/>
+		<result property="manager_tel_no" column="manager_tel_no" columnIndex="4"/>
+		<result property="manager_email" column="manager_email" columnIndex="5"/>
+		<result property="manager_name" column="manager_name" columnIndex="6"/>
+		<result property="confirm_status" column="confirm_status" columnIndex="7"/>		
+		<result property="reg_date" column="reg_date" columnIndex="8"/>
+		
+	</resultMap>
+
+	<resultMap id="rfpDetail" class="com.mice.cvb.service.service.RFPVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="site" column="site" columnIndex="2"/>
+		<result property="event_name" column="event_name" columnIndex="3"/>
+		<result property="event_type" column="event_type" columnIndex="4"/>
+		<result property="join_national_cnt" column="join_national_cnt" columnIndex="5"/>
+		<result property="join_member_cnt" column="join_member_cnt" columnIndex="6"/>
+		<result property="venue" column="venue" columnIndex="7"/>
+		<result property="meeting_room_member_cnt" column="meeting_room_member_cnt" columnIndex="8"/>
+		<result property="meeting_room_type" column="meeting_room_type" columnIndex="9"/>
+		<result property="meeting_room_cnt" column="meeting_room_cnt" columnIndex="10"/>
+		<result property="use_exhibition" column="use_exhibition" columnIndex="1"/>
+		<result property="exhibition_size" column="exhibition_size" columnIndex="1"/>
+		<result property="checkin_day" column="checkin_day" columnIndex="1"/>	
+		<result property="checkin_member" column="checkin_member" columnIndex="1"/>
+		<result property="checkin_night_member" column="checkin_night_member" columnIndex="1"/>
+		<result property="checkin_price" column="checkin_price" columnIndex="1"/>
+		<result property="checkin_etc_text" column="checkin_etc_text" columnIndex="1"/>
+		<result property="checkin_file_id" column="checkin_file_id" columnIndex="1"/>
+		<result property="organization_name" column="organization_name" columnIndex="1"/>
+		<result property="manager_name" column="manager_name" columnIndex="1"/>
+		<result property="manager_class" column="manager_class" columnIndex="1"/>
+		<result property="manager_tel_no" column="manager_tel_no" columnIndex="1"/>
+		<result property="organization_fax_no" column="organization_fax_no" columnIndex="1"/>
+		<result property="manager_phone_no" column="manager_phone_no" columnIndex="1"/>
+		<result property="manager_email" column="manager_email" columnIndex="1"/>
+		<result property="organization_addr" column="organization_addr" columnIndex="1"/>
+		<result property="organization_zip_code" column="organization_zip_code" columnIndex="1"/>
+		<result property="organization_homepage" column="organization_homepage" columnIndex="1"/>
+		<result property="st_event_date" column="st_event_date" columnIndex="1"/>
+		<result property="ed_event_date" column="ed_event_date" columnIndex="1"/>
+		<result property="confirm_status" column="confirm_status" columnIndex="1"/>
+		<result property="confirm_id" column="confirm_id" columnIndex="1"/>
+		<result property="confirm_date" column="confirm_date" columnIndex="1"/>
+		<result property="confirm_update_date" column="confirm_update_date" columnIndex="1"/>
+		<result property="reg_date" column="reg_date" columnIndex="1"/>
+	</resultMap>
+ 	<select id="RFPDAO.selectRFP" parameterClass="java.lang.Integer" resultMap="rfpDetail" >
+ 		<![CDATA[
+ 		SELECT 
+		idx,
+		site,
+		event_name,
+		event_type,
+		join_national_cnt,
+		join_member_cnt,
+		venue,
+		meeting_room_member_cnt,
+		meeting_room_type,
+		meeting_room_cnt,
+		use_exhibition,
+		exhibition_size,
+		checkin_day,
+		checkin_member,
+		checkin_night_member,
+		checkin_price,
+		checkin_etc_text,
+		checkin_file_id,
+		organization_name,
+		manager_name,
+		manager_class,
+		manager_tel_no,
+		organization_fax_no,
+		manager_phone_no,
+		manager_email,
+		organization_addr,
+		organization_zip_code,
+		organization_homepage,
+		st_event_date,
+		ed_event_date,
+		confirm_status,
+		confirm_id,
+		confirm_date,
+		confirm_update_date,
+		reg_date
+		FROM tbl_rfp_info WHERE
+		1=1 AND expire_date > SYSDATE() AND idx=#idx#
+ 		]]>
+ 	</select>
+	<select id="RFPDAO.selectRFPList" parameterClass="RFPVO" resultMap="rfpList" >
+		<![CDATA[
+		SELECT 
+		idx,
+		site,
+		event_name,
+		manager_tel_no,
+		manager_email,
+		manager_name,
+		confirm_status,
+		reg_date
+		FROM tbl_rfp_info WHERE
+		1=1 AND expire_date > SYSDATE()
+		]]>
+        <isNotEmpty prepend="AND" property="searchWrd">
+        		(event_name LIKE CONCAT('%', #searchWrd#,'%') or manager_name LIKE CONCAT('%', #searchWrd#,'%'))
+        </isNotEmpty>
+        <![CDATA[
+        order by idx desc
+        LIMIT #recordCountPerPage# OFFSET #firstIndex#
+        ]]>
+	</select>
+	
+	<select id="RFPDAO.selectRFPListCount" parameterClass="RFPVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+		SELECT 
+		COUNT(*)
+		FROM tbl_rfp_info WHERE
+		1=1 AND expire_date >= SYSDATE()
+		]]>
+        <isNotEmpty prepend="AND" property="searchWrd">
+        		(event_name LIKE CONCAT('%', #searchWrd#,'%') or manager_name LIKE CONCAT('%', #searchWrd#,'%'))
+        </isNotEmpty>
+
+	</select>
+	
+	<update id="RFPDAO.updateRFP" parameterClass="RFPVO">
+		<![CDATA[
+		UPDATE tbl_rfp_info SET
+			event_name = #event_name#,
+			event_type = #event_type#,
+			join_national_cnt = #join_national_cnt#,
+			join_member_cnt = #join_member_cnt#,
+			venue = #venue#,
+			meeting_room_member_cnt = #meeting_room_member_cnt#,
+			meeting_room_type = #meeting_room_type#,
+			meeting_room_cnt = #meeting_room_cnt#,
+			use_exhibition = #use_exhibition#,
+			exhibition_size = #exhibition_size#,
+			checkin_day = #checkin_day#,
+			checkin_member = #checkin_member#,
+			checkin_night_member = #checkin_night_member#,
+			checkin_price = #checkin_price#,
+			checkin_etc_text = #checkin_etc_text#,
+			checkin_file_id = #checkin_file_id#,
+			organization_name = #organization_name#,
+			manager_name = #manager_name#,
+			manager_class = #manager_class#,
+			manager_tel_no = #manager_tel_no#,
+			organization_fax_no = #organization_fax_no#,
+			manager_phone_no = #manager_phone_no#,
+			manager_email = #manager_email#,
+			organization_addr = #organization_addr#,
+			organization_zip_code = #organization_zip_code#,
+			organization_homepage = #organization_homepage#,
+			st_event_date = #st_event_date#,
+			ed_event_date = #ed_event_date#,
+			confirm_status = #confirm_status#,
+			confirm_id = #confirm_id#,
+			confirm_date = #confirm_date#
+			WHERE idx = #idx# AND expire_date > SYSDATE()
+		]]>
+	</update>
+	<update id="RFPDAO.deleteRFP" parameterClass="RFPVO">
+		<![CDATA[
+		UPDATE tbl_rfp_info SET
+		expire_id = #expire_id#, expire_date = SYSDATE()
+		WHERE idx = #idx#
+		]]>
+	</update>
+</sqlMap>

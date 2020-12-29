@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<!-- 리멤버 명함가져오기 작업 정의 -->
+	<bean id="rememberApp" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="RemeberAppController" />
+		<property name="targetMethod" value="rememberAPI" />
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<!-- 리멤버 명함가져오기 트리거 정의 -->
+	<bean id="rememberAppTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="rememberApp" />
+		<!-- 시작하고 2분후에 실행한다. (milisecond) -->
+		<property name="startDelay" value="120000" />
+		
+		<!-- 1분에 600,000 43200000-> 12시간, 86400000 -> 24시간 매 12시간마다 실행한다. 43200000(milisecond) 
+		<property name="repeatInterval" value="43200000" />
+		<property name="repeatInterval" value="86400000" /> 
+		!-->
+		
+		<property name="cronExpression" value="0 00 00 * * ? "/>
+	</bean>
+	
+	
+
+	<!-- 리멤버 명함가져오기 트리거 정의 -->
+	<bean id="rememberAppTrigger2" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="rememberApp" />
+		<!-- 시작하고 2분후에 실행한다. (milisecond) -->
+		<property name="startDelay" value="120000" />
+		
+		<!-- 1분에 600,000 43200000-> 12시간, 86400000 -> 24시간 매 12시간마다 실행한다. 43200000(milisecond) 
+		<property name="repeatInterval" value="43200000" />
+		<property name="repeatInterval" value="86400000" /> 
+		!-->
+		
+		<property name="cronExpression" value="0 00 12 * * ? "/>
+	</bean>
+	
+	
+
+	<!-- 리멤버 명함가져오기 스케줄러 정의, 스케줄러 적용시 아래 주석 제거 필요 -->
+	<bean id="rememberAppSummaryScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="rememberAppTrigger" />
+				<ref bean="rememberAppTrigger2" />
+			</list>
+		</property>
+	</bean>
+	
+	
+	
+	
+</beans>

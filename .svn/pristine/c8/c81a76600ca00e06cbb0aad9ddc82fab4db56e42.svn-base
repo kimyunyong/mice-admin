@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="LodgmentDAO">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="LodgmentInfoList" type="com.mice.cvb.lodgment.service.LodgmentVO"/>
+	<typeAlias  alias="LodgmentInfoDetail" type="com.mice.cvb.lodgment.service.LodgmentVO"/>
+	
+    <select id="LodgmentDAO.list" parameterClass="com.mice.cvb.lodgment.service.LodgmentVO" resultClass="com.mice.cvb.lodgment.service.LodgmentVO">
+    	<![CDATA[
+    	SELECT
+    	idx,
+    	type,
+    	class_info,
+    	name_ko,
+    	reg_id,
+    	reg_date
+    	FROM tbl_lodgment_info 
+    	WHERE 1=1 AND expire_date>NOW()
+    	]]>
+		<isEqual property="searchCnd" compareValue="0">
+			<isNotEmpty prepend="AND" property="searchWrd">
+			<![CDATA[
+        		type like concat('%',#searchWrd#,'%')
+        	]]>
+        	</isNotEmpty>
+		</isEqual>
+		<isEqual property="searchCnd" compareValue="1">
+			<isNotEmpty prepend="AND" property="searchWrd">
+			<![CDATA[
+        		class_info like concat('%',#searchWrd#,'%')
+        	]]>
+        	</isNotEmpty>
+		</isEqual>
+		<isEqual property="searchCnd" compareValue="2">
+			<isNotEmpty prepend="AND" property="searchWrd">
+			<![CDATA[
+        		name_ko like concat('%',#searchWrd#,'%')
+        	]]>
+        	</isNotEmpty>
+		</isEqual>
+		<![CDATA[
+		order by idx desc
+		LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>				
+    </select>
+    
+    <select id="LodgmentDAO.listCount" parameterClass="com.mice.cvb.lodgment.service.LodgmentVO" resultClass="java.lang.Integer">
+    	<![CDATA[
+    	SELECT
+    	COUNT(*)
+    	FROM tbl_lodgment_info 
+    	WHERE 1=1 AND expire_date>NOW()
+    	]]>
+		<isEqual property="searchCnd" compareValue="0">
+			<isNotEmpty prepend="AND" property="searchWrd">
+			<![CDATA[
+        		type like concat('%',#searchWrd#,'%')
+        	]]>
+        	</isNotEmpty>
+		</isEqual>
+		<isEqual property="searchCnd" compareValue="1">
+			<isNotEmpty prepend="AND" property="searchWrd">
+			<![CDATA[
+        		class_info like concat('%',#searchWrd#,'%')
+        	]]>
+        	</isNotEmpty>
+		</isEqual>
+		<isEqual property="searchCnd" compareValue="2">
+			<isNotEmpty prepend="AND" property="searchWrd">
+			<![CDATA[
+        		name_ko like concat('%',#searchWrd#,'%')
+        	]]>
+        	</isNotEmpty>
+		</isEqual>
+    </select>
+    
+    <update id="LodgmentDAO.delete" parameterClass="com.mice.cvb.lodgment.service.LodgmentVO">
+    	<![CDATA[
+    		UPDATE tbl_lodgment_info SET
+    		expire_id = #expire_id#, expire_date = SYSDATE()
+    		WHERE idx=#idx#
+    	]]>
+ 
+    </update>
+    
+    <update id="LodgmentDAO.update" parameterClass="com.mice.cvb.lodgment.service.LodgmentVO">
+    	<![CDATA[
+    		UPDATE tbl_lodgment_info SET
+				name_ko = #name_ko#,
+				name_en = #name_en#,
+				type = #type#,
+				class_info = #class_info#,
+				image_file_path1 = #image_file_path1#,
+				image_file_path2 = #image_file_path2#,
+				image_file_path3 = #image_file_path3#,
+				homepage = #homepage#,
+				address_ko = #address_ko#,
+				address_en = #address_en#,
+				tel_no = #tel_no#,
+				comment = #comment#,
+				comment_en = #comment_en#,
+				google_map = #google_map#
+			WHERE idx = #idx#;
+    	]]>
+    	
+    	<isEqual property="type" compareValue="호텔">
+    		<![CDATA[
+    		UPDATE tbl_lodgment_hotel_extension SET
+				locality_ko = #locality_ko#, 
+				locality_en = #locality_en#,
+				hico = #hico#,
+				new_gyeongju_ktx_station = #new_gyeongju_ktx_station#,
+				gyeongju_station = #gyeongju_station#,
+				west_gyeongju_station = #west_gyeongju_station#,
+				gyeongju_express_bus = #gyeongju_express_bus#,
+				gyeongju_intercity_bus = #gyeongju_intercity_bus#,
+				gyeongju_ic = #gyeongju_ic#,
+				total_room_count = #total_room_count#,
+				sweetroom_count = #sweetroom_count#,
+				nomal_room_count = #nomal_room_count#,
+				double_room_count = #double_room_count#,
+				tween_room_count = #tween_room_count#,
+				triple_room_count = #triple_room_count#,
+				quadruple_room_count = #quadruple_room_count#,
+				ondol_room_count = #ondol_room_count#,
+				theater_capacity = #theater_capacity#,
+				classroom_capacity = #classroom_capacity#,
+				convention_capacity = #convention_capacity#,
+				banquet_basic_count = #banquet_basic_count#,
+				banquet_max_count = #banquet_max_count#
+			WHERE lodgment_idx = #idx#		
+    		]]>
+    	</isEqual>
+		<isEqual property="type" compareValue="전통고택">
+    		<![CDATA[
+    		UPDATE tbl_lodgment_hotel_extension SET
+ 				total_room_capacity = #total_room_capacity#,
+ 				total_room_count = #total_room_count#
+			WHERE lodgment_idx = #idx#		
+    		]]>
+    	</isEqual>
+    </update>
+    
+    <insert id="LodgmentDAO.insert" parameterClass="com.mice.cvb.lodgment.service.LodgmentVO">
+    	<![CDATA[
+    	INSERT INTO tbl_lodgment_info (
+    	name_ko,
+		name_en,
+		type,
+		class_info,
+		image_file_path1,
+		image_file_path2,
+		image_file_path3,
+		homepage,
+		address_ko,
+		address_en,
+		tel_no,
+		comment,
+		comment_en,
+		google_map,
+		reg_date,
+		reg_id
+    	) VALUES (
+    	#name_ko#,
+		#name_en#,
+		#type#,
+		#class_info#,
+		#image_file_path1#,
+		#image_file_path2#,
+		#image_file_path3#,
+		#homepage#,
+		#address_ko#,
+		#address_en#,
+		#tel_no#,
+		#comment#,
+		#comment_en#,
+		#google_map#,
+		NOW(),
+		#reg_id#
+    	);
+    
+    
+    		SET @lodgment_idx := LAST_INSERT_ID();
+    		INSERT INTO tbl_lodgment_hotel_extension
+    		(
+    			lodgment_idx,
+				locality_ko,
+				locality_en,
+				hico,
+				new_gyeongju_ktx_station,
+				gyeongju_station,
+				west_gyeongju_station,
+				gyeongju_express_bus,
+				gyeongju_intercity_bus,
+				gyeongju_ic,
+				total_room_count,
+				sweetroom_count,
+				nomal_room_count,
+				double_room_count,
+				tween_room_count,
+				triple_room_count,
+				quadruple_room_count,
+				ondol_room_count,
+				theater_capacity,
+				classroom_capacity,
+				convention_capacity,
+				total_room_capacity,
+				banquet_basic_count,
+				banquet_max_count
+    		)
+    		VALUES
+    		(
+				@lodgment_idx,
+				#locality_ko#,
+				#locality_en#,
+				#hico#,
+				#new_gyeongju_ktx_station#,
+				#gyeongju_station#,
+				#west_gyeongju_station#,
+				#gyeongju_express_bus#,
+				#gyeongju_intercity_bus#,
+				#gyeongju_ic#,
+				#total_room_count#,
+				#sweetroom_count#,
+				#nomal_room_count#,
+				#double_room_count#,
+				#tween_room_count#,
+				#triple_room_count#,
+				#quadruple_room_count#,
+				#ondol_room_count#,
+				#theater_capacity#,
+				#classroom_capacity#,
+				#convention_capacity#,
+				#total_room_capacity#,
+				#banquet_basic_count#,
+				#banquet_max_count#   		
+    		)
+    		]]>
+    </insert>
+ 	<select id="LodgmentDAO.info" resultClass="com.mice.cvb.lodgment.service.LodgmentVO">
+ 		<![CDATA[
+ 		SELECT 
+			a.idx,
+			a.name_ko,
+			a.name_en,
+			a.type,
+			a.class_info,
+			a.image_file_path1,
+			a.image_file_path2,
+			a.image_file_path3,
+			a.homepage,
+			a.address_ko,
+			a.address_en,
+			a.tel_no,
+			a.comment,
+			a.comment_en,
+			a.google_map,
+			a.reg_date,
+			a.reg_id,
+			a.expire_date,
+			a.expire_id,
+			b.locality_ko,
+			b.locality_en,
+			b.hico,
+			b.new_gyeongju_ktx_station,
+			b.gyeongju_station,
+			b.west_gyeongju_station,
+			b.gyeongju_express_bus,
+			b.gyeongju_intercity_bus,
+			b.gyeongju_ic,
+			b.total_room_count,
+			b.sweetroom_count,
+			b.nomal_room_count,
+			b.double_room_count,
+			b.tween_room_count,
+			b.triple_room_count,
+			b.quadruple_room_count,
+			b.ondol_room_count,
+			b.theater_capacity,
+			b.classroom_capacity,
+			b.convention_capacity,
+			b.total_room_capacity,
+			b.banquet_basic_count,
+			b.banquet_max_count
+		FROM tbl_lodgment_info a LEFT OUTER JOIN tbl_lodgment_hotel_extension b ON a.idx=b.lodgment_idx WHERE 1=1 AND a.expire_date > NOW() AND a.idx=#idx#
+ 		]]>
+ 	</select>
+</sqlMap>

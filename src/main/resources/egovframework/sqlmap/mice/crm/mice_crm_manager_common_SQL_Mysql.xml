@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ManagerEventDAO">
+
+	<typeAlias alias="ManagerEvent" type="com.mice.crm.service.ManagerEventVO"/>
+
+	<resultMap id="ManagerEvent" class="com.mice.crm.service.ManagerEventVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="cate_no" column="cate_no" columnIndex="2"/>
+		<result property="crm_event_idx" column="crm_event_idx" columnIndex="2"/>
+		<result property="cate_code" column="cate_code" columnIndex="3"/>
+		<result property="cate_name" column="cate_name" columnIndex="4"/>
+		<result property="depth" column="depth" columnIndex="5"/>
+		<result property="sort" column="sort" columnIndex="6"/>
+		<result property="parent" column="parent" columnIndex="7"/>
+		<result property="hidden" column="hidden" columnIndex="8"/>
+		<result property="reg_id" column="reg_id" columnIndex="9"/>
+		<result property="reg_date" column="reg_date" columnIndex="10"/>
+		<result property="modify_id" column="modify_id" columnIndex="11"/>
+		<result property="modify_date" column="modify_date" columnIndex="12"/>
+		<result property="expire_id" column="expire_id" columnIndex="13"/>
+		<result property="expire_date" column="expire_date" columnIndex="14"/>
+	</resultMap>
+
+	
+ 	<select id="ManagerEventDAO.listManagerCategoryListAll" parameterClass="com.mice.crm.service.ManagerEventVO" resultClass="com.mice.crm.service.ManagerEventVO" >
+ 		<![CDATA[
+		SELECT * from (
+			SELECT 
+			idx,
+			cate_no,
+			crm_event_idx,
+			cate_code,
+			cate_name,
+			depth,
+			sort,
+			parent,
+			hidden,
+			reg_id,
+			reg_date,
+			modify_id,
+			modify_date,
+			expire_id,
+			expire_date
+			
+			,( select count(*) from tbl_crm_category C2 where C2.crm_event_idx = C.crm_event_idx and C2.cate_code = C.cate_code and C2.depth = C.depth and C2.sort > C.sort  AND expire_date>NOW()) sort_cnt
+			
+			,ifnull(
+			if(depth=1,sort,
+			if(depth=2,(select sort from tbl_crm_category C2 where C2.crm_event_idx  = C.crm_event_idx and C2.cate_code=C.cate_code and C2.cate_no = C.parent),
+			if(depth=3,(select sort from tbl_crm_category C3 where C3.crm_event_idx  = C.crm_event_idx and C3.cate_code=C.cate_code and C3.cate_no=
+			(select parent from tbl_crm_category C1 where  C1.crm_event_idx  = C.crm_event_idx and C1.cate_code=C.cate_code and  C1.cate_no = C.parent)),  0 ))) 
+			,0)  depth1
+			
+			,
+			ifnull(
+			if(depth=1,0,
+			if(depth=2,sort,
+			if(depth=3,(select sort from tbl_crm_category C3 where C3.crm_event_idx  = C.crm_event_idx and C3.cate_code=C.cate_code and C3.cate_no = C.parent),  0 )))  
+			,0)  depth2
+			
+			,
+			ifnull(
+			if(depth=1,0,
+			if(depth=2,0,
+			if(depth=3,sort,  0 )))  
+			,0)  depth3
+			
+			FROM tbl_crm_category C WHERE 1=1 AND expire_date>NOW()
+		) tbl_crm_category
+		WHERE 1=1 AND expire_date>NOW() and crm_event_idx=#crm_event_idx# and cate_code=#cate_code#
+ 		]]>
+ 		<isNotEmpty prepend="AND" property="searchDepth">
+ 			depth = #searchDepth#
+ 		</isNotEmpty>
+ 		<isNotEmpty prepend="AND" property="searchParent">
+			<isNotEqual property="searchDepth" compareValue="1">
+				<![CDATA[
+				parent = #searchParent#
+				]]>
+			</isNotEqual>
+ 		</isNotEmpty>      
+ 		<![CDATA[
+ 			order by depth1, depth2, depth3
+ 		]]>
+	</select>
+	
+
+			
+				
+	
+ 	<select id="ManagerEventDAO.selectManagerCategorySortNum" parameterClass="com.mice.crm.service.ManagerEventVO" resultClass="com.mice.crm.service.ManagerEventVO" >
+ 		<![CDATA[
+ 		SELECT 
+ 			(SELECT ifnull(max(cate_no)+1,1) FROM tbl_crm_category WHERE 1=1 AND crm_event_idx=#crm_event_idx# AND cate_code=#cate_code# ) cate_no 
+ 			,(SELECT ifnull(max(sort)+1,1) FROM tbl_crm_category WHERE 1=1 AND crm_event_idx=#crm_event_idx# AND cate_code=#cate_code# AND depth=#depth# AND parent=#parent# ) sort
+  		]]>
+	</select>
+	
+	
+
+	
+		
+ 	<select id="ManagerEventDAO.selectManagerCategory" parameterClass="com.mice.crm.service.ManagerEventVO" resultClass="com.mice.crm.service.ManagerEventVO" >
+ 		<![CDATA[
+ 		SELECT 
+			idx,
+			cate_no,
+			crm_event_idx,
+			cate_code,
+			cate_name,
+			depth,
+			sort,
+			parent,
+			hidden,
+			reg_id,
+			reg_date,
+			modify_id,
+			modify_date,
+			expire_id,
+			expire_date
+		FROM tbl_crm_category WHERE 1=1 AND expire_date>NOW() AND idx=#idx#
+ 		]]>
+	</select>
+	
+	
+	
+	
+	<insert id="ManagerEventDAO.insertManagerCategory" parameterClass="com.mice.crm.service.ManagerEventVO">
+ 		<![CDATA[
+			INSERT INTO tbl_crm_category
+		 	(
+		 		cate_no,
+		 		crm_event_idx,
+		 		cate_code,
+				cate_name,
+				depth,
+				sort,
+				parent,
+				hidden,
+				reg_id,
+				reg_date
+		 	)
+		 	VALUES
+		 	(
+		 		#cate_no#,
+				#crm_event_idx#,
+				#cate_code#,
+				#cate_name#,
+				#depth#,
+				#sort#,
+				#parent#,
+				#hidden#,
+				#reg_id#,
+				NOW()		 	
+		 	)
+		]]>
+		<selectKey keyProperty="idx" resultClass="int">
+        	SELECT LAST_INSERT_ID()
+		</selectKey>		
+ 	</insert>
+ 	
+ 	
+ 	
+ 	
+ 	<update id="ManagerEventDAO.updateManagerCategory" parameterClass="com.mice.crm.service.ManagerEventVO">
+ 		<![CDATA[
+ 		UPDATE tbl_crm_category SET
+ 		cate_name = #cate_name#,
+		hidden = #hidden#
+ 		WHERE idx = #idx# AND expire_date>NOW() 
+ 		]]>
+ 	</update>
+ 	
+ 	
+ 	
+ 	<update id="ManagerEventDAO.deleteManagerCategory" parameterClass="com.mice.crm.service.ManagerEventVO">
+ 		<![CDATA[
+  		UPDATE tbl_crm_category SET
+  		expire_id=#reg_id#,
+		expire_date = now()
+ 		WHERE expire_date>NOW() AND 
+ 		(
+ 		(idx = #idx# ) 
+ 		or ( crm_event_idx=#crm_event_idx# AND cate_code=#cate_code# AND parent=(select * from (select cate_no from tbl_crm_category where idx=#idx#) as a) )
+ 		or ( crm_event_idx=#crm_event_idx# AND cate_code=#cate_code# AND parent=
+	 		( select * from (select cate_no from tbl_crm_category where crm_event_idx=#crm_event_idx# AND cate_code=#cate_code# 
+					 		  AND parent = (select * from (select cate_no from tbl_crm_category where idx=#idx#) as c)
+					 		) as b)
+		 	)
+ 		)  
+ 		]]>
+ 	</update>
+ 	
+ 	
+ 	
+ 		
+ 	<select id="ManagerEventDAO.selectManagerCategorySortUpIdx" parameterClass="com.mice.crm.service.ManagerEventVO" resultClass="com.mice.crm.service.ManagerEventVO"  >
+ 		<![CDATA[
+ 		SELECT 
+			idx, sort
+		FROM tbl_crm_category WHERE 1=1 AND expire_date>NOW() 
+		AND crm_event_idx=#crm_event_idx# and cate_code=#cate_code# and depth=#depth# and sort < #sort#
+		order by sort desc  limit 0,1
+ 		]]>
+	</select>
+	<update id="ManagerEventDAO.updateManagerCategorySortChange" parameterClass="com.mice.crm.service.ManagerEventVO">
+ 		<![CDATA[
+ 		UPDATE tbl_crm_category SET
+ 		sort = #sort#
+ 		WHERE idx=#idx# AND expire_date>NOW()
+ 		]]>
+ 	</update>
+	
+	
+	
+	
+ 	<select id="ManagerEventDAO.selectManagerCategorySortDownIdx" parameterClass="com.mice.crm.service.ManagerEventVO" resultClass="com.mice.crm.service.ManagerEventVO"  >
+ 		<![CDATA[
+ 		SELECT 
+			idx, sort
+		FROM tbl_crm_category WHERE 1=1 AND expire_date>NOW() 
+		AND crm_event_idx=#crm_event_idx# and cate_code=#cate_code# and depth=#depth# and sort > #sort#
+		order by sort asc  limit 0,1
+ 		]]>
+	</select>
+	
+
+
+	<select id="ManagerEventDAO.listManagerEvent" parameterClass="com.mice.crm.service.ManagerEventVO" resultClass="com.mice.crm.service.ManagerEventVO" >
+ 		<![CDATA[
+ 		SELECT 
+ 		idx, name_ko
+		FROM tbl_crm_event_info WHERE 1=1 AND expire_date>NOW() and manager_event='M'
+ 		]]>
+ 		<![CDATA[
+ 			order by idx desc
+ 		]]>		
+ 	</select>
+	
+	
+</sqlMap>

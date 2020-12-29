@@ -1,0 +1,5 @@
+body {/* border:2px solid green; */ box-sizing:border-box;}
+
+.tsearch_btn_area input {
+    width: 83px !important;
+}

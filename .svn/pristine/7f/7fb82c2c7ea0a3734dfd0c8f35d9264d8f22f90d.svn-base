@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="CRMInviteDAO">
+	<typeAlias  alias="int" type="java.lang.Integer"/>
+	<typeAlias  alias="InviteVO" type="com.mice.crm.service.InviteVO"/>
+	<typeAlias  alias="CustomerVO" type="com.mice.crm.service.CustomerVO"/>
+	<typeAlias  alias="InvitePersonVO" type="com.mice.crm.service.InvitePersonVO"/>	
+	<typeAlias  alias="InviteOpinionVO" type="com.mice.crm.service.InviteOpinionVO"/>	
+	<typeAlias  alias="InviteSupportVO" type="com.mice.crm.service.InviteSupportVO"/>	
+	
+	<resultMap id="FileList" class="com.mice.crm.service.FileVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="atch_file_id" column="atch_file_id" columnIndex="2"/>
+		<result property="crm_event_idx" column="crm_event_idx" columnIndex="3"/>
+		<result property="type" column="type" columnIndex="4"/>
+		<result property="file_stre_cours" column="file_stre_cours" columnIndex="5"/>
+		<result property="orignl_file_nm" column="orignl_file_nm" columnIndex="6"/>
+		<result property="file_size" column="file_size" columnIndex="7"/>
+	</resultMap>
+
+	<resultMap id="InviteSupportList" class="com.mice.crm.service.InviteSupportVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="invite_idx" column="invite_idx" columnIndex="2"/>
+		<result property="invite_cost" column="invite_cost" columnIndex="4"/>
+		<result property="invite_cost_etc" column="invite_cost_etc" columnIndex="5"/>
+		<result property="invite_cost_type" column="invite_cost_type" columnIndex="6"/>
+	</resultMap>
+	
+	<resultMap id="InviteList" class="com.mice.crm.service.InviteVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="implementation_status" column="implementation_status" columnIndex="2"/>
+		<result property="implementation_status_str" column="implementation_status_str" columnIndex="3"/>
+		<result property="invite_character" column="invite_character" columnIndex="4"/>
+		<result property="invite_category" column="invite_category" columnIndex="5"/>
+		<result property="relation_name" column="relation_name" columnIndex="6"/>
+		<result property="relation_name_str" column="relation_name_str" columnIndex="7"/>
+		<result property="confirm_date" column="confirm_date" columnIndex="8"/>
+		<result property="name_ko" column="name_ko" columnIndex="9"/>
+		<result property="name_en" column="name_en" columnIndex="10"/>
+		<result property="name_etc" column="name_etc" columnIndex="11"/>
+		<result property="event_division_idx" column="event_division_idx" columnIndex="12"/>
+		<result property="open_period" column="open_period" columnIndex="13"/>
+		<result property="event_term" column="event_term" columnIndex="14"/>		
+		<result property="sugt_st_date" column="sugt_st_date" columnIndex="15"/>		
+		<result property="sugt_ed_date" column="sugt_ed_date" columnIndex="16"/>
+		<result property="place" column="place" columnIndex="17"/>				
+		<result property="join_total_nation" column="join_total_nation" columnIndex="18"/>				
+		<result property="join_total_cnt" column="join_total_cnt" columnIndex="19"/>				
+		<result property="join_nationals_cnt" column="join_nationals_cnt" columnIndex="20"/>				
+		<result property="join_foreigner" column="join_foreigner" columnIndex="21"/>				
+		<result property="join_foreigner_cnt" column="join_foreigner_cnt" columnIndex="22"/>				
+		<result property="etc_open_nation" column="etc_open_nation" columnIndex="23"/>
+		<result property="decision_method" column="decision_method" columnIndex="24"/>				
+		<result property="decision_time" column="decision_time" columnIndex="25"/>				
+		<result property="organizers" column="organizers" columnIndex="26"/>				
+		<result property="interior_agency" column="interior_agency" columnIndex="27"/>				
+		<result property="etc_comment" column="etc_comment" columnIndex="28"/>								
+		<result property="open_fail_cause" column="open_fail_cause" columnIndex="29"/>				
+		<result property="reg_date" column="reg_date" columnIndex="30"/>			
+		<result property="reg_id" column="reg_id" columnIndex="31"/>			
+		<result property="interior_agency_val" column="interior_agency_val" columnIndex="32"/>			
+		<result property="invite_character_val" column="invite_character_val" columnIndex="33"/>			
+		<result property="held_grant_cost" column="held_grant_cost" columnIndex="34"/>			
+		<result property="info_desk_cost" column="info_desk_cost" columnIndex="35"/>			
+		<result property="marshal_cost" column="marshal_cost" columnIndex="36"/>			
+		<result property="held_grant_cost_etc" column="held_grant_cost_etc" columnIndex="37"/>			
+		<result property="info_desk_cost_etc" column="info_desk_cost_etc" columnIndex="38"/>			
+		<result property="marshal_cost_etc" column="marshal_cost_etc" columnIndex="39"/>	
+		
+		<result property="manager1" column="manager1" columnIndex="40"/>			
+		<result property="manager2" column="manager2" columnIndex="41"/>			
+		<result property="manager3" column="manager3" columnIndex="42"/>
+					
+	</resultMap>
+	
+	<resultMap id="CustomerList" class="com.mice.crm.service.CustomerVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="name_ko" column="name_ko" columnIndex="2"/>
+		<result property="tel_no" column="tel_no" columnIndex="3"/>
+		<result property="phone_no" column="phone_no" columnIndex="4"/>
+		<result property="email" column="email" columnIndex="5"/>
+		<result property="organizer_name" column="organizer_name" columnIndex="6"/>
+		<result property="staff" column="staff" columnIndex="7"/>
+		<result property="unit" column="unit" columnIndex="8"/>
+		<result property="address" column="address" columnIndex="9"/>
+		<result property="sosoc_excel" column="sosoc_excel" columnIndex="10"/>
+	</resultMap>
+	
+	<resultMap id="InviteOptionList" class="com.mice.crm.service.InviteOpinionVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="parent_idx" column="parent_idx" columnIndex="2"/>
+		<result property="promotion_type" column="promotion_type" columnIndex="3"/>
+		<result property="comment" column="comment" columnIndex="4"/>
+		<result property="input_date" column="input_date" columnIndex="5"/>
+		<result property="reg_id" column="reg_id" columnIndex="6"/>
+		<result property="reg_date" column="reg_date" columnIndex="7"/>
+		<result property="opinion_type" column="opinion_type" columnIndex="8"/>
+		<result property="customer_idx" column="customer_idx" columnIndex="9"/>
+	</resultMap>
+	
+	<select id="CRMInviteDAO.getOpinionList" parameterClass="InvitePersonVO" resultMap="InviteOptionList">
+		<![CDATA[
+			SELECT 
+			 	 idx,
+			     parent_idx,
+				 promotion_type,
+				 comment,
+				 input_date,
+				 reg_id,
+				 reg_date,
+				 opinion_type,
+				 customer_idx
+			FROM tbl_crm_promotion_info
+			WHERE 1=1 AND expire_date>NOW() AND parent_idx = #invite_idx# AND customer_idx = #customer_idx#
+			ORDER BY reg_date DESC
+		]]>
+	</select>
+	
+	
+	<update id="CRMInviteDAO.updateInvite" parameterClass="InviteVO">
+		<![CDATA[
+			UPDATE tbl_crm_invite_info
+			SET 
+				implementation_status = #implementation_status#,	
+				invite_character = #invite_character#	,
+				invite_category = #invite_category#,
+				relation_name = #relation_name#,	
+				confirm_date = #confirm_date#	,
+				name_ko = #name_ko#	,
+				name_en = #name_en#	,
+				name_etc = #name_etc#,	
+				event_division_idx = #event_division_idx#,	
+				open_period = #open_period#	,
+				event_term = #event_term#	,
+				sugt_st_date = #sugt_st_date#,	
+				sugt_ed_date = #sugt_ed_date#,	
+				place = #place#	,
+				join_total_nation = #join_total_nation#,	
+				join_total_cnt = #join_total_cnt#	,
+				join_nationals_cnt = #join_nationals_cnt#,	
+				join_foreigner = #join_foreigner#	,
+				join_foreigner_cnt = #join_foreigner_cnt#,
+				etc_open_nation = #etc_open_nation#	,
+				decision_method	 = #decision_method#,
+				decision_time = #decision_time#	,
+				organizers = #organizers#	,
+				interior_agency = #interior_agency#,	
+				etc_comment = #etc_comment#	,
+				open_fail_cause = #open_fail_cause#,	
+				reg_date = now(),
+				held_grant_cost = #held_grant_cost#,	
+				info_desk_cost = #info_desk_cost#,
+				marshal_cost = #marshal_cost#,
+				held_grant_cost_etc = #held_grant_cost_etc#,	
+				info_desk_cost_etc	= #info_desk_cost_etc#,
+				marshal_cost_etc = #marshal_cost_etc#,
+				manager1 = #manager1#,
+				manager2 = #manager2#,
+				manager3 = #manager3#
+				
+			WHERE idx = #idx#
+		]]>
+	</update>
+	<select id="CRMInviteDAO.getInvite" parameterClass="int" resultClass="InviteVO" >
+		<![CDATA[
+	 		select
+		 		idx,
+				implementation_status,	
+				(select value from tbl_crm_code_info where idx=implementation_status) implementation_status_str,	
+				invite_character,
+				invite_category,
+				relation_name,	
+				(select value from tbl_crm_code_info where idx=relation_name) relation_name_str,	
+				confirm_date,
+				name_ko,
+				name_en,
+				name_etc,	
+				event_division_idx,	
+				open_period,
+				event_term,
+				sugt_st_date,	
+				sugt_ed_date,	
+				place,
+				join_total_nation,	
+				join_total_cnt,
+				join_nationals_cnt,	
+				join_foreigner,
+				join_foreigner_cnt,
+				etc_open_nation,
+				decision_method,
+				decision_time,
+				organizers,
+				interior_agency,	
+				etc_comment,
+				open_fail_cause,	
+				reg_date,
+				reg_id,
+				(select name_ko from tbl_crm_organizer_info where idx = interior_agency) as interior_agency_val,
+				held_grant_cost,
+				info_desk_cost,
+				marshal_cost,
+				held_grant_cost_etc,	
+				info_desk_cost_etc,
+				marshal_cost_etc,	
+
+				manager1,
+				manager2,
+				manager3				
+				
+			FROM tbl_crm_invite_info
+			WHERE idx = #idx#
+	 	]]>
+	</select>
+	
+	<select id="CRMInviteDAO.getInviteList" parameterClass="InviteVO" resultMap="InviteList" >
+		<![CDATA[
+			SELECT
+				idx,
+				implementation_status,
+				(select value from tbl_crm_code_info where idx=implementation_status) implementation_status_str,	
+				invite_character,
+				invite_category,
+				relation_name,	
+				(select value from tbl_crm_code_info where idx=relation_name) relation_name_str,	
+				confirm_date,
+				name_ko,
+				name_en,
+				name_etc,	
+				event_division_idx,	
+				open_period,
+				event_term,
+				sugt_st_date,	
+				sugt_ed_date,	
+				place,
+				join_total_nation,	
+				join_total_cnt,
+				join_nationals_cnt,	
+				join_foreigner,
+				join_foreigner_cnt,
+				etc_open_nation,
+				decision_method,
+				decision_time,
+				organizers,
+				interior_agency,	
+				etc_comment,
+				open_fail_cause,	
+				reg_date,
+				reg_id,
+				(select name_ko from tbl_crm_organizer_info where idx = interior_agency) as interior_agency_val,
+				(select value from tbl_crm_code_info where idx = invite_character) as invite_character_val,
+				held_grant_cost,
+				info_desk_cost,
+				marshal_cost,
+				held_grant_cost_etc,	
+				info_desk_cost_etc,
+				marshal_cost_etc,
+
+				manager1,
+				manager2,
+				manager3				
+				
+			FROM tbl_crm_invite_info
+			WHERE 1=1
+		]]>   
+     	
+		<isNotEmpty prepend="AND" property="implementation_status_search_List">
+			<![CDATA[implementation_status]]>
+	 		<iterate prepend="IN" property="implementation_status_search_List" open="(" close=")" conjunction=","> 
+	       		#implementation_status_search_List[]#
+	     	</iterate>
+ 		</isNotEmpty>
+ 		
+		<isNotEmpty prepend="AND" property="invite_character_search_List">
+ 			<![CDATA[invite_character]]>
+	 		<iterate prepend="IN" property="invite_character_search_List" open="(" close=")" conjunction=","> 
+	       		#invite_character_search_List[]#
+	     	</iterate>
+ 		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="invite_category_search_List">
+			<![CDATA[invite_category]]>
+	 		<iterate prepend="IN" property="invite_category_search_List" open="(" close=")" conjunction=","> 
+	       		#invite_category_search_List[]#
+	     	</iterate>
+	 	</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="relation_name_search_List">
+ 			<![CDATA[relation_name]]>
+		 		<iterate prepend="IN" property="relation_name_search_List" open="(" close=")" conjunction=","> 
+		       		#relation_name_search_List[]#
+		     	</iterate>
+	 	</isNotEmpty>
+		<isNotEmpty prepend="AND" property="event_term_search">
+ 			<![CDATA[ event_term like concat('%',#event_term_search#,'%') ]]>
+ 		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="join_total_cnt_search">
+	 		<isEqual property="join_total_cnt_search" compareValue="1">
+	 			<![CDATA[ join_total_cnt < 500 ]]>
+			</isEqual>
+			<isEqual property="join_total_cnt_search" compareValue="2">
+	 			<![CDATA[ join_total_cnt >= 500 AND join_total_cnt < 1000 ]]>
+			</isEqual>
+			<isEqual property="join_total_cnt_search" compareValue="3">
+	 			<![CDATA[ join_total_cnt >= 1000 AND join_total_cnt < 2000 ]]>
+			</isEqual>
+			<isEqual property="join_total_cnt_search" compareValue="4">
+	 			<![CDATA[ join_total_cnt >= 2000 AND join_total_cnt < 3000 ]]>
+			</isEqual>
+			<isEqual property="join_total_cnt_search" compareValue="5">
+	 			<![CDATA[ join_total_cnt >= 3000 ]]>
+			</isEqual>
+ 		</isNotEmpty> 		
+ 		
+ 		<![CDATA[
+ 			ORDER BY reg_date DESC
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>
+	</select>
+	
+	<select id="CRMInviteDAO.getCodeValue" parameterClass="String" resultClass="String" >
+		<![CDATA[
+			SELECT value					
+			FROM tbl_crm_code_info
+ 			WHERE idx = #codeIdx#
+		]]>
+	</select>
+	
+	<select id="CRMInviteDAO.getCount" resultClass="int" parameterClass="InviteVO" >
+		<![CDATA[
+			SELECT count(idx) as count
+			FROM tbl_crm_invite_info
+			WHERE 1=1
+		]]>
+     	
+		<isNotEmpty prepend="AND" property="implementation_status_search_List">
+			<![CDATA[implementation_status]]>
+	 		<iterate prepend="IN" property="implementation_status_search_List" open="(" close=")" conjunction=","> 
+	       		#implementation_status_search_List[]#
+	     	</iterate>
+ 		</isNotEmpty>
+ 		
+		<isNotEmpty prepend="AND" property="invite_character_search_List">
+ 			<![CDATA[invite_character]]>
+	 		<iterate prepend="IN" property="invite_character_search_List" open="(" close=")" conjunction=","> 
+	       		#invite_character_search_List[]#
+	     	</iterate>
+ 		</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="invite_category_search_List">
+			<![CDATA[invite_category]]>
+	 		<iterate prepend="IN" property="invite_category_search_List" open="(" close=")" conjunction=","> 
+	       		#invite_category_search_List[]#
+	     	</iterate>
+	 	</isNotEmpty>
+		
+		<isNotEmpty prepend="AND" property="relation_name_search_List">
+ 			<![CDATA[relation_name]]>
+		 		<iterate prepend="IN" property="relation_name_search_List" open="(" close=")" conjunction=","> 
+		       		#relation_name_search_List[]#
+		     	</iterate>
+	 	</isNotEmpty>
+		<isNotEmpty prepend="AND" property="event_term_search">
+ 			<![CDATA[ event_term like concat('%',#event_term_search#,'%') ]]>
+ 		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="join_total_cnt_search">
+	 		<isEqual property="join_total_cnt_search" compareValue="1">
+	 			<![CDATA[ join_total_cnt < 500 ]]>
+			</isEqual>
+			<isEqual property="join_total_cnt_search" compareValue="2">
+	 			<![CDATA[ join_total_cnt >= 500 AND join_total_cnt < 1000 ]]>
+			</isEqual>
+			<isEqual property="join_total_cnt_search" compareValue="3">
+	 			<![CDATA[ join_total_cnt >= 1000 AND join_total_cnt < 2000 ]]>
+			</isEqual>
+			<isEqual property="join_total_cnt_search" compareValue="4">
+	 			<![CDATA[ join_total_cnt >= 2000 AND join_total_cnt < 3000 ]]>
+			</isEqual>
+			<isEqual property="join_total_cnt_search" compareValue="5">
+	 			<![CDATA[ join_total_cnt >= 3000 ]]>
+			</isEqual>
+ 		</isNotEmpty> 		
+	</select>
+	
+	<delete id="CRMInviteDAO.deleteInvite" parameterClass="int">
+		<![CDATA[
+			DELETE	FROM	tbl_crm_invite_info
+			WHERE	idx = #idx#
+		]]>
+	</delete>
+	
+	<select id="CRMInviteDAO.getCustomerList" parameterClass="CustomerVO" resultMap="CustomerList" >
+		<![CDATA[
+			SELECT idx,
+                   name_ko,
+                   tel_no,
+                   phone_no,
+                   email,
+                   sosoc_excel,
+                   (SELECT name_ko FROM tbl_crm_organizer_info WHERE idx in (SELECT organizer_idx FROM tbl_crm_customer_organizer_relation WHERE customer_idx=customer.idx) limit 1) as organizer_name,
+                   (SELECT staff FROM tbl_crm_customer_organizer_relation WHERE customer_idx = idx limit 1) as staff,
+                   (SELECT unit FROM tbl_crm_customer_organizer_relation WHERE customer_idx = idx limit 1) as unit,
+                   (SELECT address_ko FROM tbl_crm_organizer_info WHERE idx in (SELECT organizer_idx FROM tbl_crm_customer_organizer_relation WHERE customer_idx=customer.idx) limit 1) address
+        	FROM tbl_crm_customer_info customer WHERE name_ko like concat('%',#searchName#,'%')
+		]]>
+	</select>
+	
+	<insert id="CRMInviteDAO.insertPerson" parameterClass="InvitePersonVO">
+		<![CDATA[
+			INSERT INTO tbl_crm_invite_person_info (
+				invite_idx, 
+				customer_idx
+			) VALUES(
+				#invite_idx#, 
+				#customer_idx#
+			);
+			
+		]]>
+	</insert>
+	
+	<select id="CRMInviteDAO.getIndex" resultClass="int" >
+		<![CDATA[
+			SELECT MAX(idx) as idx FROM tbl_crm_invite_info
+		]]>
+	</select>
+	
+	<insert id="CRMInviteDAO.insertInviteSupport"  parameterClass="InviteSupportVO">
+		<![CDATA[
+			INSERT INTO tbl_crm_invite_support_info (
+				invite_idx,
+				invite_cost	,
+				invite_cost_etc,
+				invite_cost_type			
+			) VALUES(
+				#invite_idx#,	
+				#invite_cost#,		
+				#invite_cost_etc#,
+				#invite_cost_type#
+			);
+		]]>
+	</insert>
+	
+	<select id="CRMInviteDAO.getInviteSupport" parameterClass="InviteSupportVO" resultMap="InviteSupportList" >
+		<![CDATA[
+			SELECT idx,
+			    invite_idx,
+				invite_cost,
+				invite_cost_etc,
+				invite_cost_type
+        	FROM tbl_crm_invite_support_info
+        	WHERE invite_idx = #invite_idx# 
+        		AND invite_cost_type = #invite_cost_type#
+		]]>
+	</select>
+	
+	<delete id="CRMInviteDAO.deleteInviteSupport" parameterClass="int">
+		<![CDATA[
+			DELETE FROM tbl_crm_invite_support_info
+			WHERE invite_idx = #invite_idx#
+		]]>
+	</delete>
+
+	
+	<insert id="CRMInviteDAO.insertInvite"  parameterClass="InviteVO">
+		<![CDATA[
+			INSERT INTO tbl_crm_invite_info (
+				implementation_status,	
+				invite_character	,
+				invite_category	,
+				relation_name,	
+				confirm_date	,
+				name_ko	,
+				name_en	,
+				name_etc,	
+				event_division_idx,	
+				open_period	,
+				event_term	,
+				sugt_st_date,	
+				sugt_ed_date,	
+				place	,
+				join_total_nation,	
+				join_total_cnt	,
+				join_nationals_cnt,	
+				join_foreigner	,
+				join_foreigner_cnt,
+				etc_open_nation	,
+				decision_method	,
+				decision_time	,
+				organizers	,
+				interior_agency,	
+				etc_comment	,
+				open_fail_cause,	
+				reg_date	,
+				reg_id	,
+				held_grant_cost	,
+				info_desk_cost	,
+				marshal_cost,
+				held_grant_cost_etc,	
+				info_desk_cost_etc	,
+				marshal_cost_etc,
+
+				manager1,
+				manager2,
+				manager3				
+				
+			) VALUES(
+				#implementation_status#,
+				#invite_character#,		
+				#invite_category#,		
+				#relation_name#,		
+				#confirm_date#,		
+				#name_ko#,		
+				#name_en#,		
+				#name_etc#,		
+				#event_division_idx#,		
+				#open_period#,		
+				#event_term#	,	
+				#sugt_st_date#,		
+				#sugt_ed_date#,		
+				#place#,		
+				#join_total_nation#,		
+				#join_total_cnt#,		
+				#join_nationals_cnt#,		
+				#join_foreigner#,		
+				#join_foreigner_cnt#,
+				#etc_open_nation#,	
+				#decision_method#,	
+				#decision_time#,		
+				#organizers#,		
+				#interior_agency#,		
+				#etc_comment#,		
+				#open_fail_cause#,		
+				now(),	
+				#reg_id#,
+				#held_grant_cost#	,
+				#info_desk_cost#,
+				#marshal_cost#,
+				#held_grant_cost_etc#,	
+				#info_desk_cost_etc#,	
+				#marshal_cost_etc#,
+
+				#manager1#,
+				#manager2#,
+				#manager3#				
+			);
+		]]>
+		<selectKey keyProperty="idx" resultClass="int">
+        	SELECT LAST_INSERT_ID()
+		</selectKey>
+		
+	</insert>
+	
+	<insert id="CRMInviteDAO.insertInviteTheme" parameterClass="com.mice.crm.service.EventThemeVO">
+		<![CDATA[
+		INSERT INTO tbl_crm_invite_info_theme
+		(
+			crm_event_idx,
+			event_theme,
+			reg_id,
+			reg_date
+		)
+		VALUES
+		(
+			#crm_event_idx#,
+			#event_theme#,
+			#reg_id#,
+			NOW()
+		)
+		]]>
+	</insert>
+	
+	<insert id="CRMInviteDAO.deleteInviteTheme" parameterClass="int">
+		<![CDATA[
+		DELETE FROM tbl_crm_invite_info_theme WHERE crm_event_idx=#idx#
+		]]>
+	</insert>
+	
+	
+	<select id="CRMInviteDAO.listInviteTheme" parameterClass="com.mice.crm.service.EventThemeVO" resultClass="com.mice.crm.service.EventThemeVO" >
+		<![CDATA[
+			SELECT crm_event_idx, event_theme
+			,(select value from tbl_crm_code_info cd where cd.idx = tm.event_theme) event_theme_name
+			FROM tbl_crm_invite_info_theme tm  WHERE 1=1 AND tm.crm_event_idx = #crm_event_idx#
+		]]> 	
+ 	</select>	
+	
+	<select id="CRMInviteDAO.getPersonList" parameterClass="int" resultMap="CustomerList" >
+		<![CDATA[
+			SELECT c.idx as idx,
+                   c.name_ko as name_ko,
+                   c.tel_no as tel_no,
+                   c.phone_no as phone_no,
+                   c.email as email,
+                   c.sosoc_excel as sosoc_excel,
+                   (SELECT name_ko FROM tbl_crm_organizer_info WHERE idx = (SELECT organizer_idx FROM tbl_crm_customer_organizer_relation WHERE customer_idx=c.idx) limit 1) as organizer_name,
+                   (SELECT staff FROM tbl_crm_customer_organizer_relation WHERE customer_idx = c.idx) as staff,
+                   (SELECT unit FROM tbl_crm_customer_organizer_relation WHERE customer_idx = c.idx) as unit,
+                   (SELECT address_ko FROM tbl_crm_organizer_info WHERE idx = (SELECT organizer_idx FROM tbl_crm_customer_organizer_relation WHERE customer_idx=c.idx)) address
+        	FROM tbl_crm_customer_info c INNER JOIN tbl_crm_invite_person_info p ON c.idx = p.customer_idx WHERE p.invite_idx = #invite_idx#
+		]]>
+	</select>
+	
+	<delete id="CRMInviteDAO.deletePerson" parameterClass="int">
+		<![CDATA[
+			DELETE FROM tbl_crm_invite_person_info
+			WHERE invite_idx = #invite_idx#
+		]]>
+	</delete>
+	
+	<insert id="CRMInviteDAO.insertOpinion" parameterClass="InviteOpinionVO">
+		<![CDATA[
+			 INSERT INTO tbl_crm_promotion_info(
+				 parent_idx,
+				 promotion_type,
+				 comment,
+				 input_date,
+				 reg_id,
+				 reg_date,
+				 opinion_type,
+				 customer_idx
+			) VALUES(
+				#parent_idx#,
+				#promotion_type#,
+				#comment#,
+				#input_date#,
+				#reg_id#,
+				now(),
+				#opinion_type#,
+				#customer_idx#
+			);			
+		]]>
+	</insert>
+	
+	<delete id="CRMInviteDAO.deleteOpinion" parameterClass="int">
+		<![CDATA[
+			DELETE 
+			FROM tbl_crm_promotion_info
+			WHERE idx = #idx#
+		]]>
+	</delete>
+	
+	<delete id="CRMInviteDAO.deleteAllOpinion" parameterClass="int">
+		<![CDATA[
+			DELETE 
+			FROM tbl_crm_promotion_info
+			WHERE parent_idx = #parent_idx#
+		]]>
+	</delete>
+	
+	<select id="CRMInviteDAO.getFile" parameterClass="com.mice.crm.service.FileVO" resultMap="FileList" >
+		<![CDATA[
+		 	select T2.idx, T1.atch_file_id, T2.crm_event_idx, T2.type, T1.file_stre_cours, T1.orignl_file_nm, T1.file_size
+			from comtnfiledetail as T1 inner join tbl_crm_event_attach_file_info as T2 
+				on T1.atch_file_id	= T2.file_id
+			where crm_event_idx = #crm_event_idx# and T2.type = #type#
+		]]>
+	</select>
+	
+	<select id="CRMInviteDAO.getLastOpinionIdx" resultClass="int" >
+		<![CDATA[
+			SELECT MAX(idx) as idx FROM tbl_crm_promotion_info
+		]]>
+	</select>
+
+	<select id="CRMInviteDAO.getCustomerName" resultClass="String" parameterClass="int">
+		<![CDATA[
+			select name_ko from tbl_crm_customer_info where idx = #customer_idx#
+		]]>
+	</select>
+	
+	<select id="CRMInviteDAO.getOrganizerName" resultClass="String" parameterClass="int">
+		<![CDATA[
+			select name_ko from tbl_crm_organizer_info where idx = #idx#
+		]]>
+	</select>
+
+	<select id="CRMInviteDAO.getMaxOrganizerIdx" resultClass="int">
+		<![CDATA[
+			select MAX(idx) from tbl_crm_organizer_info
+		]]>
+	</select>
+	
+	<delete id="CrmInviteDAO.deletePromotionFile" parameterClass="String">
+		<![CDATA[
+			DELETE FROM tbl_crm_promotion_attach_file WHERE file_id = #file_id#
+		]]>
+	</delete>
+</sqlMap>

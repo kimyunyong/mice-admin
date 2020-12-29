@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ArchiveDAO">
+
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="ArchiveCode" type="com.mice.cvb.archive.service.ArchiveCode"/>
+	<typeAlias  alias="ArchiveCodeVO" type="com.mice.cvb.archive.service.ArchiveCodeVO"/>
+	<typeAlias  alias="ArchiveInfo" type="com.mice.cvb.archive.service.ArchiveInfo"/>
+	<typeAlias  alias="ArchiveInfoVO" type="com.mice.cvb.archive.service.ArchiveInfoVO"/>
+	<typeAlias  alias="ArchiveRelation" type="com.mice.cvb.archive.service.ArchiveRelation"/>
+	<typeAlias  alias="ArchiveDownloadLogVO" type="com.mice.cvb.archive.service.ArchiveDownloadLogVO"/>
+	
+	<resultMap id="archiveInfoList" class="ArchiveInfoVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="writer_id" column="writer_id" columnIndex="2"/>
+		<result property="reg_date" column="reg_date" columnIndex="3"/>
+		<result property="codes" column="codes" columnIndex="4"/>
+		<result property="title_ko" column="title_ko" columnIndex="5"/>
+		<result property="file_name" column="file_name" columnIndex="6"/>
+		<result property="file_ext" column="file_ext" columnIndex="7"/>
+		<result property="thumb_min_file_path" column="thumb_min_file_path" columnIndex="8"/>
+		<result property="thumb_max_file_path" column="thumb_max_file_path" columnIndex="9"/>
+		<result property="code_names" column="code_names" columnIndex="8"/>
+		
+	</resultMap>
+	
+	<resultMap id="archiveInfoDetail" class="ArchiveInfoVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="writer_id" column="writer_id" columnIndex="2"/>
+		<result property="reg_date" column="reg_date" columnIndex="3"/>
+		<result property="codes" column="codes" columnIndex="4"/>
+		<result property="title_ko" column="title_ko" columnIndex="5"/>
+		<result property="title_en" column="title_en" columnIndex="6"/>
+		<result property="keyword_ko" column="keyword_ko" columnIndex="7"/>
+		<result property="keyword_en" column="keyword_en" columnIndex="8"/>
+		<result property="comment_ko" column="comment_ko" columnIndex="9"/>
+		<result property="comment_en" column="comment_en" columnIndex="10"/>
+		<result property="thumb_min_file_path" column="thumb_min_file_path" columnIndex="11"/>
+		<result property="thumb_max_file_path" column="thumb_max_file_path" columnIndex="12"/>
+		<result property="file_ext" column="file_ext" columnIndex="13"/>
+		<result property="file_name" column="file_name" columnIndex="14"/>
+	</resultMap>
+	
+	<resultMap id="archiveCodeList" class="ArchiveCodeVO">
+		
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="sort_no" column="sort_no" columnIndex="2"/>
+		<result property="code_name" column="code_name" columnIndex="3"/>
+		<result property="reg_date" column="reg_date" columnIndex="4"/>
+		<result property="expire_id" column="expire_id" columnIndex="5"/>
+	</resultMap>
+    
+    <resultMap id="archiveRelation" class="ArchiveRelation">
+    	<result property="archive_idx" column="archive_idx" columnIndex="1"/>
+		<result property="code_idx" column="code_idx" columnIndex="2"/>
+    </resultMap>
+    
+    <resultMap id="archiveLog" class="ArchiveDownloadLogVO">
+    	<result property="idx" column="idx" columnIndex="1"/>
+		<result property="archive_idx" column="archive_idx" columnIndex="2"/>
+		<result property="purpose_text" column="purpose_text" columnIndex="3"/>
+		<result property="reg_date" column="reg_date" columnIndex="3"/>
+		<result property="ip" column="ip" columnIndex="4"/>
+		<result property="title_ko" column="title_ko" columnIndex="5"/>
+    </resultMap>
+    <select id="ArchiveDAO.relationList" parameterClass="java.lang.Integer" resultMap="archiveRelation">
+    	<![CDATA[
+    	SELECT
+    	archive_idx,
+    	code_idx
+    	FROM tbl_archive_relation
+    	WHERE archive_idx = #archive_idx#
+    	]]>
+    </select>
+    
+    <update id="ArchiveDAO.infoDelete" parameterClass="ArchiveInfoVO">
+    	<![CDATA[
+    		UPDATE tbl_archive_info SET
+    		expire_id = #expire_id#, expire_date = SYSDATE()
+    		WHERE idx=#idx#
+    	]]>
+    </update>
+    
+    <update id="ArchiveDAO.infoUpdate" parameterClass="ArchiveInfoVO">
+    	<![CDATA[
+    		UPDATE tbl_archive_info SET
+			title_ko = #title_ko#,
+			title_en = #title_en#,
+			keyword_ko = #keyword_ko#,
+			keyword_en = #keyword_en#,
+			comment_ko = #comment_ko#,
+			comment_en = #comment_en#,
+			file_name = #file_name#,
+			file_ext = #file_ext#,
+			codes_idx = #codes_idx#,
+			writer_id = #writer_id#,
+			update_date = SYSDATE(),
+			thumb_min_file_path = #thumb_min_file_path#,
+			thumb_max_file_path = #thumb_max_file_path#
+			WHERE idx = #idx#;
+    	]]>
+    	<isNotEmpty property="codes">
+    		<![CDATA[
+    		DELETE FROM tbl_archive_relation WHERE archive_idx=#idx#;
+	    	call splitter(#codes#,',');
+	    	INSERT INTO tbl_archive_relation (archive_idx, code_idx)
+	    	SELECT #idx#, split_value
+	    	FROM splitResults order by split_value;
+	    	UPDATE tbl_archive_info SET codes_idx=@archive_idx WHERE idx=#idx#
+    		]]>
+    	</isNotEmpty>
+    </update>
+    <select id="ArchiveDAO.infoList" resultMap="archiveInfoList">
+    	<![CDATA[
+    	SELECT
+    	idx,
+    	codes_idx as codes,
+    	(SELECT group_concat((SELECT code_name FROM tbl_archive_code WHERE idx=ar.code_idx) separator ',') FROM tbl_archive_relation ar WHERE ar.archive_idx=info.idx)  as code_names,
+    	title_ko,
+    	reg_date,
+    	writer_id,
+    	file_name,
+    	file_ext,
+    	thumb_min_file_path,
+    	thumb_max_file_path
+    	FROM tbl_archive_info info
+    	WHERE 1=1 AND expire_date>SYSDATE()
+    	AND 1 = CASE WHEN #search_code# = '' THEN 1 ELSE CASE WHEN (SELECT 1 FROM tbl_archive_relation WHERE archive_idx=info.idx AND code_idx=CONCAT('%',#search_code#,'%')) = 1 THEN 1 ELSE 0 END END
+    	]]>
+        <isEqual property="searchCnd" compareValue="0">
+			<isNotEmpty prepend="AND" property="searchWrd">
+        		title_ko LIKE CONCAT('%', #searchWrd#,'%')
+        	</isNotEmpty>
+		</isEqual> 
+        <isEqual property="searchCnd" compareValue="1">
+			<isNotEmpty prepend="AND" property="searchWrd">
+        		writer_id LIKE CONCAT('%', #searchWrd#,'%')
+        	</isNotEmpty>
+		</isEqual>
+		<![CDATA[
+        order by idx desc
+        LIMIT #recordCountPerPage# OFFSET #firstIndex#
+        ]]> 
+    </select>
+    <select id="ArchiveDAO.infoListCount" parameterClass="ArchiveInfoVO" resultClass="java.lang.Integer">
+       	<![CDATA[
+       	SELECT COUNT(*)
+        FROM tbl_archive_info
+    	WHERE 1=1  AND expire_date>SYSDATE()     	]]>	
+        <isEqual property="searchCnd" compareValue="0">
+			<isNotEmpty prepend="AND" property="searchWrd">
+        		title_ko LIKE CONCAT('%', #searchWrd#,'%')
+        	</isNotEmpty>
+		</isEqual> 
+        <isEqual property="searchCnd" compareValue="1">
+			<isNotEmpty prepend="AND" property="searchWrd">
+        		title_ko LIKE CONCAT('%', #searchWrd#,'%')
+        	</isNotEmpty>
+		</isEqual>
+    	
+
+    </select> 
+    <select id="ArchiveDAO.infoDetail" resultMap="archiveInfoDetail">
+    	<![CDATA[
+    	SELECT
+    	idx,
+    	title_ko,
+		title_en,
+		keyword_ko,
+		keyword_en,
+		comment_ko,
+		comment_en,
+		codes_idx as codes,
+		reg_date,
+		expire_date,
+		expire_id,
+		writer_id,
+		update_date,
+		file_ext,
+		file_name,
+		thumb_min_file_path,
+		thumb_max_file_path
+    	FROM tbl_archive_info
+    	WHERE 1=1
+    	AND idx = #idx# AND expire_date > SYSDATE()
+    	]]>
+    </select>
+    
+    <insert id="ArchiveDAO.infoInsert" parameterClass="ArchiveInfoVO">
+    	<![CDATA[
+    	
+    	INSERT INTO tbl_archive_info (
+    	title_ko,
+		title_en,
+		keyword_ko,
+		keyword_en,
+		comment_ko,
+		comment_en,
+		codes_idx,
+		reg_date,
+		writer_id,
+		thumb_min_file_path,
+		thumb_max_file_path,
+		file_name,
+		file_ext
+    	) VALUES (
+    	#title_ko#,
+    	#title_en#,
+    	#keyword_ko#,
+    	#keyword_en#,
+    	#comment_ko#,
+    	#comment_en#,
+    	null,
+    	SYSDATE(),
+    	#writer_id#,
+    	#thumb_min_file_path#,
+    	#thumb_min_file_path#,
+    	#file_name#,
+    	#file_ext#
+    	);
+    	]]>
+    	<isNotEmpty property="codes">
+    		<![CDATA[
+	    	SET @archive_idx := LAST_INSERT_ID();
+	    	call splitter(#codes#,',');
+	    	INSERT INTO tbl_archive_relation (archive_idx, code_idx)
+	    	SELECT @archive_idx, split_value
+	    	FROM splitResults order by split_value;
+	    	UPDATE tbl_archive_info SET codes_idx=@archive_idx WHERE idx=#idx#
+    		]]>
+    	</isNotEmpty>
+    </insert>
+ 	<select id="ArchiveDAO.codeList" resultClass="com.mice.cvb.archive.service.ArchiveCodeVO">
+ 		<![CDATA[
+ 		SELECT 
+		idx,
+		sort_no,
+		code_name,
+		code_name_en,
+		reg_date,
+		expire_id
+		FROM tbl_archive_code WHERE 1=1 AND expire_date > SYSDATE()
+ 		]]>
+ 	</select>
+ 	
+ 	<select id="ArchiveDAO.codeSortNo" resultClass="java.lang.Integer">
+ 		<![CDATA[
+ 			SELECT (case when (select count(*) from tbl_archive_code WHERE expire_date>SYSDATE()) = 0 then 1 else (SELECT sort_no + 1 FROM tbl_archive_code where expire_date>SYSDATE() order by sort_no desc limit 0, 1) end) as sort_no 
+ 		]]>
+ 	</select>
+ 	<insert id="ArchiveDAO.codeInsert" parameterClass="ArchiveCodeVO">
+ 		<![CDATA[
+ 		INSERT INTO tbl_archive_code (sort_no, code_name, reg_date, code_name_en)
+ 		VALUES (#sort_no#, #code_name#, SYSDATE(), #code_name_en#)
+ 		]]>
+ 	</insert>
+ 	<update id="ArchiveDAO.codeUpdate" parameterClass="ArchiveCodeVO">
+ 		<![CDATA[
+ 		UPDATE tbl_archive_code SET
+ 		code_name = #code_name#,
+ 		code_name_en = #code_name_en#
+ 		WHERE idx= #idx#
+ 		AND expire_date>SYSDATE()
+ 		]]>
+ 	</update>
+ 	<update id="ArchiveDAO.codeSortUpdate" parameterClass="ArchiveCodeVO">
+ 		<![CDATA[
+ 		SET @ROWNUM := 0;
+ 		UPDATE tbl_archive_code SET
+ 		sort_no = @ROWNUM := @ROWNUM + 1
+		WHERE expire_date>SYSDATE();
+ 		]]>
+ 	</update>
+ 	<update id="ArchiveDAO.codeDelete" parameterClass="ArchiveCodeVO">
+ 		<![CDATA[
+ 		UPDATE tbl_archive_code SET expire_id=#expire_id#, expire_date=SYSDATE()
+ 		WHERE idx= #idx#
+ 		]]>
+ 	</update>
+ 	<select id="ArchiveDAO.logList" parameterClass="ArchiveDownloadLogVO" resultMap="archiveLog">
+ 		<![CDATA[
+ 		SELECT
+ 		log.idx,
+		log.archive_idx,
+		log.purpose_text,
+		log.reg_date,
+		log.ip,
+		ai.title_ko
+		FROM tbl_archive_download_log log left join tbl_archive_info ai ON log.archive_idx=ai.idx WHERE 1=1
+		]]>
+		 <isEqual property="searchCnd" compareValue="0">
+			<isNotEmpty prepend="AND" property="searchWrd">
+			<![CDATA[
+        		ai.title_ko LIKE CONCAT('%',#searchWrd#,'%')
+        	]]> 
+        	</isNotEmpty>
+		</isEqual> 
+		<![CDATA[
+        order by idx desc
+        LIMIT #recordCountPerPage# OFFSET #firstIndex#
+        ]]> 
+ 	</select>
+ 	<select id="ArchiveDAO.logListCount" parameterClass="ArchiveDownloadLogVO" resultClass="java.lang.Integer">
+ 		<![CDATA[
+ 		SELECT
+ 		COUNT(*)
+		FROM tbl_archive_download_log log left join tbl_archive_info ai ON log.archive_idx=ai.idx WHERE 1=1
+		]]>
+		 <isEqual property="searchCnd" compareValue="0">
+			<isNotEmpty prepend="AND" property="searchWrd">
+			<![CDATA[
+        		ai.title_ko LIKE CONCAT('%',#searchWrd#,'%')
+        	]]>
+        	</isNotEmpty>
+		</isEqual>  
+ 	</select>
+</sqlMap>

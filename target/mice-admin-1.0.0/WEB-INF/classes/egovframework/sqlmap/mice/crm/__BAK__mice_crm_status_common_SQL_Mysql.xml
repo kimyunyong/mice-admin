@@ -1,0 +1,1601 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="EventStatusDAO">
+
+	<typeAlias  alias="EventStatusFacilityVO" type="com.mice.crm.service.EventStatusFacilityVO"/>
+	<typeAlias  alias="EventStatusDayVO" type="com.mice.crm.service.EventStatusDayVO"/>
+
+	<resultMap id="FacilityList" class="com.mice.crm.service.EventStatusFacilityVO">
+		<result property="idx" column="idx" columnIndex="1"/>
+		<result property="type_ko" column="type_ko" columnIndex="2"/>
+		<result property="value" column="value" columnIndex="3"/>
+		<result property="sorted_no" column="sorted_no" columnIndex="4"/>
+	</resultMap>
+	
+
+	<resultMap id="StatusDay" class="com.mice.crm.service.EventStatusDayVO">
+		<result property="rent_time_am" column="rent_time_am" columnIndex="1"/>
+		<result property="rent_time_pm" column="rent_time_pm" columnIndex="2"/>
+		<result property="rent_time_night" column="rent_time_night" columnIndex="3"/>
+		
+		<result property="yyyymmdd" column="yyyymmdd" columnIndex="4"/>
+		<result property="fac_idx" column="fac_idx" columnIndex="5"/>
+		<result property="fac_name" column="fac_name" columnIndex="6"/>
+	</resultMap>
+	
+	
+	
+	<resultMap id="EventTotalSearch" class="com.mice.crm.service.EventTotalSearchVO">
+		<result property="cus_idx" column="cus_idx" columnIndex="1"/>
+		<result property="name_ko" column="name_ko" columnIndex="2"/>
+		<result property="tel_no" column="tel_no" columnIndex="3"/>
+		<result property="phone_no" column="phone_no" columnIndex="4"/>
+		<result property="email" column="email" columnIndex="5"/>
+		<result property="manager_id" column="manager_id" columnIndex="6"/>
+		<result property="newsletter" column="newsletter" columnIndex="7"/>
+		<result property="expire_date" column="expire_date" columnIndex="8"/>
+		<result property="country" column="country" columnIndex="9"/>
+		<result property="reg_name" column="reg_name" columnIndex="10"/>
+		
+		<result property="position" column="position" columnIndex="11"/>
+		<result property="address_ko" column="address_ko" columnIndex="12"/>
+		<result property="etc" column="etc" columnIndex="13"/>
+	</resultMap>
+
+
+
+
+ 	<select id="EventStatusDAO.listTotalSearchSMS" parameterClass="com.mice.crm.service.EventTotalSearchVO" resultClass="com.mice.crm.service.EventTotalSearchVO" >
+					
+			<![CDATA[
+			select * from (		
+				SELECT 
+					'U' as excel_kind
+					,idx cus_idx
+					,name_ko
+					,tel_no
+					,phone_no
+					,email
+					,address_ko
+					,position
+					,etc
+					,manager_id
+					,newsletter
+					,expire_date
+					,IFNULL(country, '') country
+					,(select user_nm from comvnusermaster where 1=1 and USER_ID = reg_id) as reg_name
+					
+		
+					,0 as org_idx
+					,0 as org_type_idx
+					,'' as org_type_name 
+					,'' as org_zip_code
+					,'' as org_address_ko
+					,'' as org_address_ko_full
+					,'' as oraganizer_name
+					
+					,0 as event_idx
+					,'' as event_name
+					,'' as event_staff_id
+					,'' as event_grant_cost
+					,'' as event_st_date 
+					,'' as event_ed_date
+					,'' as event_theme
+					,'' as event_staff_name
+					,'' as event_theme_name				
+					
+				from tbl_crm_customer_info 
+			) info
+			where expire_date > NOW() and phone_no != ''
+			]]>
+			
+				<isNotEmpty property="searchExcel"  >
+				
+					<isEqual property="searchExcel" compareValue="select">
+						 and cus_idx
+				 		<iterate prepend="IN" property="searchNum" open="(" close=")" conjunction=","> 
+				       		#searchNum[]# 
+				     	</iterate>
+					</isEqual>	
+					
+					<isEqual property="searchExcel" compareValue="search">
+					
+											
+						<isNotEmpty property="searchUserName" prepend="AND" >
+								name_ko like concat('%',#searchUserName#,'%')
+						</isNotEmpty>
+						<isNotEmpty property="searchUserAddr" prepend="AND" >
+								address_ko like concat('%',#searchUserAddr#,'%')
+						</isNotEmpty>
+						<isNotEmpty property="searchUserPosition" prepend="AND" >
+								position like concat('%',#searchUserPosition#,'%')
+						</isNotEmpty>
+						<isNotEmpty property="searchUserEtc" prepend="AND" >
+								etc like concat('%',#searchUserEtc#,'%')
+						</isNotEmpty>
+						
+						
+						
+						
+				 		<isNotEmpty property="searchNewsLetter" prepend="AND" >
+				 			<isEqual property="searchNewsLetter" compareValue="null">
+									(newsletter = '' or newsletter is null)
+							</isEqual>
+							<isNotEqual property="searchNewsLetter" compareValue="null">
+									newsletter = #searchNewsLetter#
+							</isNotEqual>
+						</isNotEmpty>
+				 		<isNotEmpty property="searchCountry" prepend="AND" >
+				 			<isEqual property="searchCountry" compareValue="null">
+									(country = '' or country is null)
+							</isEqual>
+							<isNotEqual property="searchCountry" compareValue="null">
+									country = #searchCountry#
+							</isNotEqual>
+						</isNotEmpty>
+						<isNotEmpty property="searchRegName" prepend="AND" >
+								reg_name like concat('%',#searchRegName#,'%')
+						</isNotEmpty>		
+				
+				
+				
+				
+				
+						<isNotEmpty property="searchEvtName" prepend="AND" >
+						<![CDATA[
+							 ( 
+							select count(crm_event.name_ko)
+							from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+							inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+							inner join view_tbl_crm_event  crm_event
+							on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+							
+							where cus.idx = info.cus_idx and cus.expire_date > NOW() and crm_event.name_ko like concat('%',#searchEvtName#,'%')
+							) > 0 
+						]]>
+						</isNotEmpty>
+						<isNotEmpty property="searchSdate">
+				 		<isNotEmpty property="searchEdate" prepend="AND" >
+				 		<![CDATA[
+							 ( 
+							select count(crm_event.name_ko)
+							from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+							inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+							inner join view_tbl_crm_event  crm_event
+							on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+							
+							where cus.idx = info.cus_idx and cus.expire_date > NOW() 
+							and ( crm_event.event_st_date between #searchSdate# and #searchEdate# or crm_event.event_ed_date between #searchSdate# and #searchEdate#   )
+							) > 0 
+						]]>
+						</isNotEmpty>	
+						</isNotEmpty>	
+				 		<isNotEmpty property="searchMngName" prepend="AND" >
+				 		<![CDATA[
+							 ( 
+							select count(crm_event.name_ko)
+							from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+							inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+							inner join view_tbl_crm_event  crm_event
+							on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+							
+							where cus.idx = info.cus_idx and cus.expire_date > NOW()  
+							and  crm_event.attract_staff_name like  concat('%',#searchMngName#,'%') 
+							) > 0 
+						]]>
+						</isNotEmpty>
+						<isNotEmpty property="searchEvtThemeList" prepend="AND" >
+						<![CDATA[
+							 ( 
+							select count(crm_event.name_ko)
+							from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+							inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+							inner join 
+							(
+								select *
+						]]>
+								<![CDATA[
+								,(
+									select count(tm.event_theme) from tbl_crm_event_info_theme tm where tm.crm_event_idx = crm_event.idx and tm.event_theme 
+								]]>
+						 	 		<iterate prepend="IN" property="searchEvtThemeList" open="(" close=")" conjunction=","> 
+							       		#searchEvtThemeList[]# 
+							     	</iterate>	
+								) theme_cnt		
+						
+						<![CDATA[
+									 from view_tbl_crm_event crm_event
+							
+							) crm_event
+							on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+							where cus.idx = info.cus_idx and cus.expire_date > NOW() and theme_cnt > 0 
+						
+							) > 0 
+						]]>
+						</isNotEmpty>
+						
+						
+						
+						
+						
+						
+						<isNotEmpty property="searchArea" prepend="AND" >
+						<![CDATA[
+							 ( 
+							select count(crm_event.name_ko)
+							from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+							inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+							inner join view_tbl_crm_event  crm_event
+							on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+							where cus.idx = info.cus_idx and cus.expire_date > NOW()  and  org_info.address_ko like concat('%',#searchArea#,'%')
+							) > 0
+							
+							
+						]]>
+						</isNotEmpty>	
+						<isNotEmpty property="searchOrgList" prepend="AND" >
+							<![CDATA[
+							 ( 
+							select count(crm_event.name_ko)
+							from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+							inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+							inner join view_tbl_crm_event  crm_event
+							on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+							]]>
+							where cus.idx = info.cus_idx and cus.expire_date > NOW() and org_info.type_idx 
+				 	 		<iterate prepend="IN" property="searchOrgList" open="(" close=")" conjunction=","> 
+					       		#searchOrgList[]# 
+					     	</iterate>
+							) > 0 
+						</isNotEmpty>
+						<isNotEmpty property="searchSosoc" prepend="AND" >
+						<![CDATA[
+							 ( 
+							select count(crm_event.name_ko)
+							from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+							inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+							inner join view_tbl_crm_event  crm_event
+							on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+							where cus.idx = info.cus_idx and cus.expire_date > NOW() and org_info.name_ko like concat('%',#searchSosoc#,'%')
+							) > 0
+				
+						]]>
+						</isNotEmpty>		
+						
+						
+		
+					</isEqual>	
+						
+					<isEqual property="searchExcel" compareValue="all">
+						<![CDATA[
+						 and 1=1 
+						]]>
+					</isEqual>	
+					
+				</isNotEmpty>
+		
+		
+		<isEmpty property="searchOrder">
+		order by cus_idx desc, excel_kind desc 
+		</isEmpty>
+		
+		<isNotEmpty property="searchOrder">
+			<isEqual property="searchOrder" compareValue="name_asc">
+					order by name_ko asc
+			</isEqual>
+			<isEqual property="searchOrder" compareValue="name_desc">
+					order by name_ko desc
+			</isEqual>		
+		</isNotEmpty>
+
+	</select>
+	
+		
+
+
+
+	<insert id="EventStatusDAO.insertExcelSearch" parameterClass="com.mice.crm.service.EventTotalSearchVO">
+		<![CDATA[
+		INSERT INTO tbl_totalsearch_excel_file_info(type, search_cnt, search_params, search_title ,file_id, file_path, file_name, file_size, reg_id, reg_date) 
+		VALUES ('excel_file',#search_cnt#, #search_params#, #search_title#, #file_id#, #file_path#, #file_name#, #file_size#, #reg_id#, NOW())
+		]]>
+	</insert>
+
+
+ 	<select id="EventStatusDAO.listEventTotalSearchExcel" parameterClass="com.mice.crm.service.EventTotalSearchVO" resultClass="com.mice.crm.service.EventTotalSearchVO" >
+					
+			<![CDATA[
+			select * from (		
+				SELECT 
+					'U' as excel_kind
+					,idx cus_idx
+					,name_ko
+					,tel_no
+					,phone_no
+					,email
+					,address_ko
+					,position
+					,etc
+					,manager_id
+					,newsletter
+					,expire_date
+					,IFNULL(country, '') country
+					,(select user_nm from comvnusermaster where 1=1 and USER_ID = reg_id) as reg_name
+					
+		
+					,0 as org_idx
+					,0 as org_type_idx
+					,'' as org_type_name 
+					,'' as org_zip_code
+					,'' as org_address_ko
+					,'' as org_address_ko_full
+					,'' as oraganizer_name
+					
+					,0 as event_idx
+					,'' as event_name
+					,'' as event_staff_id
+					,'' as event_grant_cost
+					,'' as event_st_date 
+					,'' as event_ed_date
+					,'' as event_theme
+					,'' as event_staff_name
+					,'' as event_theme_name				
+					
+				from tbl_crm_customer_info 
+			) info
+			where expire_date > NOW()
+			]]>
+			
+				<isNotEmpty property="searchExcel"  >
+				
+					<isEqual property="searchExcel" compareValue="select">
+						 and cus_idx
+				 		<iterate prepend="IN" property="searchNum" open="(" close=")" conjunction=","> 
+				       		#searchNum[]# 
+				     	</iterate>
+					</isEqual>	
+					
+					<isEqual property="searchExcel" compareValue="search">
+					
+											
+						<isNotEmpty property="searchUserName" prepend="AND" >
+								name_ko like concat('%',#searchUserName#,'%')
+						</isNotEmpty>
+						<isNotEmpty property="searchUserAddr" prepend="AND" >
+								address_ko like concat('%',#searchUserAddr#,'%')
+						</isNotEmpty>
+						<isNotEmpty property="searchUserPosition" prepend="AND" >
+								position like concat('%',#searchUserPosition#,'%')
+						</isNotEmpty>
+						<isNotEmpty property="searchUserEtc" prepend="AND" >
+								etc like concat('%',#searchUserEtc#,'%')
+						</isNotEmpty>
+						
+						
+						
+						
+				 		<isNotEmpty property="searchNewsLetter" prepend="AND" >
+				 			<isEqual property="searchNewsLetter" compareValue="null">
+									(newsletter = '' or newsletter is null)
+							</isEqual>
+							<isNotEqual property="searchNewsLetter" compareValue="null">
+									newsletter = #searchNewsLetter#
+							</isNotEqual>
+						</isNotEmpty>
+				 		<isNotEmpty property="searchCountry" prepend="AND" >
+				 			<isEqual property="searchCountry" compareValue="null">
+									(country = '' or country is null)
+							</isEqual>
+							<isNotEqual property="searchCountry" compareValue="null">
+									country = #searchCountry#
+							</isNotEqual>
+						</isNotEmpty>
+						<isNotEmpty property="searchRegName" prepend="AND" >
+								reg_name like concat('%',#searchRegName#,'%')
+						</isNotEmpty>		
+				
+				
+				
+				
+				
+						<isNotEmpty property="searchEvtName" prepend="AND" >
+						<![CDATA[
+							 ( 
+							select count(crm_event.name_ko)
+							from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+							inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+							inner join view_tbl_crm_event  crm_event
+							on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+							
+							where cus.idx = info.cus_idx and cus.expire_date > NOW() and crm_event.name_ko like concat('%',#searchEvtName#,'%')
+							) > 0 
+						]]>
+						</isNotEmpty>
+						<isNotEmpty property="searchSdate">
+				 		<isNotEmpty property="searchEdate" prepend="AND" >
+				 		<![CDATA[
+							 ( 
+							select count(crm_event.name_ko)
+							from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+							inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+							inner join view_tbl_crm_event  crm_event
+							on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+							
+							where cus.idx = info.cus_idx and cus.expire_date > NOW() 
+							and ( crm_event.event_st_date between #searchSdate# and #searchEdate# or crm_event.event_ed_date between #searchSdate# and #searchEdate#   )
+							) > 0 
+						]]>
+						</isNotEmpty>	
+						</isNotEmpty>	
+				 		<isNotEmpty property="searchMngName" prepend="AND" >
+				 		<![CDATA[
+							 ( 
+							select count(crm_event.name_ko)
+							from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+							inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+							inner join view_tbl_crm_event  crm_event
+							on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+							
+							where cus.idx = info.cus_idx and cus.expire_date > NOW()  
+							and  crm_event.attract_staff_name like  concat('%',#searchMngName#,'%') 
+							) > 0 
+						]]>
+						</isNotEmpty>
+						<isNotEmpty property="searchEvtThemeList" prepend="AND" >
+						<![CDATA[
+							 ( 
+							select count(crm_event.name_ko)
+							from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+							inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+							inner join 
+							(
+								select *
+						]]>
+								<![CDATA[
+								,(
+									select count(tm.event_theme) from tbl_crm_event_info_theme tm where tm.crm_event_idx = crm_event.idx and tm.event_theme 
+								]]>
+						 	 		<iterate prepend="IN" property="searchEvtThemeList" open="(" close=")" conjunction=","> 
+							       		#searchEvtThemeList[]# 
+							     	</iterate>	
+								) theme_cnt		
+						
+						<![CDATA[
+									 from view_tbl_crm_event crm_event
+							
+							) crm_event
+							on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+							where cus.idx = info.cus_idx and cus.expire_date > NOW() and theme_cnt > 0 
+						
+							) > 0 
+						]]>
+						</isNotEmpty>
+						
+						
+						
+						
+						
+						
+						<isNotEmpty property="searchArea" prepend="AND" >
+						<![CDATA[
+							 ( 
+							select count(crm_event.name_ko)
+							from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+							inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+							inner join view_tbl_crm_event  crm_event
+							on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+							where cus.idx = info.cus_idx and cus.expire_date > NOW()  and  org_info.address_ko like concat('%',#searchArea#,'%')
+							) > 0
+							
+							
+						]]>
+						</isNotEmpty>	
+						<isNotEmpty property="searchOrgList" prepend="AND" >
+							<![CDATA[
+							 ( 
+							select count(crm_event.name_ko)
+							from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+							inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+							inner join view_tbl_crm_event  crm_event
+							on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+							]]>
+							where cus.idx = info.cus_idx and cus.expire_date > NOW() and org_info.type_idx 
+				 	 		<iterate prepend="IN" property="searchOrgList" open="(" close=")" conjunction=","> 
+					       		#searchOrgList[]# 
+					     	</iterate>
+							) > 0 
+						</isNotEmpty>
+						<isNotEmpty property="searchSosoc" prepend="AND" >
+						<![CDATA[
+							 ( 
+							select count(crm_event.name_ko)
+							from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+							inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+							inner join view_tbl_crm_event  crm_event
+							on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+							where cus.idx = info.cus_idx and cus.expire_date > NOW() and org_info.name_ko like concat('%',#searchSosoc#,'%')
+							) > 0
+				
+						]]>
+						</isNotEmpty>		
+						
+						
+		
+					</isEqual>	
+						
+					<isEqual property="searchExcel" compareValue="all">
+						<![CDATA[
+						 and 1=1 
+						]]>
+					</isEqual>	
+					
+				</isNotEmpty>
+			
+		
+		
+		<![CDATA[
+		union 
+		
+		]]>
+			<![CDATA[
+			SELECT * FROM 
+			(
+				select
+				'E' as excel_kind
+				,cus.idx cus_idx
+				,cus.name_ko
+				,cus.tel_no
+				,cus.phone_no
+				,cus.email
+				,cus.address_ko
+				,cus.position
+				,cus.etc
+				
+				,cus.manager_id
+				,cus.newsletter
+				,cus.expire_date
+				,IFNULL(cus.country, '') country			
+				,(select user_nm from comvnusermaster where 1=1 and USER_ID = cus.reg_id) as reg_name
+	
+				,org_info.idx as org_idx
+				,org_info.type_idx as org_type_idx
+				,(select value from tbl_crm_code_info where idx=org_info.type_idx) as org_type_name 
+				,org_info.zip_code as org_zip_code
+				,org_info.address_ko as org_address_ko
+				,org_info.address_ko as org_address_ko_full
+				,org_info.name_ko as oraganizer_name
+				
+				,crm_event.idx as event_idx
+				,crm_event.name_ko as event_name
+				,crm_event.attract_staff_id as event_staff_id
+				,crm_event.attract_grant_cost event_grant_cost
+				,crm_event.event_st_date 
+				,crm_event.event_ed_date
+				,crm_event.event_theme
+				,crm_event.attract_staff_name as event_staff_name
+				,(
+				SELECT GROUP_CONCAT( (select value from tbl_crm_code_info cd where cd.idx = tm.event_theme)  SEPARATOR ',') 
+				FROM tbl_crm_event_info_theme tm
+				WHERE tm.crm_event_idx = crm_event.idx
+				) event_theme_name
+					
+				from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel 
+				on cus.idx = org_rel.customer_idx
+				inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+				inner join view_tbl_crm_event  crm_event
+				on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx	
+			) total_search
+			where expire_date > NOW() 
+			]]>
+
+			
+				<isNotEmpty property="searchExcel"  >
+				
+					<isEqual property="searchExcel" compareValue="select">
+						 and cus_idx
+				 		<iterate prepend="IN" property="searchNum" open="(" close=")" conjunction=","> 
+				       		#searchNum[]# 
+				     	</iterate>
+					</isEqual>	
+					
+					<isEqual property="searchExcel" compareValue="search">
+					
+															
+				
+						<isNotEmpty property="searchUserName" prepend="AND" >
+								name_ko like concat('%',#searchUserName#,'%')
+						</isNotEmpty>
+						<isNotEmpty property="searchUserAddr" prepend="AND" >
+								address_ko like concat('%',#searchUserAddr#,'%')
+						</isNotEmpty>
+						<isNotEmpty property="searchUserPosition" prepend="AND" >
+								position like concat('%',#searchUserPosition#,'%')
+						</isNotEmpty>
+						<isNotEmpty property="searchUserEtc" prepend="AND" >
+								etc like concat('%',#searchUserEtc#,'%')
+						</isNotEmpty>
+						
+						
+						
+						
+				 		<isNotEmpty property="searchNewsLetter" prepend="AND" >
+				 			<isEqual property="searchNewsLetter" compareValue="null">
+									(newsletter = '' or newsletter is null)
+							</isEqual>
+							<isNotEqual property="searchNewsLetter" compareValue="null">
+									newsletter = #searchNewsLetter#
+							</isNotEqual>
+						</isNotEmpty>
+				 		<isNotEmpty property="searchCountry" prepend="AND" >
+				 			<isEqual property="searchCountry" compareValue="null">
+									(country = '' or country is null)
+							</isEqual>
+							<isNotEqual property="searchCountry" compareValue="null">
+									country = #searchCountry#
+							</isNotEqual>
+						</isNotEmpty>
+						<isNotEmpty property="searchRegName" prepend="AND" >
+								reg_name like concat('%',#searchRegName#,'%')
+						</isNotEmpty>	
+				
+						
+						
+						
+						<isNotEmpty property="searchEvtName" prepend="AND" >
+								event_name like concat('%',#searchEvtName#,'%')
+						</isNotEmpty>	
+						<isNotEmpty property="searchSdate">
+							<isNotEmpty property="searchEdate" prepend="AND" >
+									( 
+									event_st_date between #searchSdate# and #searchEdate# or 
+									event_ed_date between #searchSdate# and #searchEdate#
+									)
+							</isNotEmpty>	
+						</isNotEmpty>		
+						<isNotEmpty property="searchMngName" prepend="AND" >
+								event_staff_name like concat('%',#searchMngName#,'%') 
+						</isNotEmpty>	
+				    	<isNotEmpty prepend="AND" property="searchEvtThemeList">
+				    	
+				 				<![CDATA[
+									( select count(tm.event_theme) from tbl_crm_event_info_theme tm where tm.crm_event_idx = event_idx and tm.event_theme 
+								]]>
+						 	 		<iterate prepend="IN" property="searchEvtThemeList" open="(" close=")" conjunction=","> 
+							       		#searchEvtThemeList[]# 
+							     	</iterate>	
+								) > 0		
+											
+				      	</isNotEmpty>
+				
+				
+					
+						<isNotEmpty property="searchArea" prepend="AND" >
+								org_address_ko like concat('%',#searchArea#,'%')
+						</isNotEmpty>
+				   		<isNotEmpty prepend="AND" property="searchOrgList">
+				     		<![CDATA[org_type_idx]]>
+					 		<iterate prepend="IN" property="searchOrgList" open="(" close=")" conjunction=","> 
+					       		#searchOrgList[]# 
+					     	</iterate>
+				     	</isNotEmpty>
+						<isNotEmpty property="searchSosoc" prepend="AND" >
+								oraganizer_name like concat('%',#searchSosoc#,'%')
+						</isNotEmpty>
+						
+						
+		
+					</isEqual>	
+						
+					<isEqual property="searchExcel" compareValue="all">
+						<![CDATA[
+						 and 1=1 
+						]]>
+					</isEqual>	
+					
+				</isNotEmpty>
+		
+		
+		<isEmpty property="searchOrder">
+		order by cus_idx desc, excel_kind desc 
+		</isEmpty>
+		
+		<isNotEmpty property="searchOrder">
+			<isEqual property="searchOrder" compareValue="name_asc">
+					order by name_ko asc
+			</isEqual>
+			<isEqual property="searchOrder" compareValue="name_desc">
+					order by name_ko desc
+			</isEqual>		
+		</isNotEmpty>
+
+	</select>
+	
+		
+		
+ 
+ 	<select id="EventStatusDAO.listEventTotalSearch" parameterClass="com.mice.crm.service.EventTotalSearchVO" resultMap="EventTotalSearch" >
+		<![CDATA[
+		select * from (		
+		SELECT 
+			idx cus_idx
+			,name_ko
+			,tel_no
+			,phone_no
+			,email
+			,address_ko
+			,position
+			,etc
+			,manager_id
+			,newsletter
+			,expire_date
+			,IFNULL(country, '') country
+			,(select user_nm from comvnusermaster where 1=1 and USER_ID = reg_id) as reg_name
+		from tbl_crm_customer_info 
+		) info
+		where expire_date > NOW()
+		]]>
+		<isNotEmpty property="searchUserName" prepend="AND" >
+				name_ko like concat('%',#searchUserName#,'%')
+		</isNotEmpty>
+		<isNotEmpty property="searchUserAddr" prepend="AND" >
+				address_ko like concat('%',#searchUserAddr#,'%')
+		</isNotEmpty>
+		<isNotEmpty property="searchUserPosition" prepend="AND" >
+				position like concat('%',#searchUserPosition#,'%')
+		</isNotEmpty>
+		<isNotEmpty property="searchUserEtc" prepend="AND" >
+				etc like concat('%',#searchUserEtc#,'%')
+		</isNotEmpty>
+		
+		
+		
+ 		<isNotEmpty property="searchNewsLetter" prepend="AND" >
+ 			<isEqual property="searchNewsLetter" compareValue="null">
+					(newsletter = '' or newsletter is null)
+			</isEqual>
+			<isNotEqual property="searchNewsLetter" compareValue="null">
+					newsletter = #searchNewsLetter#
+			</isNotEqual>
+		</isNotEmpty>
+ 		<isNotEmpty property="searchCountry" prepend="AND" >
+ 			<isEqual property="searchCountry" compareValue="null">
+					(country = '' or country is null)
+			</isEqual>
+			<isNotEqual property="searchCountry" compareValue="null">
+					country = #searchCountry#
+			</isNotEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchRegName" prepend="AND" >
+				reg_name like concat('%',#searchRegName#,'%')
+		</isNotEmpty>		
+
+
+
+
+
+		<isNotEmpty property="searchEvtName" prepend="AND" >
+		<![CDATA[
+			 ( 
+			select count(crm_event.name_ko)
+			from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+			inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+			inner join view_tbl_crm_event  crm_event
+			on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+			
+			where cus.idx = info.cus_idx and cus.expire_date > NOW() and crm_event.name_ko like concat('%',#searchEvtName#,'%')
+			) > 0 
+		]]>
+		</isNotEmpty>
+		<isNotEmpty property="searchSdate">
+ 		<isNotEmpty property="searchEdate" prepend="AND" >
+ 		<![CDATA[
+			 ( 
+			select count(crm_event.name_ko)
+			from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+			inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+			inner join view_tbl_crm_event  crm_event
+			on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+			
+			where cus.idx = info.cus_idx and cus.expire_date > NOW() 
+			and ( crm_event.event_st_date between #searchSdate# and #searchEdate# or crm_event.event_ed_date between #searchSdate# and #searchEdate#   )
+			) > 0 
+		]]>
+		</isNotEmpty>	
+		</isNotEmpty>	
+ 		<isNotEmpty property="searchMngName" prepend="AND" >
+ 		<![CDATA[
+			 ( 
+			select count(crm_event.name_ko)
+			from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+			inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+			inner join view_tbl_crm_event  crm_event
+			on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+			
+			where cus.idx = info.cus_idx and cus.expire_date > NOW()  
+			and  crm_event.attract_staff_name like  concat('%',#searchMngName#,'%') 
+			) > 0 
+		]]>
+		</isNotEmpty>
+		<isNotEmpty property="searchEvtThemeList" prepend="AND" >
+		<![CDATA[
+			 ( 
+			select count(crm_event.name_ko)
+			from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+			inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+			inner join 
+			(
+				select *
+		]]>
+				<![CDATA[
+				,(
+					select count(tm.event_theme) from tbl_crm_event_info_theme tm where tm.crm_event_idx = crm_event.idx and tm.event_theme 
+				]]>
+		 	 		<iterate prepend="IN" property="searchEvtThemeList" open="(" close=")" conjunction=","> 
+			       		#searchEvtThemeList[]# 
+			     	</iterate>	
+				) theme_cnt		
+		
+		<![CDATA[
+					 from view_tbl_crm_event crm_event
+			
+			) crm_event
+			on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+			where cus.idx = info.cus_idx and cus.expire_date > NOW() and theme_cnt > 0 
+		
+			) > 0 
+		]]>
+		</isNotEmpty>
+		
+		
+		
+		
+		<isNotEmpty property="searchArea" prepend="AND" >
+		<![CDATA[
+			 ( 
+			select count(crm_event.name_ko)
+			from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+			inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+			inner join view_tbl_crm_event  crm_event
+			on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+			where cus.idx = info.cus_idx and cus.expire_date > NOW()  and  org_info.address_ko like concat('%',#searchArea#,'%')
+			) > 0
+		]]>
+		</isNotEmpty>	
+		<isNotEmpty property="searchOrgList" prepend="AND" >
+			<![CDATA[
+			 ( 
+			select count(crm_event.name_ko)
+			from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+			inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+			inner join view_tbl_crm_event  crm_event
+			on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+			]]>
+			where cus.idx = info.cus_idx and cus.expire_date > NOW() and org_info.type_idx 
+ 	 		<iterate prepend="IN" property="searchOrgList" open="(" close=")" conjunction=","> 
+	       		#searchOrgList[]# 
+	     	</iterate>
+			) > 0 
+		</isNotEmpty>
+		<isNotEmpty property="searchSosoc" prepend="AND" >
+		<![CDATA[
+			 ( 
+			select count(crm_event.name_ko)
+			from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+			inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+			inner join view_tbl_crm_event  crm_event
+			on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+			where cus.idx = info.cus_idx and cus.expire_date > NOW() and org_info.name_ko like concat('%',#searchSosoc#,'%')
+			) > 0
+
+		]]>
+		</isNotEmpty>		
+		
+		
+		
+		
+		
+		
+		<isEmpty property="searchOrder">
+		order by cus_idx desc
+		</isEmpty>
+		
+		<isNotEmpty property="searchOrder">
+			<isEqual property="searchOrder" compareValue="name_asc">
+					order by name_ko asc
+			</isEqual>
+			<isEqual property="searchOrder" compareValue="name_desc">
+					order by name_ko desc
+			</isEqual>		
+		</isNotEmpty>
+		<![CDATA[
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>
+	</select>
+	
+	
+ 	
+ 	<select id="EventStatusDAO.listEventTotalSearchCount" parameterClass="com.mice.crm.service.EventTotalSearchVO" resultClass="java.lang.Integer" >
+		<![CDATA[
+		select count(*) from (		
+		SELECT 
+			idx cus_idx
+			,name_ko
+			,tel_no
+			,phone_no
+			,email
+			,address_ko
+			,position
+			,etc
+			,manager_id 
+			,newsletter
+			,expire_date
+			,IFNULL(country, '') country
+			,(select user_nm from comvnusermaster where 1=1 and USER_ID = reg_id) as reg_name
+		from tbl_crm_customer_info 
+		) info
+		where expire_date > NOW()
+		]]>
+		<isNotEmpty property="searchUserName" prepend="AND" >
+				name_ko like concat('%',#searchUserName#,'%')
+		</isNotEmpty>
+		<isNotEmpty property="searchUserAddr" prepend="AND" >
+				address_ko like concat('%',#searchUserAddr#,'%')
+		</isNotEmpty>
+		<isNotEmpty property="searchUserPosition" prepend="AND" >
+				position like concat('%',#searchUserPosition#,'%')
+		</isNotEmpty>
+		<isNotEmpty property="searchUserEtc" prepend="AND" >
+				etc like concat('%',#searchUserEtc#,'%')
+		</isNotEmpty>
+		
+		
+		
+ 		<isNotEmpty property="searchNewsLetter" prepend="AND" >
+ 			<isEqual property="searchNewsLetter" compareValue="null">
+					(newsletter = '' or newsletter is null)
+			</isEqual>
+			<isNotEqual property="searchNewsLetter" compareValue="null">
+					newsletter = #searchNewsLetter#
+			</isNotEqual>
+		</isNotEmpty>
+ 		<isNotEmpty property="searchCountry" prepend="AND" >
+ 			<isEqual property="searchCountry" compareValue="null">
+					(country = '' or country is null)
+			</isEqual>
+			<isNotEqual property="searchCountry" compareValue="null">
+					country = #searchCountry#
+			</isNotEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchRegName" prepend="AND" >
+				reg_name like concat('%',#searchRegName#,'%')
+		</isNotEmpty>		
+
+
+
+
+
+		<isNotEmpty property="searchEvtName" prepend="AND" >
+		<![CDATA[
+			 ( 
+			select count(crm_event.name_ko)
+			from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+			inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+			inner join view_tbl_crm_event  crm_event
+			on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+			
+			where cus.idx = info.cus_idx and cus.expire_date > NOW() and crm_event.name_ko like concat('%',#searchEvtName#,'%')
+			) > 0 
+		]]>
+		</isNotEmpty>
+		<isNotEmpty property="searchSdate">
+ 		<isNotEmpty property="searchEdate" prepend="AND" >
+ 		<![CDATA[
+			 ( 
+			select count(crm_event.name_ko)
+			from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+			inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+			inner join view_tbl_crm_event  crm_event
+			on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+			
+			where cus.idx = info.cus_idx and cus.expire_date > NOW() 
+			and ( crm_event.event_st_date between #searchSdate# and #searchEdate# or crm_event.event_ed_date between #searchSdate# and #searchEdate#   )
+			) > 0 
+		]]>
+		</isNotEmpty>	
+		</isNotEmpty>	
+ 		<isNotEmpty property="searchMngName" prepend="AND" >
+ 		<![CDATA[
+			 ( 
+			select count(crm_event.name_ko)
+			from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+			inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+			inner join view_tbl_crm_event  crm_event
+			on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+			
+			where cus.idx = info.cus_idx and cus.expire_date > NOW()  
+			and  crm_event.attract_staff_name like  concat('%',#searchMngName#,'%') 
+			) > 0 
+		]]>
+		</isNotEmpty>
+		<isNotEmpty property="searchEvtThemeList" prepend="AND" >
+		<![CDATA[
+			 ( 
+			select count(crm_event.name_ko)
+			from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+			inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+			inner join 
+			(
+				select *
+		]]>
+				<![CDATA[
+				,(
+					select count(tm.event_theme) from tbl_crm_event_info_theme tm where tm.crm_event_idx = crm_event.idx and tm.event_theme 
+				]]>
+		 	 		<iterate prepend="IN" property="searchEvtThemeList" open="(" close=")" conjunction=","> 
+			       		#searchEvtThemeList[]# 
+			     	</iterate>	
+				) theme_cnt		
+		
+		<![CDATA[
+					 from view_tbl_crm_event crm_event
+			
+			) crm_event
+			on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+			where cus.idx = info.cus_idx and cus.expire_date > NOW() and theme_cnt > 0 
+		
+			) > 0 
+		]]>
+		</isNotEmpty>
+		
+		
+		
+		
+		<isNotEmpty property="searchArea" prepend="AND" >
+		<![CDATA[
+			 ( 
+			select count(crm_event.name_ko)
+			from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+			inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+			inner join view_tbl_crm_event  crm_event
+			on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+			where cus.idx = info.cus_idx and cus.expire_date > NOW()  and  org_info.address_ko like concat('%',#searchArea#,'%')
+			) > 0
+			
+			
+		]]>
+		</isNotEmpty>	
+		<isNotEmpty property="searchOrgList" prepend="AND" >
+			<![CDATA[
+			 ( 
+			select count(crm_event.name_ko)
+			from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+			inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+			inner join view_tbl_crm_event  crm_event
+			on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+			]]>
+			where cus.idx = info.cus_idx and cus.expire_date > NOW() and org_info.type_idx 
+ 	 		<iterate prepend="IN" property="searchOrgList" open="(" close=")" conjunction=","> 
+	       		#searchOrgList[]# 
+	     	</iterate>
+			) > 0 
+		</isNotEmpty>
+		<isNotEmpty property="searchSosoc" prepend="AND" >
+		<![CDATA[
+			 ( 
+			select count(crm_event.name_ko)
+			from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel on cus.idx = org_rel.customer_idx
+			inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+			inner join view_tbl_crm_event  crm_event
+			on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx
+			where cus.idx = info.cus_idx and cus.expire_date > NOW() and org_info.name_ko like concat('%',#searchSosoc#,'%')
+			) > 0
+
+		]]>
+		</isNotEmpty>		
+		
+		
+
+		
+	</select>
+	
+	
+	
+	
+
+
+
+
+
+
+
+ 
+ 
+  	<select id="EventStatusDAO.listEventTotalSearchSub" parameterClass="com.mice.crm.service.EventTotalSearchVO" resultClass="com.mice.crm.service.EventTotalSearchVO" >
+		<![CDATA[
+		SELECT * FROM 
+		(
+			select
+			cus.idx cus_idx
+			,cus.name_ko
+			,cus.tel_no
+			,cus.phone_no
+			,cus.email
+			,cus.address_ko
+			,cus.position
+			,cus.etc
+			
+			,cus.manager_id
+			,cus.newsletter
+			,cus.expire_date
+			,IFNULL(cus.country, '') country			
+			,(select user_nm from comvnusermaster where 1=1 and USER_ID = cus.reg_id) as reg_name
+
+			,org_info.idx as org_idx
+			,org_info.type_idx as org_type_idx
+			,(select value from tbl_crm_code_info where idx=org_info.type_idx) as org_type_name 
+			,org_info.zip_code as org_zip_code
+			,org_info.address_ko as org_address_ko
+			,org_info.address_ko as org_address_ko_full
+			,org_info.name_ko as oraganizer_name
+			
+			,crm_event.idx as event_idx
+			,crm_event.name_ko as event_name
+			,crm_event.attract_staff_id as event_staff_id
+			,crm_event.attract_grant_cost event_grant_cost
+			,crm_event.event_st_date 
+			,crm_event.event_ed_date
+			,crm_event.event_theme
+			,crm_event.attract_staff_name as event_staff_name
+			,(
+			SELECT GROUP_CONCAT( (select value from tbl_crm_code_info cd where cd.idx = tm.event_theme)  SEPARATOR ',') 
+			FROM tbl_crm_event_info_theme tm
+			WHERE tm.crm_event_idx = crm_event.idx
+			) event_theme_name
+				
+			from tbl_crm_customer_info cus inner join tbl_crm_customer_organizer_relation org_rel 
+			on cus.idx = org_rel.customer_idx
+			inner join tbl_crm_organizer_info org_info on org_info.idx = org_rel.organizer_idx
+			inner join view_tbl_crm_event  crm_event
+			on crm_event.org_nm = org_info.idx and crm_event.org_mem = cus.idx	
+			and cus.idx=#searchCusIdx#
+		) total_search
+		where expire_date > NOW() and cus_idx = #searchCusIdx#
+		]]>
+		<isNotEmpty property="searchUserName" prepend="AND" >
+				name_ko like concat('%',#searchUserName#,'%')
+		</isNotEmpty>
+		<isNotEmpty property="searchUserAddr" prepend="AND" >
+				address_ko like concat('%',#searchUserAddr#,'%')
+		</isNotEmpty>
+		<isNotEmpty property="searchUserPosition" prepend="AND" >
+				position like concat('%',#searchUserPosition#,'%')
+		</isNotEmpty>
+		<isNotEmpty property="searchUserEtc" prepend="AND" >
+				etc like concat('%',#searchUserEtc#,'%')
+		</isNotEmpty>
+		
+		
+		
+		
+ 		<isNotEmpty property="searchNewsLetter" prepend="AND" >
+ 			<isEqual property="searchNewsLetter" compareValue="null">
+					(newsletter = '' or newsletter is null)
+			</isEqual>
+			<isNotEqual property="searchNewsLetter" compareValue="null">
+					newsletter = #searchNewsLetter#
+			</isNotEqual>
+		</isNotEmpty>
+ 		<isNotEmpty property="searchCountry" prepend="AND" >
+ 			<isEqual property="searchCountry" compareValue="null">
+					(country = '' or country is null)
+			</isEqual>
+			<isNotEqual property="searchCountry" compareValue="null">
+					country = #searchCountry#
+			</isNotEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchRegName" prepend="AND" >
+				reg_name like concat('%',#searchRegName#,'%')
+		</isNotEmpty>	
+
+		
+		
+		
+		<isNotEmpty property="searchEvtName" prepend="AND" >
+				event_name like concat('%',#searchEvtName#,'%')
+		</isNotEmpty>	
+		<isNotEmpty property="searchSdate">
+			<isNotEmpty property="searchEdate" prepend="AND" >
+					( 
+					event_st_date between #searchSdate# and #searchEdate# or 
+					event_ed_date between #searchSdate# and #searchEdate#
+					)
+			</isNotEmpty>	
+		</isNotEmpty>		
+		<isNotEmpty property="searchMngName" prepend="AND" >
+				event_staff_name like concat('%',#searchMngName#,'%') 
+		</isNotEmpty>	
+    	<isNotEmpty prepend="AND" property="searchEvtThemeList">
+    	
+ 				<![CDATA[
+					( select count(tm.event_theme) from tbl_crm_event_info_theme tm where tm.crm_event_idx = event_idx and tm.event_theme 
+				]]>
+		 	 		<iterate prepend="IN" property="searchEvtThemeList" open="(" close=")" conjunction=","> 
+			       		#searchEvtThemeList[]# 
+			     	</iterate>	
+				) > 0		
+							
+      	</isNotEmpty>
+
+	
+	
+	
+		<isNotEmpty property="searchArea" prepend="AND" >
+				org_address_ko like concat('%',#searchArea#,'%')
+		</isNotEmpty>
+   		<isNotEmpty prepend="AND" property="searchOrgList">
+     		<![CDATA[org_type_idx]]>
+	 		<iterate prepend="IN" property="searchOrgList" open="(" close=")" conjunction=","> 
+	       		#searchOrgList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+		<isNotEmpty property="searchSosoc" prepend="AND" >
+				oraganizer_name like concat('%',#searchSosoc#,'%')
+		</isNotEmpty>
+		   				
+		   				
+		   				
+		   				
+		<isEmpty property="searchOrder">
+		order by cus_idx desc
+		</isEmpty>
+	</select>
+	
+ 		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+		
+		
+
+	<select id="EventStatusDAO.listStatusCalendar" parameterClass="com.mice.crm.service.EventStatusVO" resultClass="com.mice.crm.service.EventStatusVO">
+		<![CDATA[
+		
+		SELECT          
+		yyyymmdd,
+		days,
+		dayweek,
+		(select restde_nm from comtnrestde where restde=yyyymmdd) as holiday,
+		(select group_concat((idx) SEPARATOR '|') from tbl_crm_event_info where expire_date>NOW() AND yyyymmdd between 
+		]]>
+		<isNotEmpty property="searchOrderby">
+			<isEqual property="searchOrderby" compareValue="0">
+				<![CDATA[
+				rent_st_date and rent_ed_date
+				]]>
+			</isEqual>
+			<isEqual property="searchOrderby" compareValue="1">
+				<![CDATA[
+				event_st_date and event_ed_date
+				]]>
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchPlaceIdx" prepend="AND">
+		<![CDATA[
+		place_idx = #searchPlaceIdx#
+		]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchImplementsStatusList">
+ 			<![CDATA[implementation_status]]>
+	 		<iterate prepend="IN" property="searchImplementsStatusList" open="(" close=")" conjunction=","> 
+	       		#searchImplementsStatusList[]# 
+	     	</iterate>
+     	</isNotEmpty>    
+     	<isNotEmpty prepend="AND" property="searchEventDivisionList">
+     		<![CDATA[event_division_idx]]>
+	 		<iterate prepend="IN" property="searchEventDivisionList" open="(" close=")" conjunction=","> 
+	       		#searchEventDivisionList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+		
+		<![CDATA[
+		) as idx,
+		(select group_concat((name_ko) SEPARATOR '|') from tbl_crm_event_info where  expire_date>NOW() AND yyyymmdd between 
+		]]>
+		
+		<isNotEmpty property="searchOrderby">
+			<isEqual property="searchOrderby" compareValue="0">
+				<![CDATA[
+				rent_st_date and rent_ed_date
+				]]>
+			</isEqual>
+			<isEqual property="searchOrderby" compareValue="1">
+				<![CDATA[
+				event_st_date and event_ed_date
+				]]>
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchPlaceIdx" prepend="AND">
+		<![CDATA[
+		place_idx = #searchPlaceIdx#
+		]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchImplementsStatusList">
+ 			<![CDATA[implementation_status]]>
+	 		<iterate prepend="IN" property="searchImplementsStatusList" open="(" close=")" conjunction=","> 
+	       		#searchImplementsStatusList[]# 
+	     	</iterate>
+     	</isNotEmpty>    
+     	<isNotEmpty prepend="AND" property="searchEventDivisionList">
+     		<![CDATA[event_division_idx]]>
+	 		<iterate prepend="IN" property="searchEventDivisionList" open="(" close=")" conjunction=","> 
+	       		#searchEventDivisionList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+     	
+		<![CDATA[
+		) as name_ko,
+		(select group_concat((SELECT value FROM tbl_crm_code_info where type='추진현황' and idx=implementation_status) SEPARATOR '|') from tbl_crm_event_info where expire_date>NOW() AND yyyymmdd between 
+		]]>
+		<isNotEmpty property="searchOrderby">
+			<isEqual property="searchOrderby" compareValue="0">
+				<![CDATA[
+				rent_st_date and rent_ed_date
+				]]>
+			</isEqual>
+			<isEqual property="searchOrderby" compareValue="1">
+				<![CDATA[
+				event_st_date and event_ed_date
+				]]>
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchPlaceIdx" prepend="AND">
+		<![CDATA[
+		place_idx = #searchPlaceIdx#
+		]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="searchImplementsStatusList">
+ 			<![CDATA[implementation_status]]>
+	 		<iterate prepend="IN" property="searchImplementsStatusList" open="(" close=")" conjunction=","> 
+	       		#searchImplementsStatusList[]# 
+	     	</iterate>
+     	</isNotEmpty>    
+     	<isNotEmpty prepend="AND" property="searchEventDivisionList">
+     		<![CDATA[event_division_idx]]>
+	 		<iterate prepend="IN" property="searchEventDivisionList" open="(" close=")" conjunction=","> 
+	       		#searchEventDivisionList[]# 
+	     	</iterate>
+     	</isNotEmpty>
+		
+		<![CDATA[
+		) as implementsStatusName
+		FROM            (SELECT (dt          + INTERVAL lv-1 DAY)      AS yyyymmdd, 
+		                        substring(dt + INTERVAL lv-1 DAY, 9,2) AS days    , 
+		                        dayofweek(dt + INTERVAL lv-1 DAY)      AS dayweek 
+		                FROM    ( SELECT ordinal_position                       lv , 
+		                                        CONCAT(#searchYearMonth#, '01')                 dt 
+		                        FROM    information_schema.columns 
+		                        WHERE   table_schema = 'mysql' 
+		                        AND     table_name   = 'user' 
+		                        ) 
+		                        a 
+		                WHERE   lv <= DAY(LAST_DAY(dt)) 
+		                ) 
+		                calendar 
+		                
+		WHERE           1=1 
+		ORDER BY        calendar.yyyymmdd ASC;
+		 
+		]]>
+	</select>
+	
+
+
+
+	<select id="EventStatusDAO.listStatusCalendarWeek" parameterClass="com.mice.crm.service.EventStatusVO" resultClass="com.mice.crm.service.EventStatusVO">
+		<![CDATA[
+		
+		SELECT          
+		yyyymmdd,
+		days,
+		dayweek,
+		monthweek,
+		(select restde_nm from comtnrestde where restde=yyyymmdd) as holiday,
+'' dayweek_han
+		
+		]]>
+		<![CDATA[
+		FROM  
+		]]>
+		<![CDATA[
+		            
+					(SELECT (dt          + INTERVAL lv-1 DAY)      AS yyyymmdd, 
+						substring(dt + INTERVAL lv-1 DAY, 9,2) AS days, 
+						dayofweek(dt + INTERVAL lv-1 DAY)      AS dayweek, 
+						floor((date_format((dt+INTERVAL lv-1 DAY),'%d')+(date_format(date_format((dt+INTERVAL lv-1 DAY),'%Y%m%01'),'%w')-1))/7)+1 monthweek
+					FROM    ( 
+				
+						SELECT ordinal_position  lv, CONCAT(date_format(#searchToday#,'%Y%m'), '01')  dt 
+						FROM    information_schema.columns 
+						WHERE   table_schema = 'mysql' 
+						AND     table_name   = 'user' 
+					) a 
+					WHERE   lv <= DAY(LAST_DAY(dt)) 
+					
+					) calendar 
+			where monthweek = #monthweek#                
+		 
+		]]>
+						
+		<isEqual property="monthweek" compareValue="1">
+		<![CDATA[
+		union 
+                
+		select
+		  
+			yyyymmdd,
+			days,
+			dayweek,
+			monthweek,
+			(select restde_nm from comtnrestde where restde=yyyymmdd) as holiday,	
+''  dayweek_han
+					
+		from
+			(SELECT (dt          + INTERVAL lv-1 DAY)      AS yyyymmdd, 
+				substring(dt + INTERVAL lv-1 DAY, 9,2) AS days, 
+				dayofweek(dt + INTERVAL lv-1 DAY)      AS dayweek, 
+				floor((date_format((dt+INTERVAL lv-1 DAY),'%d')+(date_format(date_format((dt+INTERVAL lv-1 DAY),'%Y%m%01'),'%w')-1))/7)+1 monthweek
+			FROM    ( 
+		
+				SELECT ordinal_position  lv, CONCAT(date_format(DATE_SUB( date_format(#searchToday#,'%Y%m%d'),INTERVAL 1 month),'%Y%m'), '01')  dt 
+				FROM    information_schema.columns 
+				WHERE   table_schema = 'mysql' 
+				AND     table_name   = 'user' 
+			) a 
+			WHERE   lv <= DAY(LAST_DAY(dt)) 
+			) calendar 
+		where monthweek = 5  
+					
+		]]>
+		</isEqual>	
+		<isEqual property="monthweek" compareValue="5">
+		<![CDATA[
+		union 
+                
+		select
+			  
+			yyyymmdd,
+			days,
+			dayweek,
+			monthweek,
+			(select restde_nm from comtnrestde where restde=yyyymmdd) as holiday,	
+''  dayweek_han
+					
+		from
+                
+			(SELECT (dt          + INTERVAL lv-1 DAY)      AS yyyymmdd, 
+				substring(dt + INTERVAL lv-1 DAY, 9,2) AS days, 
+				dayofweek(dt + INTERVAL lv-1 DAY)      AS dayweek, 
+				floor((date_format((dt+INTERVAL lv-1 DAY),'%d')+(date_format(date_format((dt+INTERVAL lv-1 DAY),'%Y%m%01'),'%w')-1))/7)+1 monthweek
+			FROM    ( 
+		
+				SELECT ordinal_position  lv, CONCAT(date_format(DATE_SUB( date_format(#searchToday#,'%Y%m%d'),INTERVAL -1 month),'%Y%m'), '01')  dt 
+				FROM    information_schema.columns 
+				WHERE   table_schema = 'mysql' 
+				AND     table_name   = 'user' 
+			) a 
+			WHERE   lv <= DAY(LAST_DAY(dt)) 
+			) calendar 
+		where monthweek = 1  
+		]]>
+		</isEqual>			
+							         
+		<![CDATA[
+		                
+		ORDER BY        yyyymmdd ASC;
+		 
+		]]>
+		
+	</select>
+	
+
+	<select id="EventStatusDAO.listStatusFacility" parameterClass="com.mice.crm.service.EventStatusFacilityVO" resultClass="com.mice.crm.service.EventStatusFacilityVO">
+		<![CDATA[
+			select 
+				idx, 
+				type type_ko, 
+				value, 
+				sorted_no
+				
+			from tbl_crm_code_info 
+			where type='1층' or type='2층' or type='3층' or type='기타' 
+		]]>
+		<![CDATA[
+			order by type, sorted_no asc
+		]]>
+	</select>
+		
+
+	<select id="EventStatusDAO.listStatusDay" parameterClass="com.mice.crm.service.EventStatusDayVO" resultClass="com.mice.crm.service.EventStatusDayVO">
+		<![CDATA[
+			select 
+			(select count(CRM_EVENT_IDX) from tbl_crm_event_place where RENT_TIME_AM = '1' and  #yyyymmdd# BETWEEN P_RENT_ST_DATE and P_RENT_ED_DATE   and value=#fac_idx#)  rent_time_am
+			,(select count(CRM_EVENT_IDX) from tbl_crm_event_place where RENT_TIME_PM = '1' and #yyyymmdd# BETWEEN P_RENT_ST_DATE and P_RENT_ED_DATE  and  value=#fac_idx#) rent_time_pm
+			,(select count(CRM_EVENT_IDX) from tbl_crm_event_place where RENT_TIME_NIGHT = '1' and #yyyymmdd# BETWEEN P_RENT_ST_DATE and P_RENT_ED_DATE   and value=#fac_idx#) rent_time_night
+		]]>
+	</select>
+		
+				
+								
+	
+	
+
+
+
+
+
+
+	<select id="EventStatusDAO.listTotalSearchExcel" parameterClass="com.mice.crm.service.TotalSearchExcelVO" resultMap="com.mice.crm.service.TotalSearchExcelVO" >
+		<![CDATA[
+		SELECT 
+			idx, type, search_cnt, search_title, fiel_path, file_name, file_size, reg_id, reg_date		
+		from tbl_totalsearch_excel_file_info 
+		where expire_date > NOW()
+		]]>
+		<isNotEmpty property="searchNum" prepend="AND">
+			 idx
+	 		<iterate prepend="IN" property="searchNum" open="(" close=")" conjunction=","> 
+	       		#searchNum[]# 
+	     	</iterate>
+		</isNotEmpty>
+		<isNotEmpty property="searchUserName" prepend="AND" >
+				search_title like concat('%',#searchEvtName#,'%')
+		</isNotEmpty>
+		<isNotEmpty property="searchSdate">
+ 		<isNotEmpty property="searchEdate" prepend="AND" >
+ 		<![CDATA[
+			reg_date between #searchSdate# and #searchEdate#
+		]]>
+		</isNotEmpty>	
+		</isNotEmpty>	
+		
+		<isEmpty property="searchOrder">
+		order by idx desc
+		</isEmpty>
+
+		<![CDATA[
+			LIMIT #recordCountPerPage# OFFSET #firstIndex#
+		]]>
+	</select>
+	
+	
+
+	<delete id="EventStatusDAO.deleteTotalSearchExcel" parameterClass="com.mice.crm.service.TotalSearchExcelVO">
+		<![CDATA[
+		DELETE FROM tbl_totalsearch_excel_file_info WHERE idx=#idx#
+		]]>
+	</delete>
+	
+
+	
+			
+	
+</sqlMap>

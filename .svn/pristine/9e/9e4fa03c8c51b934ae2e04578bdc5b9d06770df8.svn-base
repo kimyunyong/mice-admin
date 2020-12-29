@@ -1,0 +1,987 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="KMSDAO">
+	<!-- <typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/> -->
+	<typeAlias  alias="int" type="java.lang.Integer"/>
+	<typeAlias  alias="KMSSearchVO" type="com.mice.crm.service.KMSSearchVO"/>
+	<typeAlias  alias="KMSInsertVO" type="com.mice.crm.service.KMSInsertVO"/>
+	<typeAlias  alias="KMSMemberVO" type="com.mice.crm.service.KMSMemberVO"/>
+	<typeAlias  alias="KMSEvaluateVO" type="com.mice.crm.service.KMSEvaluateVO"/>
+	<typeAlias  alias="KMSEvaluateCurrVO" type="com.mice.crm.service.KMSEvaluateCurrVO"/>
+	<typeAlias  alias="KMSLogVO" type="com.mice.crm.service.KMSLogVO"/>
+	<typeAlias  alias="FileVO" type="egovframework.com.cmm.service.FileVO"/>
+	
+	<typeAlias  alias="userManageVO" type="egovframework.com.uss.umt.service.UserManageVO"/>
+	<typeAlias  alias="userVO"       type = "egovframework.com.uss.umt.service.UserManageVO"/>
+	
+	<resultMap id="TeamList" class="KMSSearchVO">
+		<result property="team_idx" column="idx" columnIndex="1"/>
+		<result property="team_name" column="value" columnIndex="2"/>		
+	</resultMap>
+
+	<resultMap id="TeamPositionById" class="userManageVO">	
+		<result property="emplyrId" column="EMPLYR_ID" columnIndex="1"/>
+		<result property="team_idx" column="TEAM_IDX" columnIndex="2"/>
+		<result property="position" column="POSITION" columnIndex="3"/>		
+	</resultMap>
+	
+	<resultMap id="EmpList" class="com.mice.crm.service.KMSSearchVO">
+		<result property="emp_idx" column="id" columnIndex="1"/>
+		<result property="emp_name" column="name" columnIndex="2"/>		
+	</resultMap>
+	
+	<resultMap id="FolderList" class="com.mice.crm.service.KMSSearchVO">
+		<result property="project_code" column="project_code" columnIndex="1"/>
+		<result property="category_code" column="category_code" columnIndex="2"/>
+		<result property="years_code" column="years_code" columnIndex="3"/>	
+		<result property="folder_1_code" column="folder_1_code" columnIndex="4"/>	
+		<result property="folder_2_code" column="folder_2_code" columnIndex="5"/>
+		<result property="name" column="name" columnIndex="6"/>			
+	</resultMap>
+	<resultMap id="EvaluateList" class="com.mice.crm.service.KMSEvaluateSearchVO">
+		<result property="years" column="years" columnIndex="1"/>
+		<result property="team_idx" column="team_idx" columnIndex="2"/>
+		<result property="team_name" column="team_name" columnIndex="3"/>	
+		<result property="emp_id" column="emp_id" columnIndex="4"/>	
+		<result property="emp_name" column="emp_name" columnIndex="5"/>
+		<result property="fileCount" column="fileCount" columnIndex="6"/>
+		<result property="evaluate" column="evaluate" columnIndex="7"/>			
+	</resultMap>
+	
+	<resultMap id="ProList" class="com.mice.crm.service.KMSSearchVO">
+		<result property="dir_idx" column="dir_idx" columnIndex="1"/>
+		<result property="project_code" column="project_code" columnIndex="2"/>
+		<result property="project_name" column="name" columnIndex="3"/>
+	</resultMap>
+	
+	<resultMap id="CateList" class="com.mice.crm.service.KMSSearchVO">
+		<result property="dir_idx" column="dir_idx" columnIndex="1"/>
+		<result property="category_code" column="category_code" columnIndex="2"/>
+		<result property="category_name" column="name" columnIndex="3"/>
+	</resultMap>
+	
+	<resultMap id="YearsList" class="com.mice.crm.service.KMSSearchVO">
+		<result property="dir_idx" column="dir_idx" columnIndex="1"/>
+		<result property="years_code" column="years_code" columnIndex="2"/>
+		<result property="years_name" column="name" columnIndex="3"/>
+	</resultMap>
+	
+	<resultMap id="Folder_1_List" class="com.mice.crm.service.KMSSearchVO">
+		<result property="dir_idx" column="dir_idx" columnIndex="1"/>
+		<result property="folder_1_code" column="folder_1_code" columnIndex="2"/>
+		<result property="folder_1_name" column="name" columnIndex="3"/>
+	</resultMap>
+	
+	<resultMap id="Folder_2_List" class="com.mice.crm.service.KMSSearchVO">
+		<result property="dir_idx" column="dir_idx" columnIndex="1"/>
+		<result property="folder_2_code" column="folder_2_code" columnIndex="2"/>
+		<result property="folder_2_name" column="name" columnIndex="3"/>
+	</resultMap>
+	
+	<resultMap id="FileList" class="com.mice.crm.service.KMSSearchVO">
+		<result property="dir_idx" column="dir_idx" columnIndex="1"/>
+		<result property="team_idx" column="team_idx" columnIndex="2"/>
+		<result property="team_name" column="team_name" columnIndex="3"/>		
+		<result property="emp_idx" column="emp_idx" columnIndex="4"/>
+		<result property="emp_name" column="emp_name" columnIndex="5"/>
+		<result property="use_tf" column="use_tf" columnIndex="6"/>
+		<result property="atchFileId" column="atch_file_id" columnIndex="7"/>
+		<result property="fileStreCours" column="file_stre_cours" columnIndex="8"/>
+		<result property="orignlFileNm" column="orignl_file_nm" columnIndex="9"/>
+		<result property="fileMg" column="file_mg" columnIndex="10"/>
+		<result property="reg_date" column="reg_date" columnIndex="11"/>		
+	</resultMap>
+	
+	<resultMap id="fileList2" class="egovframework.com.cmm.service.FileVO">
+			<result property="atchFileId" column="ATCH_FILE_ID" columnIndex="1"/>
+		<result property="fileCn" column="FILE_CN" columnIndex="2"/>
+		<result property="fileExtsn" column="FILE_EXTSN" columnIndex="3"/>
+		<result property="fileMg" column="FILE_SIZE" columnIndex="4"/>
+		<result property="fileStreCours" column="FILE_STRE_COURS" columnIndex="5"/>
+		<result property="orignlFileNm" column="ORIGNL_FILE_NM" columnIndex="6"/>
+		<result property="streFileNm" column="STRE_FILE_NAME" columnIndex="7"/>
+	</resultMap>
+	
+	<resultMap id="LogList" class="com.mice.crm.service.KMSLogVO">
+		<result property="atchFileId" column="atch_file_id" columnIndex="1"/>
+		<result property="download_id" column="download_id" columnIndex="2"/>
+		<result property="download_date" column="download_date" columnIndex="3"/>
+	</resultMap>
+	
+	<insert id="KMSDAO.insertTeam" parameterClass="KMSSearchVO">
+		<![CDATA[
+		INSERT INTO KMS_DIRECTORY (
+									team_idx, 
+									id, 
+									project_code, 
+									category_code, 
+									years_code,
+									folder_1_code, 
+									folder_2_code, 
+									name,
+									reg_id,
+									reg_date, 
+									use_tf)
+							VALUES (
+									#team_idx#,
+									'', 
+									0, 
+									0,
+									0, 
+									0, 
+									0, 
+									#team_name#,
+									#reg_id#, 
+									now(), 
+									1
+									);
+		]]>
+	</insert>
+	<update id="KMSDAO.updateTeamName" parameterClass="KMSSearchVO">
+		<![CDATA[
+			UPDATE kms_directory
+				SET	name = #team_name#
+			WHERE team_idx = #team_idx# 
+			and ID = ''
+			and project_code = '0'
+			and category_code = '0'
+			and years_code = '0'
+			and folder_1_code = '0'
+			and folder_2_code = '0'
+		]]>
+	</update>
+	<insert id="KMSDAO.insertCommonFolder" parameterClass="KMSSearchVO">
+
+		<![CDATA[
+		INSERT INTO KMS_DIRECTORY (
+									team_idx, 
+									id, 
+									project_code, 
+									category_code, 
+									years_code,
+									folder_1_code, 
+									folder_2_code, 
+									name,
+									reg_id,
+									reg_date, 
+									use_tf)
+							VALUES (
+									#team_idx#,
+									'공용폴더', 
+									0, 
+									0,
+									0, 
+									0, 
+									0, 
+									'공용폴더', 
+									#reg_id#, 
+									now(), 
+									1
+									);
+		]]>
+	</insert>
+	<select id="KMSDAO.getFileList"  resultMap="FileList" parameterClass="KMSSearchVO">
+		<![CDATA[
+			SELECT A.DIR_IDX AS DIR_IDX,
+				A.TEAM_IDX AS TEAM_IDX,
+				(SELECT value FROM tbl_crm_code_info WHERE idx = TEAM_IDX) AS TEAM_NAME,
+				ifnull (A.ID,'공용폴더') AS EMP_IDX,
+				ifnull((SELECT USER_NM FROM comtnemplyrinfo WHERE EMPLYR_ID = EMP_IDX ), '공용폴더') AS EMP_NAME,
+				B.ATCH_FILE_ID AS ATCH_FILE_ID,
+				B.FILE_STRE_COURS AS FILE_STRE_COURS,
+				B.ORIGNL_FILE_NM AS ORIGNL_FILE_NM,
+				B.FILE_SIZE AS FILE_MG,
+				B.USE_TF AS USE_TF,
+				B.REG_DATE AS REG_DATE
+			FROM KMS_DIRECTORY A INNER JOIN KMS_FILE B
+			ON A.DIR_IDX = B.DIR_IDX
+			WHERE 1=1 AND B.USE_TF = '1'
+		]]>
+		
+			<isNotEmpty prepend="AND" property="search_name">
+				<![CDATA[ B.ORIGNL_FILE_NM like concat('%',#search_name#,'%') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="team_idx">
+ 				A.team_idx = #team_idx#
+ 			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="emp_idx">
+				A.id = #emp_idx#
+			</isNotEmpty>
+ 			<isNotEmpty prepend="AND" property="startDate">
+ 				<![CDATA[reg_date >= concat(#startDate#,' 00:00:00') ]]>
+ 			</isNotEmpty>
+			
+			<isNotEmpty prepend="AND" property="endDate">
+ 				<![CDATA[
+					a.reg_date <= concat(#endDate#, ' 23:59:59') 
+				]]>
+ 			</isNotEmpty>
+ 			
+ 			<isNotEmpty prepend="AND" property="project_code">
+ 				A.project_code = #project_code#
+ 			</isNotEmpty>
+ 			<isNotEmpty prepend="AND" property="category_code">
+ 				A.category_code = #category_code#
+ 			</isNotEmpty>
+ 			<isNotEmpty prepend="AND" property="years_code">
+ 				A.years_code = #years_code#
+ 			</isNotEmpty>
+ 			<isNotEmpty prepend="AND" property="folder_1_code">
+ 				A.folder_1_code = #folder_1_code#
+ 			</isNotEmpty>
+ 			<isNotEmpty prepend="AND" property="folder_2_code">
+ 				A.folder_2_code = #folder_2_code#
+ 			</isNotEmpty>
+			
+			<![CDATA[
+	 			ORDER BY B.reg_date DESC 
+ 				LIMIT #recordCountPerPage# OFFSET #firstIndex#
+			]]>
+	</select>
+	<select id="KMSDAO.getFileCount" parameterClass="KMSSearchVO" resultClass="int">
+		<![CDATA[
+			SELECT COUNT(A.DIR_IDX)
+			FROM KMS_DIRECTORY A INNER JOIN KMS_FILE B 
+			ON A.DIR_IDX = B.DIR_IDX
+			WHERE 1=1 AND B.USE_TF = '1'
+		]]>
+		
+			<isNotEmpty prepend="AND" property="search_name">
+				<![CDATA[ B.ORIGNL_FILE_NM like concat('%',#search_name#,'%') ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="team_idx">
+ 				A.team_idx = #team_idx#
+ 			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="emp_idx">
+				A.id = #emp_idx#
+			</isNotEmpty>
+ 			<isNotEmpty prepend="AND" property="startDate">
+ 				B.reg_date >= concat(#startDate#,' 00:00:00')
+ 			</isNotEmpty>
+ 			<isNotEmpty prepend="AND" property="endDate">
+ 				<![CDATA[ B.reg_date <= concat(#endDate#,' 00:00:00') ]]>
+ 			</isNotEmpty>
+ 			<isNotEmpty prepend="AND" property="project_code">
+ 				A.project_code = #project_code#
+ 			</isNotEmpty>
+ 			<isNotEmpty prepend="AND" property="category_code">
+ 				A.category_code = #category_code#
+ 			</isNotEmpty>
+ 			<isNotEmpty prepend="AND" property="years_code">
+ 				A.years_code = #years_code#
+ 			</isNotEmpty>
+ 			<isNotEmpty prepend="AND" property="folder_1_code">
+ 				A.folder_1_code = #folder_1_code#
+ 			</isNotEmpty>
+ 			<isNotEmpty prepend="AND" property="folder_2_code">
+ 				A.folder_2_code = #folder_2_code#
+ 			</isNotEmpty>
+	</select>
+	
+	<select id="KMSDAO.getAllEmpByTeam" resultMap="EmpList" parameterClass="int">
+		<![CDATA[
+			SELECT distinct id, name
+			FROM kms_directory
+			WHERE  team_idx = #team_idx# 
+				and id != ''
+				and project_code = 0 
+				and category_code = 0 
+				and years_code = 0 
+				and folder_1_code = 0 
+				and folder_2_code = 0
+				and use_tf = 1
+			ORDER BY 
+	    			CASE WHEN id in ('공용폴더') 
+	    			THEN 0
+	    			ELSE 1 END,
+	    			DIR_IDX
+		]]>
+	</select>
+	
+	<select id="KMSDAO.getProByEmp" resultMap="ProList" parameterClass="KMSSearchVO">
+		<![CDATA[
+			SELECT  dir_idx, project_code, name
+			FROM 	kms_directory
+			WHERE   team_idx 		= #team_idx# 
+				and id 				= #emp_idx#
+				and project_code 	!= 0
+				and category_code 	= 0 
+				and years_code 		= 0 
+				and folder_1_code 	= 0 
+				and folder_2_code 	= 0
+				and use_tf 			= 1
+			ORDER BY
+			DIR_IDX
+		]]>
+	</select>
+	<select id="KMSDAO.getCateByPro" resultMap="CateList" parameterClass="KMSSearchVO">
+		<![CDATA[
+			SELECT  dir_idx, category_code, name
+			FROM 	kms_directory
+			WHERE   team_idx 		= #team_idx# 
+				and id 				= #emp_idx#
+				and project_code 	= #project_code#
+				and category_code 	!= 0
+				and years_code 		= 0 
+				and folder_1_code 	= 0 
+				and folder_2_code 	= 0
+				and use_tf 			= 1
+			ORDER BY
+			DIR_IDX
+		]]>
+	</select>
+	<select id="KMSDAO.getYearsByCate" resultMap="YearsList" parameterClass="KMSSearchVO">
+		<![CDATA[
+			SELECT  dir_idx, years_code, name
+			FROM 	kms_directory
+			WHERE   team_idx 		= #team_idx# 
+				and id 				= #emp_idx#
+				and project_code 	= #project_code#
+				and category_code 	= #category_code#
+				and years_code 		!= 0 
+				and folder_1_code 	= 0 
+				and folder_2_code 	= 0
+				and use_tf 			= 1
+			ORDER BY
+			DIR_IDX
+		]]>
+	</select>
+	<select id="KMSDAO.getFolder_1ByYears" resultMap="Folder_1_List" parameterClass="KMSSearchVO">
+		<![CDATA[
+			SELECT  dir_idx, folder_1_code, name
+			FROM 	kms_directory
+			WHERE   team_idx 		= #team_idx# 
+				and id 				= #emp_idx#
+				and project_code 	= #project_code#
+				and category_code 	= #category_code#
+				and years_code 		= #years_code#  
+				and folder_1_code 	!= 0 
+				and folder_2_code 	= 0
+				and use_tf 			= 1
+			ORDER BY
+			DIR_IDX
+		]]>
+	</select>
+	<select id="KMSDAO.getFolder_2ByFolder_1" resultMap="Folder_2_List" parameterClass="KMSSearchVO">
+		<![CDATA[
+			SELECT  dir_idx, folder_2_code, name
+			FROM 	kms_directory
+			WHERE   team_idx 		= #team_idx# 
+				and id 				= #emp_idx#
+				and project_code 	= #project_code#
+				and category_code 	= #category_code#
+				and years_code 		= #years_code#  
+				and folder_1_code 	= #folder_1_code# 
+				and folder_2_code 	!= 0
+				and use_tf 			= 1
+			ORDER BY
+			DIR_IDX
+		]]>
+	</select>
+	
+	<insert id="KMSDAO.insertDirEmp" parameterClass="userManageVO">
+
+		<![CDATA[
+		INSERT INTO KMS_DIRECTORY (
+									team_idx, 
+									id, 
+									project_code, 
+									category_code, 
+									years_code, 
+									folder_1_code, 
+									folder_2_code, 
+									name, 
+									reg_id,
+									reg_date, 
+									use_tf)
+							VALUES (
+									#team_idx#,
+									#emplyrId#, 
+									0, 
+									0, 
+									0, 
+									0, 
+									0, 
+									#emplyrNm#,
+									#reg_id#, 
+									now(), 
+									1
+									);
+		]]>
+	</insert>
+	
+	<select id="KMSDAO.getDirCountByTeamAndEmp" resultClass="int" parameterClass="userManageVO" >
+		<![CDATA[
+			SELECT count(team_idx) as count
+			FROM KMS_DIRECTORY
+			WHERE id=#emplyrId# AND team_idx=#team_idx#
+		]]>
+	</select>
+	
+	<update id="KMSDAO.updateAllDirUseFalse" parameterClass="userManageVO">
+		<![CDATA[
+		UPDATE kms_directory
+			SET	USE_TF = '0'
+		WHERE id=#emplyrId# AND id != '꽁용폴떠'
+		]]>
+	</update>
+
+	<update id="KMSDAO.updateDirUseTrue" parameterClass="userManageVO">
+		<![CDATA[
+		UPDATE kms_directory
+			SET	USE_TF = 1
+			WHERE id=#emplyrId# 
+				AND team_idx=#team_idx#
+		]]>
+	</update>
+
+	<update id="KMSDAO.updateDirEmpName" parameterClass="userManageVO">
+		<![CDATA[
+		UPDATE kms_directory
+			SET	name=#emplyrNm#
+			WHERE id=#emplyrId# 
+				AND team_idx=#team_idx#
+				AND project_code=0
+		]]>
+	</update>
+	
+	<insert id="KMSDAO.insertFile" parameterClass="KMSSearchVO" >
+		<![CDATA[
+			INSERT INTO KMS_FILE(
+							ATCH_FILE_ID, 
+							FILE_STRE_COURS, 
+							STRE_FILE_NAME, 
+			  				ORIGNL_FILE_NM, 
+			  				FILE_EXTSN, 
+			  				FILE_SIZE, 
+			  				FILE_CN, 
+			  				REG_DATE,
+			  				DIR_IDX,
+			  				USE_TF
+			) VALUES (
+							#atchFileId#, 
+							#fileStreCours#, 
+							#streFileNm#, 
+			  				#orignlFileNm#, 
+			  				#fileExtsn#,
+			  				#fileMg#, 
+			  				#fileCn#, 
+			  				now(),
+			  				#dir_idx#,
+			  				1
+			  		)
+		]]>
+	</insert>
+	<update id="KMSDAO.deleteFile" parameterClass="String">
+		<![CDATA[
+			UPDATE KMS_FILE SET use_tf = '0'
+				WHERE ATCH_FILE_ID = #atchFileId#
+		]]>
+	</update>
+	
+    <select id="KMSDAO.getTeamPositionById"  resultMap="TeamPositionById" parameterClass="String">
+      <![CDATA[
+      	 SELECT 
+      	 	EMPLYR_ID, 
+      	 	TEAM_IDX, 
+      	 	POSITION
+      	 FROM comtnemplyrinfo 
+      	 WHERE EMPLYR_ID = #userId#
+      ]]>
+   </select>
+	
+	
+	<select id="KMSDAO.getAllTeam"  resultMap="TeamList">
+		<![CDATA[
+			SELECT IDX, VALUE
+			FROM TBL_CRM_CODE_INFO
+			WHERE TYPE = '팀'
+		]]>
+	</select>
+	<select id="KMSDAO.getTeam"  resultMap="TeamList" parameterClass="String">
+		<![CDATA[
+			SELECT IDX, VALUE
+			FROM TBL_CRM_CODE_INFO 
+			WHERE TYPE = '팀' and IDX = (select TEAM_IDX from comtnemplyrinfo where EMPLYR_ID = #userId#)
+		]]>
+	</select>
+	
+	<select id="KMSDAO.getAllEmp" resultMap="EmpList" parameterClass="KMSMemberVO">
+		<![CDATA[
+		SELECT distinct id, name
+			FROM kms_directory
+			WHERE  team_idx =  #team_idx# 
+				and use_tf = 1 
+				and id != ''
+				and project_code = 0 
+				and category_code = 0 
+				and years_code = 0 
+				and folder_1_code = 0 
+				and folder_2_code = 0
+				and 
+				case 
+				when (select POSITION from comtnemplyrinfo where EMPLYR_ID = #userId#) = '235' then 1
+				when (select POSITION from comtnemplyrinfo where EMPLYR_ID = #userId#) = '237' then id = #userId# OR id='공용폴더'
+				end
+				ORDER BY 
+	    			CASE WHEN id in ('공용폴더') 
+	    			THEN 0
+	    			ELSE 1 END,
+	    			DIR_IDX
+		]]>
+	</select>
+	
+	<select id="KMSDAO.getAllFolder" resultMap="FolderList" parameterClass="KMSSearchVO">
+		<![CDATA[
+			select project_code, category_code, years_code, folder_1_code, folder_2_code, name from kms_directory  
+			where project_code !=0 
+				  and team_idx = #team_idx# 
+				  and id = #emp_name#
+				  and use_tf = 1
+			order by cast(project_code as unsigned),
+					 cast(category_code as unsigned), 
+					 cast(years_code as unsigned), 
+					 cast(folder_1_code as unsigned), 
+					 cast(folder_2_code as unsigned)
+		]]>
+	</select>
+	<insert id="KMSDAO.insertProject" parameterClass="KMSInsertVO">
+		<![CDATA[
+		INSERT INTO kms_directory (
+									team_idx, 
+									id, 
+									project_code, 
+									category_code, 
+									years_code, 
+									folder_1_code, 
+									folder_2_code, 
+									name, 
+									reg_id,
+									reg_date, 
+									use_tf)
+							VALUES (
+									#team_idx#,
+									#emp_name#, 
+									(select cast(project_code as unsigned)+1 from kms_directory a where team_idx = #team_idx# and id = #emp_name# order by cast(project_code as unsigned) desc limit 1), 
+									0, 
+									0, 
+									0, 
+									0, 
+									#name#, 
+									#reg_id#, 
+									now(), 
+									1
+									)
+			]]>
+	</insert>
+	<insert id="KMSDAO.insertCategory" parameterClass="KMSInsertVO">
+		<![CDATA[
+		INSERT INTO kms_directory (
+									team_idx, 
+									id, 
+									project_code, 
+									category_code, 
+									years_code, 
+									folder_1_code, 
+									folder_2_code, 
+									name, 
+									reg_id,
+									reg_date, 
+									use_tf)
+							VALUES (
+									#team_idx#,
+									#emp_name#, 
+									(select project_code from kms_directory a where team_idx = #team_idx# and id = #emp_name# order by cast(project_code as unsigned) desc limit 1), 
+									(select cast(category_code as unsigned)+1 from kms_directory a where team_idx = #team_idx#  and id = #emp_name# and project_code = (select project_code from kms_directory a where team_idx = #team_idx# and id = #emp_name# order by cast(project_code as unsigned) desc limit 1)  order by cast(category_code as unsigned) desc limit 1), 
+									0, 
+									0, 
+									0, 
+									#name#, 
+									#reg_id#, 
+									now(), 
+									1
+									)
+			]]>
+	</insert>
+	<insert id="KMSDAO.insertYears" parameterClass="KMSInsertVO">
+		<![CDATA[
+		INSERT INTO kms_directory (
+									team_idx, 
+									id, 
+									project_code, 
+									category_code, 
+									years_code, 
+									folder_1_code, 
+									folder_2_code, 
+									name, 
+									reg_id,
+									reg_date, 
+									use_tf)
+							VALUES (
+									#team_idx#,
+									#emp_name#, 
+									#project_code#, 
+									#category_code#, 
+									(select cast(years_code as unsigned)+1 from kms_directory a 
+									where team_idx = #team_idx#  and id = #emp_name# and project_code = #project_code#
+									and category_code = #category_code#
+									order by cast(years_code as unsigned) desc limit 1), 
+									0, 
+									0, 
+									#name#, 
+									#reg_id#, 
+									now(), 
+									1
+									)
+			]]>
+	</insert>
+	<insert id="KMSDAO.insertFolder1" parameterClass="KMSInsertVO">
+		<![CDATA[
+		INSERT INTO kms_directory (
+									team_idx, 
+									id, 
+									project_code, 
+									category_code, 
+									years_code, 
+									folder_1_code, 
+									folder_2_code, 
+									name, 
+									reg_id,
+									reg_date, 
+									use_tf)
+							VALUES (
+									#team_idx#,
+									#emp_name#, 
+									#project_code#, 
+									#category_code#, 
+									#years_code#, 
+									(select cast(folder_1_code as unsigned)+1 from kms_directory a 
+									where team_idx = #team_idx#  and id = #emp_name# and project_code = #project_code#
+									and category_code = #category_code# and years_code = #years_code#
+									order by cast(folder_1_code as unsigned) desc limit 1), 
+									0, 
+									#name#, 
+									#reg_id#, 
+									now(), 
+									1
+									)
+			]]>
+	</insert>
+	<insert id="KMSDAO.insertFolder2" parameterClass="KMSInsertVO">
+		<![CDATA[
+		INSERT INTO kms_directory (
+									team_idx, 
+									id, 
+									project_code, 
+									category_code, 
+									years_code, 
+									folder_1_code, 
+									folder_2_code, 
+									name, 
+									reg_id,
+									reg_date, 
+									use_tf)
+							VALUES (
+									#team_idx#,
+									#emp_name#, 
+									#project_code#, 
+									#category_code#, 
+									#years_code#, 
+									#folder_1_code#, 
+									(select cast(folder_2_code as unsigned)+1 from kms_directory a 
+									where team_idx = #team_idx#  and id = #emp_name# and project_code = #project_code#
+									and category_code = #category_code# and years_code = #years_code# and folder_1_code = #folder_1_code#
+									order by cast(folder_2_code as unsigned) desc limit 1), 
+									#name#, 
+									#reg_id#, 
+									now(), 
+									1
+									)
+			]]>
+	</insert>
+	<update id="KMSDAO.UpdateProject" parameterClass="KMSInsertVO">
+		<![CDATA[
+		UPDATE kms_directory
+			SET	name = #name#
+		WHERE team_idx = #team_idx#
+		       and id = #emp_name# 
+		       and project_code = #project_code#
+			   and category_code = 0
+			   and years_code = 0 
+			   and folder_1_code = 0
+			   and folder_2_code = 0
+		]]>
+	</update>
+	<update id="KMSDAO.UpdateCategory" parameterClass="KMSInsertVO">
+		<![CDATA[
+		UPDATE kms_directory
+			SET	name = #name#
+		WHERE team_idx = #team_idx#
+		       and id = #emp_name# 
+		       and project_code = #project_code#
+			   and category_code =#category_code#
+			   and years_code = 0 
+			   and folder_1_code = 0
+			   and folder_2_code = 0
+		]]>
+	</update>
+	<update id="KMSDAO.UpdateYears" parameterClass="KMSInsertVO">
+		<![CDATA[
+		UPDATE kms_directory
+			SET	name = #name#
+		WHERE team_idx = #team_idx#
+		       and id = #emp_name# 
+		       and project_code = #project_code#
+			   and category_code =#category_code#
+			   and years_code = #years_code# 
+			   and folder_1_code = 0
+			   and folder_2_code = 0
+		]]>
+	</update>
+	<update id="KMSDAO.UpdateFolder1" parameterClass="KMSInsertVO">
+		<![CDATA[
+		UPDATE kms_directory
+			SET	name = #name#
+		WHERE team_idx = #team_idx#
+		       and id = #emp_name# 
+		       and project_code = #project_code#
+			   and category_code =#category_code#
+			   and years_code = #years_code# 
+			   and folder_1_code = #folder_1_code#
+			   and folder_2_code = 0
+		]]>
+	</update>
+	<update id="KMSDAO.UpdateFolder2" parameterClass="KMSInsertVO">
+		<![CDATA[
+		UPDATE kms_directory
+			SET	name = #name#
+		WHERE team_idx = #team_idx#
+		       and id = #emp_name# 
+		       and project_code = #project_code#
+			   and category_code =#category_code#
+			   and years_code = #years_code# 
+			   and folder_1_code = #folder_1_code#
+			   and folder_2_code = #folder_2_code#
+		]]>
+	</update>
+	
+	<update id="KMSDAO.DeleteProject" parameterClass="KMSInsertVO">
+		<![CDATA[
+		UPDATE kms_directory
+			SET	use_tf = 0
+		WHERE team_idx = #team_idx#
+		       and id = #emp_name# 
+		       and project_code = #project_code# 
+		]]>
+	</update>
+	
+	<update id="KMSDAO.DeleteCategory" parameterClass="KMSInsertVO">
+		<![CDATA[
+		UPDATE kms_directory
+			SET	use_tf = 0
+		WHERE team_idx = #team_idx#
+		       and id = #emp_name# 
+		       and project_code = #project_code#
+			   and category_code =#category_code# 
+		]]>
+	</update>
+	
+	<update id="KMSDAO.DeleteYears" parameterClass="KMSInsertVO">
+		<![CDATA[
+		UPDATE kms_directory
+			SET	use_tf = 0
+		WHERE team_idx = #team_idx#
+		       and id = #emp_name# 
+		       and project_code = #project_code#
+			   and category_code =#category_code#
+			   and years_code = #years_code# 
+		]]>
+	</update>
+	<update id="KMSDAO.DeleteFolder1" parameterClass="KMSInsertVO">
+		<![CDATA[
+		UPDATE kms_directory
+			SET	use_tf = 0
+		WHERE team_idx = #team_idx#
+		       and id = #emp_name# 
+		       and project_code = #project_code#
+			   and category_code =#category_code#
+			   and years_code = #years_code# 
+			   and folder_1_code = #folder_1_code#
+		]]>
+	</update>
+	<update id="KMSDAO.DeleteFolder2" parameterClass="KMSInsertVO">
+		<![CDATA[
+		UPDATE kms_directory
+			SET	use_tf = 0
+		WHERE team_idx = #team_idx#
+		       and id = #emp_name# 
+		       and project_code = #project_code#
+			   and category_code =#category_code#
+			   and years_code = #years_code# 
+			   and folder_1_code = #folder_1_code#
+			   and folder_2_code = #folder_2_code#
+		]]>
+	</update>
+	<update id="KMSDAO.DeleteFile" parameterClass="KMSInsertVO">
+		<![CDATA[
+		UPDATE kms_file 
+			SET	use_tf = 0
+		WHERE dir_idx in 
+		(select dir_idx from kms_directory where team_idx = #team_idx#
+								and id = #emp_name# 
+		       				and project_code = #project_code#
+		]]>
+		<isNotEmpty prepend="AND" property="category_code">
+		category_code = #category_code#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="years_code">
+		years_code = #years_code#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="folder_1_code">
+		folder_1_code = #folder_1_code#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="folder_2_code">
+		folder_2_code = #folder_2_code#
+		</isNotEmpty>
+		       				
+		<![CDATA[    				
+		)
+		]]>
+	</update>
+	<select id="KMSDAO.getEvaluateList"  resultMap="EvaluateList" parameterClass="KMSEvaluateVO">
+      <![CDATA[
+          SELECT   d.Reg_years as years,
+             #team_idx# as team_idx,
+                (select value from TBL_CRM_CODE_INFO where idx = #team_idx#) as team_name,
+              d.id as emp_id,
+             (select user_NM from comtnemplyrinfo where EMPLYR_ID = d.id) as emp_name,
+             (select count(atch_file_id) from kms_file b join kms_directory c on b.DIR_IDX = c.DIR_IDX where c.TEAM_IDX = #team_idx# and c.ID = d.id and d.REG_YEARS = substring(cast(b.REG_DATE as char),1,4) and b.USE_TF = 1) as fileCount,
+                a.EVALUATE_POINT  as evaluate
+            FROM  kms_evaluate a right join 
+            (select distinct substring(cast(b.REG_DATE as char),1,4) as Reg_years, c.ID, c.TEAM_IDX, c.USE_TF AS USE_TF from kms_file b join kms_directory c  on b.DIR_IDX = c.DIR_IDX and c.use_tf = 1 where c.TEAM_IDX = #team_idx# and b.USE_TF = 1  ) d on a.Reg_years = d.Reg_years and a.id = d.id 
+              where 1=1 and d.use_tf = '1' 
+           ]]>
+           <isNotEmpty prepend="AND" property="team_idx">
+         d.TEAM_IDX = #team_idx#
+         </isNotEmpty>
+           <isNotEmpty prepend="AND" property="years">
+         d.Reg_years = #years# 
+         </isNotEmpty>
+           <isNotEmpty prepend="AND" property="emp_id">
+         a.ID = #emp_id#
+         </isNotEmpty>   
+   </select>
+	
+	<insert id="KMSDAO.InsertEvaluate" parameterClass="KMSEvaluateCurrVO">
+
+		<![CDATA[
+		INSERT INTO kms_evaluate (
+									EVALUATE_POINT,
+									REG_YEARS,
+									ID, 
+									use_tf)
+							VALUES (
+									#point#,
+									#curr_years#, 
+									#curr_emp_id#,
+									1
+									);
+		]]>
+	</insert>
+	<update id="KMSDAO.UpdateEvaluate" parameterClass="KMSEvaluateCurrVO">
+		<![CDATA[
+		UPDATE kms_evaluate
+			SET	EVALUATE_POINT = #point#
+		WHERE REG_YEARS = #curr_years# AND ID = #curr_emp_id#
+		]]>
+	</update>
+	
+	<insert id="KMSDAO.InsertLog" parameterClass="KMSLogVO">
+      <![CDATA[
+      INSERT INTO kms_download_log (
+                           ATCH_FILE_ID,
+                           DOWNLOAD_ID,
+                           DOWNLOAD_DATE
+                           ) VALUES (
+                           #atchFileId#,
+                           #download_id#,
+                           now()
+                           );
+      ]]>
+   </insert>
+		
+   <select id="KMSDAO.selectFileInf" parameterClass="FileVO" resultMap="fileList2">
+ 		<![CDATA[
+			SELECT 
+				ATCH_FILE_ID,
+  				FILE_CN,
+  				FILE_EXTSN,
+  				FILE_SIZE,
+				FILE_STRE_COURS, 
+  				ORIGNL_FILE_NM, 
+				STRE_FILE_NAME, 
+  				REG_DATE
+			FROM
+				KMS_FILE
+			WHERE
+				ATCH_FILE_ID = #atchFileId#	
+ 		]]>
+ 	</select>
+ 		<select id="KMSDAO.getFileLog" resultMap="LogList" parameterClass="String">
+		<![CDATA[
+			select atch_file_id, download_id, download_date from kms_download_log 
+			where atch_file_id = #atchFileId# 
+			order by Log_idx 
+		]]>
+	</select>
+	
+
+	<select id="KMSDAO.selectUser" resultClass="userVO">
+        <![CDATA[
+            SELECT
+                ESNTL_ID           uniqId            ,
+                'USR03'           userTy,
+            EMPLYR_ID         emplyrId          ,
+            USER_NM         emplyrNm          ,
+            PASSWORD          password          ,
+            PASSWORD_HINT     passwordHint      ,
+            PASSWORD_CNSR     passwordCnsr      ,
+            EMPL_NO           emplNo            ,
+            IHIDNUM           ihidnum           ,
+            SEXDSTN_CODE      sexdstnCode       ,
+            BRTHDY              brth              ,
+            AREA_NO           areaNo            ,
+            HOUSE_MIDDLE_TELNO  homemiddleTelno   ,
+            HOUSE_END_TELNO     homeendTelno      ,
+            FXNUM             fxnum             ,
+            HOUSE_ADRES         homeadres         ,
+            DETAIL_ADRES      detailAdres       ,
+            ZIP               zip               ,
+            OFFM_TELNO        offmTelno         ,
+            MBTLNUM       moblphonNo        ,
+            EMAIL_ADRES       emailAdres        ,
+            OFCPS_NM          ofcpsNm           ,
+            GROUP_ID          groupId           ,
+            ORGNZT_ID         orgnztId          ,
+            PSTINST_CODE        insttCode         ,
+            EMPLYR_STTUS_CODE emplyrSttusCode   , 
+            SBSCRB_DE         sbscrbDe          ,
+            CRTFC_DN_VALUE            subDn      ,
+            (SELECT AUTHOR_CODE FROM comtnemplyrscrtyestbs WHERE SCRTY_DTRMN_TRGET_ID=#uniqId#) permission,
+            TEAM_IDX,
+            POSITION
+        FROM COMTNEMPLYRINFO
+            WHERE EMPLYR_ID =#emp_idx#
+        ]]>
+    </select>
+   
+   <update id="KMSDAO.DeleteFileById" parameterClass="String">
+      <![CDATA[
+      UPDATE kms_file
+         SET   use_tf = 0
+      WHERE dir_idx in 
+         (select dir_idx from kms_directory where id = #emp_idx#)
+      ]]>
+      
+   </update>
+</sqlMap>
